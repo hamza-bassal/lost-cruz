@@ -3,15 +3,6 @@ Lost@Cruz is a platform for reporting and recovering lost and found items on cam
 
 Team Members: Hamza, Keshav, Jiayi, Thomas, Kelly
 
-Test test
+To run the project:
 
-
-
- test 1.0
-
-
- test 2.0
-
- test 3.0
-
- test 4.0
+Open a terminal at the root directory, then cd into the lost-cruz folder. Afterwards, you should be to 'npm run dev' to locally run the website.
