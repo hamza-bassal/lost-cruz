@@ -5,6 +5,8 @@ import { getFirestore } from 'firebase/firestore';
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+//Learn how to import firebase api from file to protect api information in github
+/*
 const firebaseConfig = {
     apiKey: "",
     authDomain: "",
@@ -14,6 +16,9 @@ const firebaseConfig = {
     appId: "",
     measurementId: ""
 };
+*/
+
+import firebaseConfig from "./firebase.config.js"
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
