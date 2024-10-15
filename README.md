@@ -6,3 +6,4 @@ Team Members: Hamza, Keshav, Jiayi, Thomas, Kelly
 To run the project:
 
 Open a terminal at the root directory, then cd into the lost-cruz folder. Afterwards, you should be to 'npm run dev' to locally run the website.
+
