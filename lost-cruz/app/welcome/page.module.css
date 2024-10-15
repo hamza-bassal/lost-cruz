@@ -1,0 +1,15 @@
+.page {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #0174BE;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  margin: auto;
+  gap: 5%;
+}
