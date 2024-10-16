@@ -8,11 +8,11 @@ import { getFirestore } from 'firebase/firestore';
 const firebaseConfig = {
     apiKey: process.env.apiKey,
     authDomain: process.env.authDomain,
-    projectId: process.env.projectId,
+    databaseURL: process.env.databaseURL,
+    projectId: "lostatcruz",
     storageBucket: process.env.storageBucket,
     messagingSenderId: process.env.messagingSenderId,
-    appId: process.env.appId,
-    measurementId: process.env.measurementId
+    appId: process.env.appId
 };
 
 // Initialize Firebase
