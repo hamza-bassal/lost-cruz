@@ -28,7 +28,7 @@ const style = {
   gap: 3,
 }
 
-export default function Home() {
+export default function Test() {
   // We'll add our component logic here
   const [inventory, setInventory] = useState([])
   const [itemName, setItemName] = useState('')
