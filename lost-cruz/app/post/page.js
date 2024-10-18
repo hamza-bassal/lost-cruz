@@ -13,13 +13,16 @@ import styles from "./post.module.css"
 
 import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
+import styled from "@emotion/styled";
 
 
 const SingleComment = () => {
     return (
         <Box className={styles.commentContainer}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
-                <Box sx={{ height: '75px', width: '75px', bgcolor: '#FFC436', borderRadius: '10px' }}></Box>
+                <Box sx={{ height: '75px', width: '75px', bgcolor: '#FFC436', borderRadius: '10px', cursor: 'pointer' }}>
+                    {/* User Profile img here */}
+                </Box>
                 <Link href="#" sx={{ textDecoration: 'none', color: 'black' }}>username</Link>
             </Box>
 
@@ -52,14 +55,39 @@ const CommentList = () => {
     )
 }
 
+const LFtag = ({ tagName }) => {
+    return (
+        <box className={styles.lfTag}>
+            <box className={styles.tagText}>{tagName}</box>
+        </box>
+    )
+}
+
+const Tag = ({ tagName }) => {
+    return (
+        <box className={styles.tag}>
+            <box className={styles.tagText}>{tagName}</box>
+        </box>
+    )
+}
+
 const postPage = () => {
     return (
         <div>
             <Navbar />
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce' }}>
-                <Box sx={{ width: 0.75, height: '100%', bgcolor: '#fcf7ed', margin: 'auto' }}>
 
+                {/* tags */}
+                <Box className={styles.tagGroup}>
+                    <LFtag tagName={"LOST"} />
+                    <Tag tagName={"tag 1"} />
+                    <Tag tagName={"tag 2"} />
+                    <Tag tagName={"tag 3"} />
+                    <Tag tagName={"tagtagtagtagtagtag"} />
+                </Box>
+
+                <Box sx={{ width: 0.75, height: '100%', bgcolor: '#fcf7ed', margin: 'auto', borderStyle: 'solid', borderWidth: '1px', borderColor: 'lightgray' }}>
                     {/* Post Body */}
                     <Box sx={{ bgcolor: 'white', borderRadius: '20px' }}>
                         {/* go back */}
@@ -77,10 +105,13 @@ const postPage = () => {
                                 display: 'flex',
                                 justifyContent: "space-between",
                                 paddingTop: '20px',
-                                paddingBottom: '20px'
+                                paddingBottom: '20px',
+                                marginBottom: '10px',
                             }}>
-                                <h1 style={{ color: '#0C356A' }}>Title</h1>
-                                <Button variant="contained" sx={{ bgcolor: "#0174BE" }}>Contact</Button>
+                                <Box sx={{ maxWidth: '80%', }}>
+                                    <h1 className={styles.title}>Title</h1>
+                                </Box>
+                                <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
                             </Box>
 
                             {/* paragraph + img */}
@@ -106,7 +137,7 @@ const postPage = () => {
                                 paddingBottom: '10px',
                             }}>
                                 <Box sx={{ display: 'flex', gap: '7.5px' }}>
-                                    <Box sx={{ height: '30px', width: '30px', bgcolor: '#FFC436', borderRadius: '10px', marginLeft: '10px' }}>
+                                    <Box sx={{ height: '30px', width: '30px', bgcolor: '#FFC436', borderRadius: '10px', marginLeft: '10px', cursor: 'pointer' }}>
                                         {/* profile img here */}
                                     </Box>
                                     <Link href="#" sx={{ alignSelf: 'flex-end', textDecoration: 'none', color: 'black' }}>author</Link>
@@ -114,7 +145,7 @@ const postPage = () => {
                                 <Box sx={{ alignSelf: 'flex-end', fontSize: 'small', color: 'gray' }}>hh:mm a/pm - MM/DD/YYYY</Box>
                             </Box>
 
-                            <hr style={{marginTop: '10px', marginBottom: '10px'}} />
+                            <hr style={{ marginTop: '10px', marginBottom: '10px' }} />
 
                             {/* location + report + share */}
                             <Box sx={{ paddingBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
@@ -142,19 +173,7 @@ const postPage = () => {
                     <CommentList />
 
                     {/* Comment Box */}
-                    <Box sx={{
-                        padding: '10px',
-                        width: 0.75,
-                        bgcolor: 'white',
-                        position: 'fixed',
-                        bottom: '20px',
-                        height: '50px',
-                        borderRadius: '20px',
-                        borderColor: '#0174BE',
-                        borderWidth: '1px',
-                        borderStyle: 'solid',
-                        display: 'flex'
-                    }}>
+                    <Box className={styles.commentBoxContainer}>
                         <form className={styles.commentForm} method="get">
                             <IconButton>
                                 <AddIcon sx={{ color: '#0174BE' }} />
