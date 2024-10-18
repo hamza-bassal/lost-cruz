@@ -13,8 +13,6 @@ import styles from "./post.module.css"
 
 import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
-import styled from "@emotion/styled";
-
 
 const SingleComment = () => {
     return (
