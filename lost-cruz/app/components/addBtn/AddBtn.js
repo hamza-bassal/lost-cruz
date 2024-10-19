@@ -3,10 +3,15 @@
 import { IconButton } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 
-const TopBtn = () => {
+const AddBtn = () => {
     return (
         <div>
-            <IconButton href="#">
+            <IconButton
+                sx={{
+                    position: 'fixed',
+                    bottom: '15%',
+                    right: '3%',
+                }}>
                 {/* redirect to create new post page */}
                 <AddIcon
                     sx={{
@@ -18,9 +23,6 @@ const TopBtn = () => {
                         width: '50px',
                         color: 'white',
                         bgcolor: '#0174BE',
-                        position: 'fixed',
-                        bottom: '16%',
-                        right: '5%',
                     }}
                 />
             </IconButton>
@@ -28,4 +30,4 @@ const TopBtn = () => {
     )
 }
 
-export default TopBtn
+export default AddBtn
