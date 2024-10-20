@@ -13,3 +13,36 @@
   margin: auto;
   gap: 5%;
 }
+
+.loginBox {
+  position: fixed;
+  width: 650px;
+  height: 375px;
+  top: 22.5%;
+  left: 25%;
+  background-color: #FCF7ED;
+  border: 5px double #0174BE;
+  border-radius: 25px;
+  opacity: 95%;
+  box-shadow: 2px 2px 4px gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 40px 20px 40px;
+}
+
+.helpBox {
+  position: fixed;
+  width: 650px;
+  height: 375px;
+  top: 22.5%;
+  left: 25%;
+  background-color: #FCF7ED;
+  border: 5px double #0174BE;
+  border-radius: 25px;
+  opacity: 95%;
+  box-shadow: 2px 2px 4px gray;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 40px 20px 40px;
+}

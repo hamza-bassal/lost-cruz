@@ -1,11 +1,81 @@
 'use client'
 
-import { Box, Button } from '@mui/material'
-import styles from "./page.module.css";
-import Image from "next/image";
+import { useState } from 'react';
+import { Box, Button, FormControl, IconButton, TextField } from '@mui/material'
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import CloseIcon from '@mui/icons-material/Close';
+
+import styles from "./page.module.css";
 
 export default function Home() {
+  const [login, setLogin] = useState(false)
+  const [help, setHelp] = useState(false)
+
+  const LoginBox = () => {
+    return (
+      <Box className={styles.loginBox}>
+        <Box>
+          <IconButton onClick={() => { setLogin(false) }}
+            sx={{ color: '#0174BE' }}>
+            <CloseIcon fontSize="large" />
+          </IconButton>
+          <Box
+            sx={{
+              fontSize: '30px',
+              fontWeight: 'bolder',
+              color: '#0C356A',
+              textAlign: 'center',
+              textDecoration: 'underline',
+              cursor: 'default'
+            }}
+          >LOGIN</Box>
+        </Box>
+        <FormControl
+          sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}
+        >
+          <Box>
+            <TextField fullWidth id='username' label='username' variant='filled' size='small'></TextField>
+          </Box>
+
+          <Box>
+            <TextField fullWidth id='password' label='password' variant='filled' size='small'></TextField>
+          </Box>
+
+        </FormControl>
+        <Button variant='contained' sx={{ width: '50%', alignSelf: 'center', marginTop: '10px', marginBottom: '10px' }}>SIGN IN</Button>
+      </Box>
+    )
+  }
+
+  const HelpBox = () => {
+    return (
+      <Box className={styles.helpBox}>
+        <Box sx={{ marginBottom: '30px' }}>
+          <IconButton onClick={() => { setHelp(false) }}
+            sx={{ color: '#0174BE' }}>
+            <CloseIcon fontSize="large" />
+          </IconButton>
+          <Box
+            sx={{
+              fontSize: '30px',
+              fontWeight: 'bolder',
+              color: '#0C356A',
+              textAlign: 'center',
+              textDecoration: 'underline',
+              cursor: 'default',
+            }}
+          >ABOUT US</Box>
+        </Box>
+        <Box sx={{ wordWrap: 'break-word' }}>
+          <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
+          <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext</p>
+          <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttext</p>
+          <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
+        </Box>
+      </Box>
+    )
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.container}>
@@ -14,7 +84,6 @@ export default function Home() {
           {/* ----- Img here ------ */}
         </Box>
 
-        {/* about us */}
         <Box maxWidth={0.5} alignSelf={'center'}>
           {/* Title */}
           <h1 style={{
@@ -35,25 +104,30 @@ export default function Home() {
             wordWrap: 'break-word',
             paddingLeft: '40px',
           }}>
-            <p style={{marginBottom: '20px'}}>texttexttexttexttext</p>
-            <p style={{marginBottom: '20px'}}>texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext</p>
-            <p style={{marginBottom: '20px'}}>texttexttexttexttexttexttexttexttext</p>
-            <p style={{marginBottom: '20px'}}>texttexttexttexttext</p>
+            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
+            <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext</p>
+            <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttext</p>
+            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
           </Box>
 
           {/* Log-in Button */}
-          <Box sx={{
-            paddingTop: '30px',
-            width: 1,
-            display: 'flex',
-          }}><Button variant='contained'
+          <Box
             sx={{
-              width: 0.75,
-              bgcolor: '#FFC436',
-              fontWeight: 'bold',
-              margin: 'auto',
-            }}>LOGIN</Button></Box>
+              paddingTop: '30px',
+              width: 1,
+              display: 'flex',
+            }}><Button variant='contained'
+              onClick={() => { setLogin(true); setHelp(false); }}
+              sx={{
+                width: 0.75,
+                bgcolor: '#FFC436',
+                fontWeight: 'bold',
+                margin: 'auto',
+              }}>LOGIN</Button></Box>
         </Box>
+
+        {login &&
+          <LoginBox></LoginBox>}
 
         {/* Footer */}
         <Box sx={{
@@ -65,15 +139,18 @@ export default function Home() {
 
         {/* Help Button */}
         <ContactSupportIcon
-        fontSize="large"
-        // onClick={() => {}}
-        sx={{
-          position: 'fixed',
-          top: '10px',
-          right: '20px',
-          color: '#FCF7ED',
-          cursor: 'pointer'
-        }}/>
+          fontSize="large"
+          onClick={() => { !login && setHelp(true) }}
+          sx={{
+            position: 'fixed',
+            top: '10px',
+            right: '20px',
+            color: '#FCF7ED',
+            cursor: 'pointer'
+          }} />
+
+        {help && <HelpBox />}
+
       </div>
     </div>
   );
