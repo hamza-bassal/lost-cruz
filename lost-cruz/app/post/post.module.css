@@ -1,0 +1,131 @@
+.title {
+    color: #0C356A;
+    font-size: 40px;
+    cursor: pointer;
+    word-wrap: break-word;
+}
+
+.commentBoxContainer {
+    padding: 10px;
+    width: 70%;
+    background-color: white;
+    position: fixed;
+    bottom: 20px;
+    left: 15%;
+    height: 50px;
+    border: 1px solid #0174BE;
+    border-radius: 20px;
+    display: flex;
+    box-shadow: 2px 2px 5px gray;
+}
+
+.commentForm {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.commentBox {
+    font-size: large;
+    width: 100%;
+    height: 100%;
+    margin: 10px;
+    outline: none;
+    border: none;
+}
+
+.commentContainer {
+    display: flex;
+    padding: 5% 10% 0 5%;
+    gap: 20px;
+    width: 100%;
+    overflow:hidden;
+    justify-content: center;
+}
+
+.commentText {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    min-height: 150px;
+    max-width: 80%;
+    width: auto;
+    height: auto;
+}
+
+.tagGroup {
+    height: auto;
+    width: 100px;
+    position: absolute;
+    top: 125px;
+    left: calc(12.5% - 100px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.lfTag {
+    width: inherit;
+    height: 50px;
+    position: relative;
+    display: inline-block;
+    background: #0174BE;
+    text-overflow: clip;
+    cursor: pointer;
+    display: flex;
+    box-shadow: 0 1px 2px gray;
+    color: white;
+    border-radius: 10px 0 0 10px;
+    opacity: 75%;
+}
+
+.tag {
+    width: inherit;
+    height: 50px;
+    position: relative;
+    display: inline-block;
+    background: #ffc436;
+    text-overflow: clip;
+    cursor: pointer;
+    display: flex;
+    box-shadow: 0 1px 2px gray;
+    opacity: 75%;
+}
+
+.tagText {
+    padding: 1px;
+    padding-right: 10px;
+    width: inherit;
+    max-height: 50px;
+    font-weight: bold;
+    align-content: center;
+    text-align: end;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.tag:after {
+    position: absolute;
+    content: "";
+    left: -19px;
+    width: 1px;
+    height: 0px;
+    border-right: 19px solid #ffc436;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    transition: border 0.3s;
+}
+
+.tag:hover {
+    opacity: 100%;
+}
+
+.lfTag:hover {
+    opacity: 100%;
+}

@@ -1,0 +1,62 @@
+.postListContainer {
+    min-height: 1000px;
+    height: auto;
+    width: 99%;
+    margin: auto;
+    margin-top: 10px;
+}
+
+.singlePost {
+    width: inherit;
+    min-height: 200px;
+    height: auto;
+    background-color: #FCF7ED;
+    display: flex;
+}
+
+.postContent {
+    margin: 5px 5px 0 5px;
+    background-color: #fff;
+    height: inherit;
+    width: inherit;
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.postText {
+    max-width: calc(100% - 250px);
+    height: auto;
+    background-color: #fff;
+    word-wrap: break-word;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.titleBox {
+    padding: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.description {
+    padding: 10px 20px;
+    max-height: 100px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-bottom: 10px;
+
+    @supports (-webkit-line-clamp: 5) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: initial;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+    }
+}
