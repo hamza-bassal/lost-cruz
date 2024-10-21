@@ -60,8 +60,22 @@ const createPost = () => {
 
                 <IconButton sx={{ color: '#FFC436' }}
                 onClick={() => {
-                    // console.log("Work now")
-                    createPost()
+                    //This button is used to create post
+                    if(postTitle && postBody && postEmail && postStatus && postTag)
+                    {
+                        createPost()
+                    }
+                    else
+                    {
+                        // Can front end handle the error for not filling out the
+                        // Maybe add email checking as well
+                        //
+                        //
+                        //
+                        //
+                        //
+                        console.log("error!")
+                    }
                 }}>
                     <SendIcon fontSize="large" />
                 </IconButton>
