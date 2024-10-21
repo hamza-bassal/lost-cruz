@@ -10,6 +10,7 @@ import {
   setDoc,
   deleteDoc,
   getDoc,
+  addDoc,
 } from 'firebase/firestore'
 
 import styles from "./forum.module.css"
