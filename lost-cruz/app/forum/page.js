@@ -64,7 +64,7 @@ const Tag = ({ tag }) => {
     )
 }
 
-const Post = ({key, postId, title, description, tags, image }) => {
+const Post = ({postId, title, description, tags, image }) => {
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -82,7 +82,10 @@ const Post = ({key, postId, title, description, tags, image }) => {
                                     whiteSpace: 'nowrap',
                                 }}>{title} </Link>
                         </Box>
-                        <Box className={styles.description}>
+                        <Box className={styles.description}
+                        sx={{
+                            color: '#313b40',
+                        }}>
                             {description}
                         </Box>
                     </Box>
@@ -121,7 +124,7 @@ const PostList = () => {
     // Generate the posts using .map()
     const posts = Array(post_len).fill(null).map((_, index) => (
         <Post
-            key={index}          // unique key
+            key={index}         
             postId={index + 1}   // Unique key for each post
             title={`Title ${index + 1}`} // Unique title for each post
             description={'description'}
