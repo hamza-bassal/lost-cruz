@@ -41,8 +41,13 @@ const createPost = () => {
             tags: postTag,
             status: postStatus,
             timestamp: serverTimestamp()
-        });
-        console.log(docRef.id);
+        })
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+          })
+          .catch((error) => {
+            console.error("Error adding document: ", error);
+          });
     }
 
     return (
