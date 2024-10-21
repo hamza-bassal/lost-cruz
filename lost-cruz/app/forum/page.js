@@ -149,7 +149,9 @@ const forumPage = () => {
                     <PostList />
 
                     {/* add new post */}
-                    <AddBtn />
+                    <Link href={`/createPost`}>
+                        <AddBtn />
+                    </Link>
 
                     {/* go back to top */}
                     <TopBtn />
