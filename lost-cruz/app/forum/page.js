@@ -64,7 +64,7 @@ const Tag = ({ tag }) => {
     )
 }
 
-const Post = ({ title, description, tags, image }) => {
+const Post = ({key, postId, title, description, tags, image }) => {
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -72,7 +72,7 @@ const Post = ({ title, description, tags, image }) => {
                     {/* title + description */}
                     <Box>
                         <Box className={styles.titleBox}>
-                            <Link href={"#"}
+                            <Link href={`/forum/${postId}`}
                                 sx={{
                                     width: 'inherit',
                                     textDecoration: 'none',
@@ -93,11 +93,11 @@ const Post = ({ title, description, tags, image }) => {
                         <Tag tag={'tag2'} />
                         <Tag tag={'tag3'} />
                         <Tag tag={'tag4'} />
-                        <Tag tag={'tagtagtagtagtagtagtag'} />
                     </Box>
                 </Box>
                 {/* image(s) */}
-                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px' }}>
+                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px', borderRadius: '10px'}}
+                >
                     {/* img here */}
                 </Box>
             </Box>
@@ -106,53 +106,36 @@ const Post = ({ title, description, tags, image }) => {
 }
 
 const PostList = () => {
+    /*
+    This is where information retrieval to create new posts will be done. 
+    We can limit the amount of posts with a modulo function.
+    Current set-up for sprint 1 should just be that it displays the most
+    recents posts within in the database.
+
+    Things needed:
+    - ID retrieval from storage for link generation to its specific page
+        - This will then be used for information retrieval
+    */
+    const post_len = 8;
+
+    // Generate the posts using .map()
+    const posts = Array(post_len).fill(null).map((_, index) => (
+        <Post
+            postId={index + 1}   // Unique key for each post
+            title={`Title ${index + 1}`} // Unique title for each post
+            description={'description'}
+            tags={[]}
+            image={'...'}
+        />
+    ));
+
     return (
-        <Box className={styles.postListContainer}>
-            <Post
-                title={'Title'}
-                description={'description'}
-                tags={[]}
-                image={'...'}
-            />
-            <Post
-                title={'Title'}
-                description={'description'}
-                tags={[]}
-                image={'...'}
-            />
-            <Post
-                title={'Title'}
-                description={'description'}
-                tags={[]}
-                image={'...'}
-            />
-            <Post
-                title={'Title'}
-                description={'description'}
-                tags={[]}
-                image={'...'}
-            />
-            <Post
-                title={'Title'}
-                description={'description'}
-                tags={[]}
-                image={'...'}
-            />
-            <Post
-                title={'Title'}
-                description={'description'}
-                tags={[]}
-                image={'...'}
-            />
-            <Post
-                title={'Title Title Title Title Title Title Title Title'}
-                description={'description...description...description...description...description...description...description...description...description...description...description...description...description...description...'}
-                tags={[]}
-                image={'...'}
-            />
+        // Box or wrapper around the posts
+        <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
+            {posts}  {/* Render the array of Post components inside the box */}
         </Box>
-    )
-}
+    );
+};
 
 const forumPage = () => {
     return (
@@ -166,7 +149,9 @@ const forumPage = () => {
                     <PostList />
 
                     {/* add new post */}
-                    <AddBtn />
+                    <Link href={`/createPost`}>
+                        <AddBtn />
+                    </Link>
 
                     {/* go back to top */}
                     <TopBtn />
