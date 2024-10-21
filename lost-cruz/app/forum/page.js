@@ -143,7 +143,8 @@ const PostList = () => {
 
 const forumPage = () => {
     return (
-        <div>
+        <Box sx={{bgcolor: '#0174BE'}}>
+            <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around',}}></Box>
             <Navbar></Navbar>
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce' }}>
@@ -161,7 +162,7 @@ const forumPage = () => {
                     <TopBtn />
                 </Box>
             </Container>
-        </div>
+        </Box>
     )
 }
 

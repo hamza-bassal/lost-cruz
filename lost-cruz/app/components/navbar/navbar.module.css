@@ -29,6 +29,10 @@
     opacity: 0.75;
 }
 
+.navBar {
+    width: 100%;
+}
+
 .searchForm {
     display: flex;
     width: 100%;
