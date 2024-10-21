@@ -1,11 +1,65 @@
 'use client'
 import { Container, Box, Link } from "@mui/material"
+import { useState, useEffect } from 'react'
+import { firestore } from '@/firebase'
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  deleteDoc,
+  getDoc,
+} from 'firebase/firestore'
 
 import styles from "./forum.module.css"
 
 import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
+
+
+// const searchInventroy = async () => {
+//   const snapshot = query(collection(firestore, 'inventory'))
+//   const docs = await getDocs(snapshot)
+//   const inventoryList = []
+//   docs.forEach((doc) => {
+//     if (doc.id.toLowerCase().includes(searchItem.toLowerCase())) {
+//       inventoryList.push({ name: doc.id, ...doc.data() })
+//     }
+//   })
+//   setInventory(inventoryList)
+// }
+
+// useEffect(() => {
+//   updatePosts()
+// }, [])
+
+// const addItem = async (item) => {
+//   const docRef = doc(collection(firestore, 'inventory'), item)
+//   const docSnap = await getDoc(docRef)
+//   if (docSnap.exists()) {
+//     const { quantity } = docSnap.data()
+//     await setDoc(docRef, { quantity: quantity + 1 })
+//   } else {
+//     await setDoc(docRef, { quantity: 1 })
+//   }
+//   await updateInventory()
+// }
+
+// const removeItem = async (item) => {
+//   const docRef = doc(collection(firestore, 'inventory'), item)
+//   const docSnap = await getDoc(docRef)
+//   if (docSnap.exists()) {
+//     const { quantity } = docSnap.data()
+//     if (quantity === 1) {
+//       await deleteDoc(docRef)
+//     } else {
+//       await setDoc(docRef, { quantity: quantity - 1 })
+//     }
+//   }
+//   await updateInventory()
+// }
 
 
 const LFTag = ({ tag }) => {
@@ -109,6 +163,24 @@ const Post = ({postId, title, description, tags, image }) => {
 }
 
 const PostList = () => {
+
+    const [posts, setPosts] = useState([])
+    // const [postName, setPostName] = useState('')
+    // const [searchItem, searchItemName] = useState('')
+
+    const updatePosts = async () => {
+        const snapshot = query(collection(firestore, 'posts'))
+        const docs = await getDocs(snapshot)
+        const postsList = []
+        docs.forEach((doc) => {
+            postsList.push({ postID: doc.id, ...doc.data() })
+        })
+        setPosts(postsList)
+    }
+
+    useEffect(() => {
+        updatePosts()
+    }, [])
     /*
     This is where information retrieval to create new posts will be done. 
     We can limit the amount of posts with a modulo function.
@@ -122,7 +194,7 @@ const PostList = () => {
     const post_len = 8;
 
     // Generate the posts using .map()
-    const posts = Array(post_len).fill(null).map((_, index) => (
+    const post = Array(post_len).fill(null).map((_, index) => (
         <Post
             key={index}         
             postId={index + 1}   // Unique key for each post
@@ -136,12 +208,23 @@ const PostList = () => {
     return (
         // Box or wrapper around the posts
         <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
-            {posts}  {/* Render the array of Post components inside the box */}
+            {post}  {/* Render the array of Post components inside the box */}
+            {posts.map(({postID, title, description}) => (
+                <Post  
+                    key={title}     
+                    postId={9}   // Unique key for each post
+                    title={title} // Unique title for each post
+                    description={description}
+                    tags={[]}
+                    image={'...'}
+                />
+            ))}
         </Box>
     );
 };
 
 const forumPage = () => {
+
     return (
         <Box sx={{bgcolor: '#0174BE'}}>
             <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around',}}></Box>
