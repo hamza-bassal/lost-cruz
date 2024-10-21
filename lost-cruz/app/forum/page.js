@@ -64,7 +64,7 @@ const Tag = ({ tag }) => {
     )
 }
 
-const Post = ({postId, title, description, tags, image }) => {
+const Post = ({key, postId, title, description, tags, image }) => {
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -93,11 +93,11 @@ const Post = ({postId, title, description, tags, image }) => {
                         <Tag tag={'tag2'} />
                         <Tag tag={'tag3'} />
                         <Tag tag={'tag4'} />
-                        <Tag tag={'tagtagtagtagtagtagtag'} />
                     </Box>
                 </Box>
                 {/* image(s) */}
-                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px' }}>
+                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px', borderRadius: '10px'}}
+                >
                     {/* img here */}
                 </Box>
             </Box>
