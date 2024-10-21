@@ -121,6 +121,7 @@ const PostList = () => {
     // Generate the posts using .map()
     const posts = Array(post_len).fill(null).map((_, index) => (
         <Post
+            key={index}          // unique key
             postId={index + 1}   // Unique key for each post
             title={`Title ${index + 1}`} // Unique title for each post
             description={'description'}
