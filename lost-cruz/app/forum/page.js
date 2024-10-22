@@ -13,6 +13,8 @@ import {
   addDoc,
 } from 'firebase/firestore'
 
+import {orderBy, limit } from "firebase/firestore";  
+
 import styles from "./forum.module.css"
 
 import Navbar from "../components/navbar/Navbar"
@@ -265,7 +267,6 @@ async function getDocumentById(collectionName, documentId) {
       console.error("Error getting document:", error);
     }
   }
-  
 // Example usage
 /*
 getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
@@ -275,5 +276,14 @@ getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
     }
 });
 */
+
+//I used this webpage to figure it out
+// https://firebase.google.com/docs/firestore/query-data/order-limit-data#web
+const q = query(collection(firestore,"posts"), orderBy("timestamp", "desc"), limit(3));
+const docs = await getDocs(q);
+
+docs.forEach((doc) => {
+    console.log(doc.id, ' => ', doc.data());
+});
 
 export default forumPage
