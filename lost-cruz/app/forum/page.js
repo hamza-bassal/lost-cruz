@@ -250,4 +250,30 @@ const forumPage = () => {
     )
 }
 
+//From google ai
+async function getDocumentById(collectionName, documentId) {
+    const docRef = doc(firestore, collectionName, documentId);
+  
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data(); 
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
+  }
+  
+// Example usage
+/*
+getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
+.then(data => {
+    if (data) {
+    console.log("Document data:", data);
+    }
+});
+*/
+
 export default forumPage
