@@ -286,4 +286,22 @@ docs.forEach((doc) => {
     console.log(doc.id, ' => ', doc.data());
 });
 
+
+//Remove Post
+//For some reason this function remove everything from the database
+const removePost = async (documentId) => {
+    const docRef = doc(firestore, 'posts', documentId)
+    const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+        await deleteDoc(docRef)
+    }
+    else
+    {
+        console.log("Can't find the post!");
+    }
+
+  }
+
+// removePost()
+
 export default forumPage
