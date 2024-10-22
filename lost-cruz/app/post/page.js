@@ -53,6 +53,23 @@ const CommentList = () => {
     )
 }
 
+const badWords = ["badword1", "badword2", "badword3"]
+const contactInfoPatterns = [ /\d{3}-\d{3}-\d{4}/, /\(\d{3}\) \d{3}-\d{4}/, /\d{3} \d{3} \d{4}/, /\d{3}\.\d{3}\.\d{4}/, /\d{3} \d{4} \d{4}/, /\d{3}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3}/, /\d{3}-\d{4}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3} \d{3}/, /\d{3}-\d{4}-\d{4}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3} \d{3} \d{3}/, /\d{1,5}\s[A-Za-z0-9\s]+(?:Ave|Avenue|St|Street|Rd|Road|Blvd|Boulevard|Dr|Drive|Ct|Court|Ln|Lane|Way)\.?/]
+
+function filterText(text){
+    let filteredText = text;
+    badWords.forEach(word => {
+        const regex = new RegExp(`\\b${word}\\b`, "gi"); 
+        filteredText = filteredText.replace(word, "[REDACTED]");
+    });
+
+    contactInfoPatterns.forEach(pattern => {
+        filteredText = filteredText.replace(pattern, "[REDACTED]");
+    });
+
+    return filteredText;
+}
+
 const LFtag = ({ tagName }) => {
     return (
         <box className={styles.lfTag}>
@@ -70,6 +87,8 @@ const Tag = ({ tagName }) => {
 }
 
 const postPage = () => {
+    const description = "I live at 123 Fake Street. Call me at 123-456-7890. This is a badword1 and badword2 example.";
+    const cleanedDescription = filterText(description);
     return (
         <div>
             <Navbar />
@@ -119,7 +138,7 @@ const postPage = () => {
                                 minHeight: '200px'
                             }}>
                                 <Box sx={{ maxWidth: 0.5, overflow: 'auto', wordWrap: 'break-word' }}>
-                                    <p>paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...</p>
+                                    <p>{cleanedDescription}</p>
                                 </Box>
                                 <Box sx={{ maxWidth: 0.5, maxHeight: 0.5, bgcolor: '#FFC436', width: '300px', height: '350px', marginLeft: '5px' }}>
                                     {/* image(s) here */}
