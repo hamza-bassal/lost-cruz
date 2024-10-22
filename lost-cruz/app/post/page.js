@@ -125,7 +125,7 @@ const postPage = () => {
                                 marginBottom: '10px',
                             }}>
                                 <Box sx={{ maxWidth: '80%', }}>
-                                    <h1 className={styles.title}>Title</h1>
+                                    <h1 className={styles.title}>Item Title</h1>
                                 </Box>
                                 <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
                             </Box>
