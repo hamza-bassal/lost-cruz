@@ -1,3 +1,5 @@
+// This is the home page where it displays all the uploaded posts. 
+
 'use client'
 import { Container, Box, Link } from "@mui/material"
 

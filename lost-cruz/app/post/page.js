@@ -1,3 +1,5 @@
+// This page shows a single post with a comment section. 
+
 'use client'
 
 import { Container, Box, Button, Link, IconButton } from "@mui/material"

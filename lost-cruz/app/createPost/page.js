@@ -1,3 +1,5 @@
+// This is the page for creating a post where the user can upload an image of the lost/found item.
+
 "use client";
 
 import {
@@ -29,6 +31,25 @@ const createPost = () => {
         setImage(e.target.result);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const importImageToDatabase = () => {
+    if (image) {
+      const imageFile = image;
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      fetch("/api/uploadImage", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   };
 
@@ -162,24 +183,24 @@ const createPost = () => {
             style={{ display: "none" }}
             id="image-upload"
           />
-          <label htmlFor="image-upload"/>
-            <IconButton>
-              <AddIcon className={styles.icon} />
-            </IconButton>
+          <label htmlFor="image-upload" />
+          <IconButton>
+            <AddIcon className={styles.icon} />
+          </IconButton>
         </Box>
 
         {/* Add Location */}
         <Box className={styles.inputBox}>
-        <IconButton>
-          <AddLocationIcon className={styles.icon} />
-        </IconButton>
+          <IconButton>
+            <AddLocationIcon className={styles.icon} />
+          </IconButton>
         </Box>
 
         {/* Save to draft */}
         <Box className={styles.inputBox}>
-        <IconButton>
-          <ArticleIcon className={styles.icon} />
-        </IconButton>
+          <IconButton>
+            <ArticleIcon className={styles.icon} />
+          </IconButton>
         </Box>
       </Box>
     </Box>
