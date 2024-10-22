@@ -1,5 +1,5 @@
 'use client'
-
+// individual post
 import { Container, Box, Button, Link, IconButton } from "@mui/material"
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FlagIcon from '@mui/icons-material/Flag';
@@ -107,7 +107,7 @@ const postPage = ( {params} ) => {
                                 marginBottom: '10px',
                             }}>
                                 <Box sx={{ maxWidth: '80%', }}>
-                                    <h1 className={styles.title}>Yuh {params.postId}</h1>
+                                    <h1 className={styles.title}>Title {params.postId}</h1>
                                 </Box>
                                 <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
                             </Box>

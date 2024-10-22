@@ -1,4 +1,4 @@
-// This is the title page of the pplication where it prompts users to login. 
+// This is the title page of the application where it prompts users to login. 
 
 'use client'
 

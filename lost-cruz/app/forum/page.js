@@ -91,16 +91,23 @@ const Post = ({key, postId, title, description, tags, image }) => {
                     {/* tags */}
                     <Box sx={{ margin: '10px', marginBottom: '5px', width: "95%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
                         <LFTag tag={'LOST'} />
-                        <Tag tag={'tag1'} />
-                        <Tag tag={'tag2'} />
+                        <Tag tag={'tag1'} />  
+                        <Tag tag={'tag2'} /> {/* only add availabe tags*/} 
                         <Tag tag={'tag3'} />
                         <Tag tag={'tag4'} />
                     </Box>
                 </Box>
                 {/* image(s) */}
-                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px', borderRadius: '10px'}}
+                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px', borderRadius: '10px', overflow: 'hidden'}}
                 >
                     {/* img here */}
+                    <img src="https://i.ytimg.com/vi/SQJrYw1QvSQ/maxresdefault.jpg" alt="meow" 
+                    style={{ 
+                    width: '100%',  // Makes the image stretch to the full width of the box
+                    height: '100%',  // Fills the height of the box
+                    objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
+                }} />
+                
                 </Box>
             </Box>
         </Box>
@@ -118,7 +125,7 @@ const PostList = () => {
     - ID retrieval from storage for link generation to its specific page
         - This will then be used for information retrieval
     */
-    const post_len = 8;
+    const post_len = 10;
 
     // Generate the posts using .map()
     const posts = Array(post_len).fill(null).map((_, index) => (

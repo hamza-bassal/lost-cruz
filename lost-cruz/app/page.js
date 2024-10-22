@@ -9,7 +9,10 @@ export default function Home() {
     return (
         <div>
             {/* Render the ForumPage component */}
-            <ForumPageComponent />  
+            <ForumPageComponent />
+
+            {/* for testing purposes: */}
+            {/*<Home />*/}
         </div>
     );
 }
