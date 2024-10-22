@@ -116,7 +116,6 @@ const postPage = () => {
                             width: 0.8,
                             margin: 'auto'
                         }}>
-
                             {/* title + contact */}
                             <Box sx={{
                                 display: 'flex',
@@ -138,7 +137,7 @@ const postPage = () => {
                                 minHeight: '200px'
                             }}>
                                 <Box sx={{ maxWidth: 0.5, overflow: 'auto', wordWrap: 'break-word' }}>
-                                    <p>{cleanedDescription}</p>
+                                    <p style={{ color: '#333333' }}>{cleanedDescription}</p>
                                 </Box>
                                 <Box sx={{ maxWidth: 0.5, maxHeight: 0.5, bgcolor: '#FFC436', width: '300px', height: '350px', marginLeft: '5px' }}>
                                     {/* image(s) here */}
