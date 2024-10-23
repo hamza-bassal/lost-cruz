@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  Link,
 } from "@mui/material";
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
@@ -101,14 +102,18 @@ const createPost = () => {
     >
       {/* close + send */}
       <Box className={styles.closeSend}>
-        <IconButton sx={{ color: "#0174BE" }}>
-          <CloseIcon fontSize="large" />
-        </IconButton>
+        <Link href={`/forum`}>
+            <IconButton sx={{ color: "#0174BE" }}>
+                <CloseIcon fontSize="large" />
+            </IconButton>
+        </Link>
 
         {/*submits form entries */}
-        <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
-          <SendIcon fontSize="large" />
-        </IconButton>
+        <Link href={`/forum`}>
+            <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
+                <SendIcon fontSize="large" />
+            </IconButton>
+        </Link>
       </Box>
 
       {/* post content */}
