@@ -1,7 +1,7 @@
 .title {
     color: #0C356A;
     font-size: 40px;
-    cursor: pointer;
+    /* cursor: pointer; */
     word-wrap: break-word;
 }
 
