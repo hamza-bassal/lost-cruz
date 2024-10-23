@@ -1,3 +1,5 @@
+// This is the title page of the application where it prompts users to login. 
+
 'use client'
 
 import { useState } from 'react';

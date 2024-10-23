@@ -1,5 +1,5 @@
 'use client'
-
+// individual post
 import { Container, Box, Button, Link, IconButton } from "@mui/material"
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FlagIcon from '@mui/icons-material/Flag';

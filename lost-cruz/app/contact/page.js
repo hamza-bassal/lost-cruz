@@ -1,3 +1,5 @@
+// This page is where the post page will direct to once the user clicks on 'contact'
+
 'use client'
 
 import { Box, IconButton, TextField } from "@mui/material";
