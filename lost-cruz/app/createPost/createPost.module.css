@@ -31,4 +31,18 @@
     border: 1px solid #0174BE;
     border-radius: 5px;
     padding: 5px;
+    cursor: pointer;
+}
+
+.popup {
+    height: 100px;
+    width: 500px;
+    background-color: white;
+    border: 1px #0174BE solid;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* half of the height & width */
+    margin-top: -50px;
+    margin-left: -250px;
 }

@@ -37,8 +37,9 @@ const createPost = () => {
   const [title, setTitle] = useState("");  // New state for title
   const [description, setDescription] = useState("");  // New state for title
   const [lostOrFound, setStatus] = useState("LOST");  // Default value is "LOST"
-  const [location, setLocation] = useState("");  
+  const [location, setLocation] = useState("");
 
+  const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
 
   // called when an image is selected
   const handleFileChange = (event) => {
@@ -48,11 +49,10 @@ const createPost = () => {
   // when uploading a post!
   const handleUpload = async () => {
 
-    (title?console.log("yaas there is a title"):console.log("nah no title"));
-    (description?console.log("yes description"):console.log("no description"));
-    (location?console.log("yes location"):console.log("no Location"));
+    (title ? console.log("yaas there is a title") : console.log("nah no title"));
+    (description ? console.log("yes description") : console.log("no description"));
+    (location ? console.log("yes location") : console.log("no Location"));
     console.log(lostOrFound)
-
 
 
     // uploading picture
@@ -62,14 +62,14 @@ const createPost = () => {
 
     let url = '';
     try {
-        await uploadBytes(storageRef, file);
-        url = await getDownloadURL(storageRef);
-        console.log(url);
-        console.log("File Uploaded Successfuly");
+      await uploadBytes(storageRef, file);
+      url = await getDownloadURL(storageRef);
+      console.log(url);
+      console.log("File Uploaded Successfuly");
     } catch (error) {
-        console.error("Error uploading the files", error)
+      console.error("Error uploading the files", error)
     } finally {
-        setUploading(false);
+      setUploading(false);
     }
     // adding metadata to firestore
     const postsCollection = collection(firestore, "posts");
@@ -82,12 +82,12 @@ const createPost = () => {
     });
 
     // Reset form, doesnt reset current form entries
-     setFile(null);
-     setTitle("")
-     setDescription("");
-     setLocation("");
-     setStatus("LOST");
-     alert("Post uploaded successfully!");
+    setFile(null);
+    setTitle("")
+    setDescription("");
+    setLocation("");
+    setStatus("LOST");
+    alert("Post uploaded successfully!");
 
   }
 
@@ -103,16 +103,16 @@ const createPost = () => {
       {/* close + send */}
       <Box className={styles.closeSend}>
         <Link href={`/forum`}>
-            <IconButton sx={{ color: "#0174BE" }}>
-                <CloseIcon fontSize="large" />
-            </IconButton>
+          <IconButton sx={{ color: "#0174BE" }}>
+            <CloseIcon fontSize="large" />
+          </IconButton>
         </Link>
 
         {/*submits form entries */}
         <Link href={`/forum`}>
-            <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
-                <SendIcon fontSize="large" />
-            </IconButton>
+          <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
+            <SendIcon fontSize="large" />
+          </IconButton>
         </Link>
       </Box>
 
@@ -141,10 +141,10 @@ const createPost = () => {
             padding: "20px",
             paddingLeft: "7.5%",
             paddingRight: "7.5%",
-          }} 
-            value = {title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          }}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
         {/* post body */}
         <TextField
@@ -160,7 +160,7 @@ const createPost = () => {
             paddingLeft: "7.5%",
             paddingRight: "7.5%",
           }}
-          value = {description}
+          value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
@@ -198,7 +198,7 @@ const createPost = () => {
             paddingRight: "7.5%",
             gap: "20px",
           }}
-          value = {lostOrFound}
+          value={lostOrFound}
           onChange={(e) => setStatus(e.target.value)}
         >
           <FormControlLabel
@@ -217,6 +217,7 @@ const createPost = () => {
       </FormControl>
 
       <Box sx={{ height: "60px" }}></Box> {/* what for? */}
+      {/* To leave some space at the bottom so the tool bar won't block anything */}
 
       {/* Tools */}
       <Box
@@ -225,42 +226,46 @@ const createPost = () => {
       >
         {/* Adding image, maybe have a button saying "Choose file" instead? */}
         <Box className={styles.inputBox}>
+          <label for="image-upload">
+            <AddIcon className={styles.icon} />
+          </label>
           <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            // style={{ display: "none" }} /* removes "Choose file" button */
+            style={{ display: "none" }} /* removes "Choose file" button */
             id="image-upload"
           />
-          <label htmlFor="image-upload" />
-          
-          
-
-          {/* hamza commented out 'plus' button to add pics*/}
-          {/* <IconButton>
-            <AddIcon className={styles.icon} />
-          </IconButton> */}
         </Box>
 
         {/* Add Location, temporarily typing location instead*/}
-        {/* <Box className={styles.inputBox}>
-          <IconButton>
+        <Box className={styles.inputBox}>
+          <IconButton onClick={() => { setOpenLocBox(true) }}>
             <AddLocationIcon className={styles.icon} />
           </IconButton>
-        </Box> */}
-        {/* Tags, optional, make array of tags */}
-        <Box className={styles.inputBox} sx={{ gap: "30px" }}>
-          <label>Location: </label>
-          <TextField
-            id="location"
-            required
-            variant="standard"
-            fullWidth
-            placeholder="location"
-            value = {location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
         </Box>
+        {openLocBox &&
+          // A pop-up window asking for location
+          <Box className={styles.popup}>
+            {/* close button */}
+            <IconButton sx={{ color: "#0174BE" }} onClick={() => { setOpenLocBox(false) }}>
+              <CloseIcon />
+            </IconButton>
+            {/* input location */}
+            <Box className={styles.inputBox} sx={{ gap: "30px" }}>
+              <label>Location: </label>
+              <TextField
+                id="location"
+                required
+                variant="standard"
+                fullWidth
+                placeholder="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </Box>
+          </Box>
+        }
 
         {/* Save to draft */}
         <Box className={styles.inputBox}>
