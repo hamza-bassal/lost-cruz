@@ -24,49 +24,6 @@ import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
 
 
-// const searchInventroy = async () => {
-//   const snapshot = query(collection(firestore, 'inventory'))
-//   const docs = await getDocs(snapshot)
-//   const inventoryList = []
-//   docs.forEach((doc) => {
-//     if (doc.id.toLowerCase().includes(searchItem.toLowerCase())) {
-//       inventoryList.push({ name: doc.id, ...doc.data() })
-//     }
-//   })
-//   setInventory(inventoryList)
-// }
-
-// useEffect(() => {
-//   updatePosts()
-// }, [])
-
-// const addItem = async (item) => {
-//   const docRef = doc(collection(firestore, 'inventory'), item)
-//   const docSnap = await getDoc(docRef)
-//   if (docSnap.exists()) {
-//     const { quantity } = docSnap.data()
-//     await setDoc(docRef, { quantity: quantity + 1 })
-//   } else {
-//     await setDoc(docRef, { quantity: 1 })
-//   }
-//   await updateInventory()
-// }
-
-// const removeItem = async (item) => {
-//   const docRef = doc(collection(firestore, 'inventory'), item)
-//   const docSnap = await getDoc(docRef)
-//   if (docSnap.exists()) {
-//     const { quantity } = docSnap.data()
-//     if (quantity === 1) {
-//       await deleteDoc(docRef)
-//     } else {
-//       await setDoc(docRef, { quantity: quantity - 1 })
-//     }
-//   }
-//   await updateInventory()
-// }
-
-
 const LFTag = ({ tag }) => {
     // Lost / Found
     return (
@@ -123,7 +80,7 @@ const Tag = ({ tag }) => {
     )
 }
 
-const Post = ({postId, title, description, tags, image }) => {
+const Post = ({postId, title, description, tags, imageURL }) => {
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -139,7 +96,8 @@ const Post = ({postId, title, description, tags, image }) => {
                                     fontWeight: 'bold',
                                     color: '#0C356A',
                                     whiteSpace: 'nowrap',
-                                }}>{title} </Link>
+                                }}>{title} 
+                                </Link>
                         </Box>
                         <Box className={styles.description}
                         sx={{
@@ -161,12 +119,16 @@ const Post = ({postId, title, description, tags, image }) => {
                 <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px', borderRadius: '10px', overflow: 'hidden'}}
                 >
                     {/* img here */}
-                    <img src="https://i.ytimg.com/vi/SQJrYw1QvSQ/maxresdefault.jpg" alt="meow" 
-                    style={{ 
-                    width: '100%',  // Makes the image stretch to the full width of the box
-                    height: '100%',  // Fills the height of the box
-                    objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
-                }} />
+                    {imageURL ? (
+                        <img src={imageURL} alt="img" 
+                            style={{ 
+                            width: '100%',  // Makes the image stretch to the full width of the box
+                            height: '100%',  // Fills the height of the box
+                            objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
+                        }} />
+                    ) : (
+                        <p>No image to display</p>
+                    )}
                 
                 </Box>
             </Box>
@@ -203,32 +165,32 @@ const PostList = () => {
     - ID retrieval from storage for link generation to its specific page
         - This will then be used for information retrieval
     */
-    const post_len = 10;
+    // const post_len = 10;
 
-    // Generate the posts using .map()
-    const post = Array(post_len).fill(null).map((_, index) => (
-        <Post
-            key={index}         
-            postId={index + 1}   // Unique key for each post
-            title={`Title ${index + 1}`} // Unique title for each post
-            description={'description'}
-            tags={[]}
-            image={'...'}
-        />
-    ));
+    // // Generate the posts using .map()
+    // const post = Array(post_len).fill(null).map((_, index) => (
+    //     <Post
+    //         key={index}         
+    //         postId={index + 1}   // Unique key for each post
+    //         title={`Title ${index + 1}`} // Unique title for each post
+    //         description={'description'}
+    //         tags={[]}
+    //         imageURL={'...'}
+    //     />
+    // ));
 
     return (
         // Box or wrapper around the posts
         <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
-            {post}  {/* Render the array of Post components inside the box */}
-            {posts.map(({postID, title, description}) => (
+            {/* {post}  Render the array of Post components inside the box */}
+            {posts.map(({postID, title, description, imageURL}) => (
                 <Post  
-                    key={title}     
-                    postId={9}   // Unique key for each post
+                    key={postID}     
+                    postId={postID}   // Unique key for each post
                     title={title} // Unique title for each post
                     description={description}
                     tags={[]}
-                    image={'...'}
+                    imageURL={imageURL}
                 />
             ))}
         </Box>
