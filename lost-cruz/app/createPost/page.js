@@ -18,6 +18,7 @@ import SendIcon from "@mui/icons-material/Send";
 import AddIcon from "@mui/icons-material/Add";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import ArticleIcon from "@mui/icons-material/Article";
+import { useRouter } from "next/navigation"; // Import Next.js router
 
 import Image from 'next/image';
 
@@ -29,6 +30,8 @@ import { collection, addDoc } from 'firebase/firestore';
 import styles from "./createPost.module.css";
 
 const createPost = () => {
+  const router = useRouter(); // Initialize Next.js router
+
   // uploading picture
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -54,9 +57,13 @@ const createPost = () => {
     (location ? console.log("yes location") : console.log("no Location"));
     console.log(lostOrFound)
 
+    // Check if required fields are filled
+    if (!title || !description || !file) {
+      alert("Please fill out all required fields.");
+      return;
+    }
 
     // uploading picture
-    if (!file) return;
     setUploading(true);
     const storageRef = ref(storage, `images/${file.name}`);
 
@@ -71,23 +78,35 @@ const createPost = () => {
     } finally {
       setUploading(false);
     }
-    // adding metadata to firestore
-    const postsCollection = collection(firestore, "posts");
-    await addDoc(postsCollection, {
-      title: title,
-      description: description,
-      imageURL: url,
-      lostOrFound: lostOrFound,
-      timestamp: new Date(),
-    });
 
-    // Reset form, doesnt reset current form entries
+    try {
+      // adding metadata to firestore
+      const postsCollection = collection(firestore, "posts");
+      await addDoc(postsCollection, {
+        title: title,
+        description: description,
+        imageURL: url,
+        lostOrFound: lostOrFound,
+        timestamp: new Date(),
+      });
+      console.log("Post uploaded successfully!");
+
+    // Reset form, doesnt reset current form entries, doesnt work, do we need?? since we are leaving the page anyways
     setFile(null);
     setTitle("")
     setDescription("");
     setLocation("");
     setStatus("LOST");
     alert("Post uploaded successfully!");
+
+    // Programmatically navigate to the forum page after successful upload
+    router.push("/forum");
+
+    } catch (error) {
+      console.error("Error saving post to Firestore", error);
+    } finally {
+      setUploading(false);
+    }
 
   }
 
@@ -109,7 +128,7 @@ const createPost = () => {
         </Link>
 
         {/*submits form entries */}
-        <Link href={`/forum`}>
+        <Link > {/**href={`/forum`} prevents from entries uploading to firestore*/}
           <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
             <SendIcon fontSize="large" />
           </IconButton>
@@ -226,7 +245,7 @@ const createPost = () => {
       >
         {/* Adding image, maybe have a button saying "Choose file" instead? */}
         <Box className={styles.inputBox}>
-          <label for="image-upload">
+          <label htmlFor="image-upload"> {/**changed to htmlFor from for */}
             <AddIcon className={styles.icon} />
           </label>
           <input
