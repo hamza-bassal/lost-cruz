@@ -59,9 +59,12 @@ const MenuBtn = () => {
 }
 
 const Navbar = () => {
-    // const navigate = useNavigate();
     return (
-        <Box sx={{
+        <Box className={styles.navBar}
+        sx={{
+            position: 'fixed',
+            top: 0,
+            zIndex: 10,
             bgcolor: '#0174BE',
             height: '50px',
             display: 'flex',
@@ -70,16 +73,16 @@ const Navbar = () => {
         }}>
             {/* Logo */}
             <Box
-                // onClick={() => {
-                // navigate("/");  // ----------------- navigate to the main page (post list) -------------------
-                // }}
                 sx={{
                     padding: '10px',
                     fontWeight: 'bolder',
                     fontSize: '20px',
                     color: '#FCF7ED',
                     cursor: 'pointer'
-                }}>Lost@Cruz</Box>
+                }}
+            >
+                Lost@Cruz
+            </Box>
 
             {/* Search Bar */}
             <Search />
@@ -96,13 +99,10 @@ const Navbar = () => {
 
                 {/* Profile */}
                 <Box sx={{
-                        width: '50px',
-                        height: '50px',
-                    }}>
+                    width: '50px',
+                    height: '50px',
+                }}>
                     <Box
-                        // onClick={() => {
-                        // navigate("/");  // ----------------- navigate to the user profile -------------------
-                        // }}
                         sx={{
                             width: '80%',
                             height: '80%',
@@ -111,12 +111,12 @@ const Navbar = () => {
                             borderRadius: '10px',
                             cursor: 'pointer'
                         }}>
-                        {/* ----------------- profile image here ------------ */}
+                        {/* Profile Image */}
                     </Box>
                 </Box>
             </Box>
         </Box>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;
