@@ -9,6 +9,12 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import styles from "./page.module.css";
 
+//https://firebase.google.com/docs/auth/web/firebaseui
+var firebase = require('firebase');
+var firebaseui = require('firebaseui');
+
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
 export default function Home() {
   const [login, setLogin] = useState(false)
   const [help, setHelp] = useState(false)
