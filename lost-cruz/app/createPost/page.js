@@ -113,6 +113,8 @@ const createPost = () => {
       setUploading(false);
     }
 
+    // Programmatically navigate to the forum page after successful upload
+    router.push("/forum");
   }
 
   return (
