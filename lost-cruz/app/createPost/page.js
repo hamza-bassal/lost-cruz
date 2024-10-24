@@ -107,12 +107,6 @@ const createPost = () => {
     // Programmatically navigate to the forum page after successful upload
     router.push("/forum");
 
-    } catch (error) {
-      console.error("Error saving post to Firestore", error);
-    } finally {
-      setUploading(false);
-    }
-
   }
 
   return (
