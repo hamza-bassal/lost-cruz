@@ -8,6 +8,9 @@ import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CommentIcon from '@mui/icons-material/Comment';
+import { firestore } from '@/firebase'
+import { doc, getDoc,} from 'firebase/firestore'
+import { useEffect, useState } from "react";
 
 import styles from "./post.module.css"
 
@@ -70,8 +73,25 @@ const Tag = ({ tagName }) => {
 }
 
 const postPage = ( {params} ) => {
+
+    const [title, setTitle] = useState("")
+    const [desc, setDesc] = useState("")
+    const [imageUrl, setImg] = useState("")
+
+    useEffect(() => {
+        async function fetchData() {
+          const data = await getDocumentById('posts', params.postId);
+          setTitle(data.title);
+          setDesc(data.description)
+          setImg(data.imageURL)
+        }
+    
+        fetchData();
+      }, []);
+
     return (
         <div>
+            <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around',}}></Box>
             <Navbar />
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce' }}>
@@ -107,7 +127,7 @@ const postPage = ( {params} ) => {
                                 marginBottom: '10px',
                             }}>
                                 <Box sx={{ maxWidth: '80%', }}>
-                                    <h1 className={styles.title}>Title {params.postId}</h1>
+                                    <h1 className={styles.title}>{title}</h1>
                                 </Box>
                                 <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
                             </Box>
@@ -119,10 +139,19 @@ const postPage = ( {params} ) => {
                                 minHeight: '200px'
                             }}>
                                 <Box sx={{ maxWidth: 0.5, overflow: 'auto', wordWrap: 'break-word' }}>
-                                    <p>paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...</p>
+                                    <p>{desc}</p>
                                 </Box>
                                 <Box sx={{ maxWidth: 0.5, maxHeight: 0.5, bgcolor: '#FFC436', width: '300px', height: '350px', marginLeft: '5px' }}>
-                                    {/* image(s) here */}
+                                    {imageUrl ? (
+                                        <img src={imageUrl} alt="img" 
+                                            style={{ 
+                                            width: '100%',  // Makes the image stretch to the full width of the box
+                                            height: '100%',  // Fills the height of the box
+                                            objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
+                                        }} />
+                                    ) : (
+                                        <p>No image to display</p>
+                                    )}
                                 </Box>
                             </Box>
 
@@ -205,7 +234,7 @@ async function getDocumentById(collectionName, documentId) {
     } catch (error) {
       console.error("Error getting document:", error);
     }
-  }
+}
   
 // Example usage
 /*

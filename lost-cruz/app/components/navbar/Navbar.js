@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, FormGroup, FormControlLabel, Checkbox, IconButton } from "@mui/material";
+import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import styles from "./navbar.module.css";
@@ -72,17 +72,19 @@ const Navbar = () => {
             justifyContent: 'space-around',
         }}>
             {/* Logo */}
-            <Box
-                sx={{
-                    padding: '10px',
-                    fontWeight: 'bolder',
-                    fontSize: '20px',
-                    color: '#FCF7ED',
-                    cursor: 'pointer'
-                }}
-            >
-                Lost@Cruz
-            </Box>
+            <Link href={`/forum`}>
+                <Box
+                    sx={{
+                        padding: '10px',
+                        fontWeight: 'bolder',
+                        fontSize: '20px',
+                        color: '#FCF7ED',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Lost@Cruz
+                </Box>
+            </Link>
 
             {/* Search Bar */}
             <Search />
