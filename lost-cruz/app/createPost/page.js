@@ -79,6 +79,12 @@ const createPost = () => {
       imageURL: url,
       lostOrFound: lostOrFound,
       timestamp: new Date(),
+    })
+    .then((docRef) => {
+      console.log("Document written with ID: ", docRef.id);
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
     });
 
     // Reset form, doesnt reset current form entries
