@@ -79,19 +79,24 @@ const createPost = () => {
       setUploading(false);
     }
 
-    try {
-      // adding metadata to firestore
-      const postsCollection = collection(firestore, "posts");
-      await addDoc(postsCollection, {
-        title: title,
-        description: description,
-        imageURL: url,
-        lostOrFound: lostOrFound,
-        timestamp: new Date(),
-      });
-      console.log("Post uploaded successfully!");
+    // adding metadata to firestore
+    const postsCollection = collection(firestore, "posts");
+    await addDoc(postsCollection, {
+      title: title,
+      description: description,
+      imageURL: url,
+      lostOrFound: lostOrFound,
+      timestamp: new Date(),
+    })
+    .then((docRef) => {
+      console.log("Document written with ID: ", docRef.id);
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+    });
 
-    // Reset form, doesnt reset current form entries, doesnt work, do we need?? since we are leaving the page anyways
+    // Reset form, doesnt reset current form entries
+    
     setFile(null);
     setTitle("")
     setDescription("");
