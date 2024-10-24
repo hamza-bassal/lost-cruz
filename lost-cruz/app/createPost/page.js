@@ -89,6 +89,8 @@ const createPost = () => {
      setStatus("LOST");
      alert("Post uploaded successfully!");
 
+    // Programmatically navigate to the forum page after successful upload
+    router.push("/forum");
   }
 
   return (
