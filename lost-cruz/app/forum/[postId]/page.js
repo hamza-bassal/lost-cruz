@@ -72,7 +72,7 @@ const Tag = ({ tagName }) => {
     )
 }
 
-const postPage = ( {params} ) => {
+const PostPage = ( {params} ) => {
 
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
@@ -248,4 +248,4 @@ getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
 });
 */
 
-export default postPage
+export default PostPage
