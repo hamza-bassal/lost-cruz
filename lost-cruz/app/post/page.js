@@ -88,7 +88,7 @@ const Tag = ({ tagName }) => {
     )
 }
 
-const postPage = () => {
+const PostPage = () => {
     const description = "I live at 123 Fake Street. Call me at 123-456-7890. This is a badword1 and badword2 example.";
     const cleanedDescription = filterText(description);
     return (
@@ -211,4 +211,4 @@ const postPage = () => {
 
 }
 
-export default postPage
+export default PostPage
