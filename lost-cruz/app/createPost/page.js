@@ -29,7 +29,7 @@ import { collection, addDoc } from 'firebase/firestore';
 
 import styles from "./createPost.module.css";
 
-const createPost = () => {
+const CreatePost = () => {
   const router = useRouter(); // Initialize Next.js router
 
   // uploading picture
@@ -103,9 +103,6 @@ const createPost = () => {
     setLocation("");
     setStatus("LOST");
     alert("Post uploaded successfully!");
-
-    // Programmatically navigate to the forum page after successful upload
-    router.push("/forum");
 
     // Programmatically navigate to the forum page after successful upload
     router.push("/forum");
@@ -314,4 +311,4 @@ const createPost = () => {
   );
 };
 
-export default createPost;
+export default CreatePost;
