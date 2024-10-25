@@ -211,4 +211,15 @@ const PostPage = () => {
 
 }
 
+const createComment = async () =>
+{
+    const postsCollection = collection(firestore, "comments");
+    await addDoc(postsCollection, {
+      commentBody: commentBody,
+      commenterID: commentorID,
+      commentParentID: 
+      timestamp: timestamp(),
+    })
+}
+
 export default PostPage
