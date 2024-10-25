@@ -106,9 +106,6 @@ const createPost = () => {
 
     // Programmatically navigate to the forum page after successful upload
     router.push("/forum");
-
-    // Programmatically navigate to the forum page after successful upload
-    router.push("/forum");
   }
 
   return (
