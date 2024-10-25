@@ -18,7 +18,7 @@ import SendIcon from "@mui/icons-material/Send";
 import AddIcon from "@mui/icons-material/Add";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import ArticleIcon from "@mui/icons-material/Article";
-//import { useRouter } from "next/navigation"; // Import Next.js router
+import { useRouter } from "next/navigation"; // Import Next.js router
 
 import Image from 'next/image';
 
@@ -29,8 +29,8 @@ import { collection, addDoc } from 'firebase/firestore';
 
 import styles from "./createPost.module.css";
 
-const createPost = () => {
-  //const router = useRouter(); // Initialize Next.js router
+const CreatePost = () => {
+  const router = useRouter(); // Initialize Next.js router
 
   // uploading picture
   const [file, setFile] = useState(null);
@@ -105,7 +105,7 @@ const createPost = () => {
     alert("Post uploaded successfully!");
 
     // Programmatically navigate to the forum page after successful upload
-    //router.push("/forum");
+    router.push("/forum");
   }
 
   return (
@@ -295,4 +295,4 @@ const createPost = () => {
   );
 };
 
-export default createPost;
+export default CreatePost;
