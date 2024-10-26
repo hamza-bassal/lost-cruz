@@ -217,8 +217,9 @@ const createComment = async () =>
     await addDoc(postsCollection, {
       commentBody: commentBody,
       commenterID: commentorID,
-      commentParentID: 
-      timestamp: timestamp(),
+      commentParentID: parentID,
+      
+      timestamp: timestamp()
     })
 }
 
