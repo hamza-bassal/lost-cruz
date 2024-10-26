@@ -131,7 +131,9 @@ const postPage = ( {params} ) => {
                                 <Box sx={{ maxWidth: '80%', }}>
                                     <h1 className={styles.title}>{title}</h1>
                                 </Box>
-                                <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
+                                <Link href={`/forum/contact/${params.postId}`} sx={{ bgcolor: "#0174BE", height: '50px' }}>
+                                    <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
+                                </Link>
                             </Box>
 
                             {/* paragraph + img */}

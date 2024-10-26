@@ -223,31 +223,6 @@ const forumPage = () => {
     )
 }
 
-//From google ai
-async function getDocumentById(collectionName, documentId) {
-    const docRef = doc(firestore, collectionName, documentId);
-  
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data(); 
-      } else {
-        console.log("No such document!");
-      }
-    } catch (error) {
-      console.error("Error getting document:", error);
-    }
-  }
-// Example usage
-/*
-getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
-.then(data => {
-    if (data) {
-    console.log("Document data:", data);
-    }
-});
-*/
-
 //I used this webpage to figure it out
 // https://firebase.google.com/docs/firestore/query-data/order-limit-data#web
 const q = query(collection(firestore,"posts"), orderBy("timestamp", "desc"), limit(3));
