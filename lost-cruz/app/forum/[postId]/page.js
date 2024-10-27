@@ -89,7 +89,7 @@ const Tag = ({ tagName }) => {
     )
 }
 
-const postPage = ( {params} ) => {
+const PostPage = ( {params} ) => {
 
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
@@ -242,3 +242,4 @@ const postPage = ( {params} ) => {
 }
 
 export default postPage
+
