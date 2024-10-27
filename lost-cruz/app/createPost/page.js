@@ -20,8 +20,6 @@ import AddLocationIcon from "@mui/icons-material/AddLocation";
 import ArticleIcon from "@mui/icons-material/Article";
 import { useRouter } from "next/navigation"; // Import Next.js router
 
-import Image from 'next/image';
-
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, firestore } from "../../firebase"
 import { collection, addDoc } from 'firebase/firestore';
