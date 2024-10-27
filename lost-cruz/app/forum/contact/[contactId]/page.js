@@ -11,10 +11,66 @@ import { Box, IconButton, TextField, Link } from "@mui/material";
 
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
+import { useRouter } from "next/navigation"; // Import Next.js router
+import { useState, useEffect } from 'react'
+import { firestore } from '@/firebase'
+import { doc, getDoc,} from 'firebase/firestore'
 
 import styles from "./contact.module.css"
 
 const contactForm = ( {params} ) => {
+
+    const router = useRouter();
+    // const [email, setEmail] = useState("")
+    const [status, setStatus] = useState('');
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
+    // useEffect(() => {
+    //     async function fetchData() {
+    //       const data = await getDocumentById('posts', params.postId);
+    //       setEmail(data.email);
+    //     }
+    
+    //     fetchData();
+    // }, []);
+
+    // useEffect(() => {
+    //     fetch('/api/hello')
+    //       .then((res) => res.json())
+    //       .then((data) => setData(data.message))
+    //       .catch((err) => console.log('Error fetching data:', err));
+    // }, []);
+        
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      };
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        try {
+          const response = await fetch('/api/sendEmail', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+    
+          if (response.ok) {
+            setStatus('Email sent successfully!');
+            router.push(`/forum/${params.contactId}`)
+          } else {
+            setStatus('Failed to send email.');
+          }
+        } catch (error) {
+          setStatus('Error: ' + error.message);
+        }
+    };
+
+
     return (
         <Box sx={{
             minHeight: '100vh',
@@ -30,7 +86,7 @@ const contactForm = ( {params} ) => {
                     </Link>
                 </IconButton>
 
-                <IconButton sx={{ color: '#FFC436' }}>
+                <IconButton sx={{ color: '#FFC436' }} onClick={handleSubmit}>
                     <SendIcon fontSize="large" />
                 </IconButton>
             </Box>
@@ -42,14 +98,18 @@ const contactForm = ( {params} ) => {
             <Box className={styles.inputBox} sx={{ gap: '50px' }}>
                 <label>Name: </label>
                 <TextField id="name" required variant="standard" fullWidth placeholder="name"
-                    sx={{ bgcolor: 'white', paddingLeft: '2px', borderRadius: '5px' }}></TextField>
+                    sx={{ bgcolor: 'white', paddingLeft: '2px', borderRadius: '5px' }}
+                    name="name" value={formData.name} onChange={handleChange}>
+                </TextField>
             </Box>
 
             {/* Email */}
             <Box className={styles.inputBox}>
                 <label>Email Address: </label>
                 <TextField id="email" required variant="standard" fullWidth placeholder="email"
-                    sx={{ bgcolor: 'white', paddingLeft: '2px', borderRadius: '5px' }}></TextField>
+                    sx={{ bgcolor: 'white', paddingLeft: '2px', borderRadius: '5px' }}
+                    name="email" value={formData.email} onChange={handleChange}>
+                </TextField>
             </Box>
 
             {/* message */}
@@ -67,10 +127,28 @@ const contactForm = ( {params} ) => {
                     "& .MuiInput-root": {
                         bgcolor: 'white'
                     }
-                }}>
+                }}
+                name="message" value={formData.message} onChange={handleChange}>
             </TextField>
         </Box>
     )
 }
+
+//Function is exported out to the subfolders requiring retrieving data
+//from a post-id
+// async function getDocumentById(collectionName, documentId) {
+//     const docRef = doc(firestore, collectionName, documentId);
+  
+//     try {
+//       const docSnap = await getDoc(docRef);
+//       if (docSnap.exists()) {
+//         return docSnap.data(); 
+//       } else {
+//         console.log("No such document!");
+//       }
+//     } catch (error) {
+//       console.error("Error getting document:", error);
+//     }
+// }
 
 export default contactForm
