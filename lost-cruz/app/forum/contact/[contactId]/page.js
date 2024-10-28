@@ -18,7 +18,7 @@ import { doc, getDoc,} from 'firebase/firestore'
 
 import styles from "./contact.module.css"
 
-const contactForm = ( {params} ) => {
+const ContactForm = ( {params} ) => {
 
     const router = useRouter();
     // const [email, setEmail] = useState("")
@@ -151,4 +151,4 @@ const contactForm = ( {params} ) => {
 //     }
 // }
 
-export default contactForm
+export default ContactForm
