@@ -5,17 +5,17 @@ import { Container, Box, Link } from "@mui/material"
 import { useState, useEffect } from 'react'
 import { firestore } from '@/firebase'
 import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  deleteDoc,
-  getDoc,
-  addDoc,
+    collection,
+    doc,
+    getDocs,
+    query,
+    setDoc,
+    deleteDoc,
+    getDoc,
+    addDoc,
 } from 'firebase/firestore'
 
-import {orderBy, limit } from "firebase/firestore";  
+import { orderBy, limit } from "firebase/firestore";
 
 import styles from "./forum.module.css"
 
@@ -80,7 +80,7 @@ const Tag = ({ tag }) => {
     )
 }
 
-const Post = ({postId, title, description, tags, imageURL }) => {
+const Post = ({ postId, title, description, tags, imageURL }) => {
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -96,40 +96,39 @@ const Post = ({postId, title, description, tags, imageURL }) => {
                                     fontWeight: 'bold',
                                     color: '#0C356A',
                                     whiteSpace: 'nowrap',
-                                }}>{title} 
-                                </Link>
+                                }}>{title}
+                            </Link>
                         </Box>
                         <Box className={styles.description}
-                        sx={{
-                            color: '#313b40',
-                        }}>
+                            sx={{
+                                color: '#313b40',
+                            }}>
                             {description}
                         </Box>
                     </Box>
                     {/* tags */}
                     <Box sx={{ margin: '10px', marginBottom: '5px', width: "95%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
                         <LFTag tag={'LOST'} />
-                        <Tag tag={'tag1'} />  
-                        <Tag tag={'tag2'} /> {/* only add availabe tags*/} 
+                        <Tag tag={'tag1'} />
+                        <Tag tag={'tag2'} /> {/* only add availabe tags*/}
                         <Tag tag={'tag3'} />
                         <Tag tag={'tag4'} />
                     </Box>
                 </Box>
                 {/* image(s) */}
-                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px', borderRadius: '10px', overflow: 'hidden'}}
-                >
+                <Box className={styles.imgContainer}>
                     {/* img here */}
                     {imageURL ? (
-                        <img src={imageURL} alt="img" 
-                            style={{ 
-                            width: '100%',  // Makes the image stretch to the full width of the box
-                            height: '100%',  // Fills the height of the box
-                            objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
-                        }} />
+                        <img src={imageURL} alt="img"
+                            style={{
+                                width: '100%',  // Makes the image stretch to the full width of the box
+                                height: 'auto',  // Fills the height of the box
+                                objectFit: 'contain',  // Ensures the whole image fits inside the box without cropping
+                                borderRadius: '10px',
+                            }} />
                     ) : (
                         <p>No image to display</p>
                     )}
-                
                 </Box>
             </Box>
         </Box>
@@ -183,9 +182,9 @@ const PostList = () => {
         // Box or wrapper around the posts
         <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
             {/* {post}  Render the array of Post components inside the box */}
-            {posts.map(({postID, title, description, imageURL}) => (
-                <Post  
-                    key={postID}     
+            {posts.map(({ postID, title, description, imageURL }) => (
+                <Post
+                    key={postID}
                     postId={postID}   // Unique key for each post
                     title={title} // Unique title for each post
                     description={description}
@@ -200,8 +199,8 @@ const PostList = () => {
 const forumPage = () => {
 
     return (
-        <Box sx={{bgcolor: '#0174BE'}}>
-            <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around',}}></Box>
+        <Box sx={{ bgcolor: '#0174BE' }}>
+            <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
             <Navbar></Navbar>
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce' }}>
@@ -225,7 +224,7 @@ const forumPage = () => {
 
 //I used this webpage to figure it out
 // https://firebase.google.com/docs/firestore/query-data/order-limit-data#web
-const q = query(collection(firestore,"posts"), orderBy("timestamp", "desc"), limit(3));
+const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
 const docs = await getDocs(q);
 
 docs.forEach((doc) => {
@@ -241,12 +240,10 @@ const removePost = async (documentId) => {
     if (docSnap.exists()) {
         await deleteDoc(docRef)
     }
-    else
-    {
+    else {
         console.log("Can't find the post!");
     }
-
-  }
+}
 
 // removePost()
 
