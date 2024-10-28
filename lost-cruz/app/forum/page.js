@@ -1,7 +1,7 @@
 // This is the home page where it displays all the uploaded posts. 
 
 'use client'
-import { Container, Box, Link } from "@mui/material"
+import { Container, Box, Link, Pagination } from "@mui/material"
 import { useState, useEffect } from 'react'
 import { firestore } from '@/firebase'
 import {
@@ -136,7 +136,6 @@ const Post = ({ postId, title, description, tags, imageURL }) => {
 }
 
 const PostList = () => {
-
     const [posts, setPosts] = useState([])
     // const [postName, setPostName] = useState('')
     // const [searchItem, searchItemName] = useState('')
@@ -154,6 +153,25 @@ const PostList = () => {
     useEffect(() => {
         updatePosts()
     }, [])
+
+    /* Pagination */
+    const pageSize = 10; // Num of posts show on a single page
+    const numPage = Math.ceil(posts.length / pageSize);
+    const [pagi, setPagi] = useState({
+        count: 0,
+        from: 0,
+        to: pageSize,
+    });
+    useEffect(() => {
+        setPagi({ ...pagi, count: numPage });
+    }, [])
+    const currentData = posts.slice(pagi.from, pagi.to);
+    const handlePageChange = (e, page) => {
+        const from = (page - 1) * pageSize;
+        const to = (page - 1) * pageSize + pageSize;
+        setPagi({ ...pagi, from: from, to: to })
+    }
+
     /*
     This is where information retrieval to create new posts will be done. 
     We can limit the amount of posts with a modulo function.
@@ -179,19 +197,30 @@ const PostList = () => {
     // ));
 
     return (
-        // Box or wrapper around the posts
-        <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
-            {/* {post}  Render the array of Post components inside the box */}
-            {posts.map(({ postID, title, description, imageURL }) => (
-                <Post
-                    key={postID}
-                    postId={postID}   // Unique key for each post
-                    title={title} // Unique title for each post
-                    description={description}
-                    tags={[]}
-                    imageURL={imageURL}
-                />
-            ))}
+        <Box sx={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center'
+        }}>
+            {/* // Box or wrapper around the posts */}
+            <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
+                {/* {post}  Render the array of Post components inside the box */}
+                {/* instead of rendering all the posts at once, only show data on the current page */}
+                {currentData.map(({ postID, title, description, imageURL }) => (
+                    <Post
+                        key={postID}
+                        postId={postID}   // Unique key for each post
+                        title={title} // Unique title for each post
+                        description={description}
+                        tags={[]}
+                        imageURL={imageURL}
+                    />
+                ))}
+            </Box>
+            <Pagination
+                count={numPage}
+                color="primary"
+                onChange={handlePageChange}
+                sx={{ margin: "20px 0px" }}
+            />
         </Box>
     );
 };
