@@ -162,13 +162,13 @@ const PostPage = ( {params} ) => {
                                 <Box sx={{ maxWidth: 0.5, overflow: 'auto', wordWrap: 'break-word' }}>
                                     <p>{desc}</p>
                                 </Box>
-                                <Box sx={{ maxWidth: 0.5, maxHeight: 0.5, bgcolor: '#FFC436', width: '300px', height: '350px', marginLeft: '5px' }}>
+                                <Box sx={{ maxWidth: 0.5, maxHeight: 0.5, width: '300px', height: 'auto', marginLeft: '5px' }}>
                                     {imageUrl ? (
                                         <img src={imageUrl} alt="img" 
                                             style={{ 
                                             width: '100%',  // Makes the image stretch to the full width of the box
                                             height: '100%',  // Fills the height of the box
-                                            objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
+                                            objectFit: 'contain',  // Ensures the whole image fits inside the box without cropping
                                         }} />
                                     ) : (
                                         <p>No image to display</p>
@@ -241,5 +241,5 @@ const PostPage = ( {params} ) => {
 
 }
 
-export default postPage
+export default PostPage
 
