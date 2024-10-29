@@ -1,5 +1,6 @@
 // app/auth/login.js
 import {useState} from 'react';
+import useLogin from "../hooks/useLogin"
 
 const Login = () => {
 
@@ -21,7 +22,7 @@ const Login = () => {
     // Add your login logic here, such as an API call
     console.log(inputs); // Logs email and password to the console
   };
-
+  const {loading,error,login} = useLogin()
   return <>
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '10px' }}>
       <label>Email:</label>
@@ -40,7 +41,12 @@ const Login = () => {
         onChange={handleChange}
         required
       />
-      <button type="submit">Log in</button>
+      {error && (
+          <p style={{ color: 'red', marginTop: '10px' }}>
+            {error.message}
+          </p>
+        )}
+      <button type="submit" onClick={() => login(inputs)}>Log in</button>
     </form>
   </>
   }

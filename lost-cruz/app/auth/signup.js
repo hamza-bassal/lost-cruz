@@ -1,5 +1,6 @@
 // app/auth/signup.js
 import { useState } from 'react';
+import useSignUpWithEmailAndPassword from '../hooks/useSignUpWithEmailAndPassword'
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,6 +11,8 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const {loading, error, signup} = useSignUpWithEmailAndPassword();
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,7 +70,15 @@ const Signup = () => {
         onChange={handleChange}
         required
       />
-      <button type="submit">Log in</button>
+
+        {error && (
+          <p style={{ color: 'red', marginTop: '10px' }}>
+            {error.message}
+          </p>
+        )}
+
+
+      <button type="submit" onClick={() => signup(inputs)}>Sign up</button>
     </form>
   </>
   }

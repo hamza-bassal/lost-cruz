@@ -23,6 +23,7 @@ import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
 
+import useLogout from "../hooks/useLogout"
 
 const LFTag = ({ tag }) => {
     // Lost / Found
@@ -178,10 +179,12 @@ const PostList = () => {
     //         imageURL={'...'}
     //     />
     // ));
-
+    
+    const {handleLogout, isLoggingOut, error} = useLogout();
     return (
         // Box or wrapper around the posts
         <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
+            <button onClick={handleLogout}>Logout</button>
             {/* {post}  Render the array of Post components inside the box */}
             {posts.map(({postID, title, description, imageURL}) => (
                 <Post  
@@ -197,8 +200,7 @@ const PostList = () => {
     );
 };
 
-const forumPage = () => {
-
+const ForumPage = () => {
     return (
         <Box sx={{bgcolor: '#0174BE'}}>
             <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around',}}></Box>
@@ -253,9 +255,9 @@ getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
 const q = query(collection(firestore,"posts"), orderBy("timestamp", "desc"), limit(3));
 const docs = await getDocs(q);
 
-docs.forEach((doc) => {
-    console.log(doc.id, ' => ', doc.data());
-});
+// docs.forEach((doc) => {
+//     console.log(doc.id, ' => ', doc.data());
+// });
 
 
 //Remove Post
@@ -275,4 +277,4 @@ const removePost = async (documentId) => {
 
 // removePost()
 
-export default forumPage
+export default ForumPage
