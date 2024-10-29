@@ -16,7 +16,7 @@ export default function AuthPage() {
 
   const [showLogin, setShowLogin] = useState(true);
 
-  /*
+  /* previous login code
   const [login, setLogin] = useState(false)
   const [help, setHelp] = useState(false)
 
@@ -109,7 +109,7 @@ export default function AuthPage() {
             userSelect: 'none',
           }}>Lost@Cruz</h1>
 
-{/*         prints Login or Signup respectively     */}
+{/*         prints Login or Signup respectively, and loads that specific page     */}
           <h1 style={{
             color: '#FFC436',
             fontSize: '60px',
@@ -119,7 +119,7 @@ export default function AuthPage() {
             textDecorationStyle: 'double',
             cursor: 'default',
             userSelect: 'none',
-          }}>{showLogin ? "Login" : "Sign Up"}</h1>
+          }}>{showLogin ? "Log in" : "Sign up"}</h1>
 
           {/* text body */}
           <Box sx={{
@@ -128,10 +128,10 @@ export default function AuthPage() {
             wordWrap: 'break-word',
             paddingLeft: '40px',
           }}>
-            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
+            {/* <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
             <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext</p>
             <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttext</p>
-            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
+            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p> */}
           </Box>
 
           {/* Log-in Button */}
@@ -142,7 +142,7 @@ export default function AuthPage() {
               display: 'flex',
             }}>
 
-              {/* goes to login or signup page on user discretion */}
+              {/* goes to login or signup page on user choice */}
               <div>
                 {showLogin ? <Login /> : <Signup />}
                 <button onClick={() => setShowLogin(!showLogin)}>
