@@ -3,8 +3,10 @@ import {auth} from '../../firebase'
 import { doc, setDoc } from 'firebase/firestore';
 import {firestore} from '../../firebase'
 import useAuthStore from "../store/authStore";
+import { useRouter } from "next/navigation"; // Import Next.js router
 
 const useSignUpWithEmailAndPassword = () => {
+    const router = useRouter(); // Initialize Next.js router
     const [
         createUserWithEmailAndPassword,
         user,
@@ -45,6 +47,8 @@ const useSignUpWithEmailAndPassword = () => {
                 await setDoc(doc(firestore, "users",newUser.user.uid), userDoc);
                 localStorage.setItem("user-info",JSON.stringify(userDoc))
                 loginUser(userDoc)
+                alert("Logged in successfully!");
+                router.push("/forum");
             }
         } catch (error) {
             console.log(error)
