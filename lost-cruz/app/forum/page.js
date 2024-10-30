@@ -1,21 +1,21 @@
 // This is the home page where it displays all the uploaded posts. 
 
 'use client'
-import { Container, Box, Link } from "@mui/material"
+import { Container, Box, Link, Pagination } from "@mui/material"
 import { useState, useEffect } from 'react'
 import { firestore } from '@/firebase'
 import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  deleteDoc,
-  getDoc,
-  addDoc,
+    collection,
+    doc,
+    getDocs,
+    query,
+    setDoc,
+    deleteDoc,
+    getDoc,
+    addDoc,
 } from 'firebase/firestore'
 
-import {orderBy, limit } from "firebase/firestore";  
+import { orderBy, limit } from "firebase/firestore";
 
 import styles from "./forum.module.css"
 
@@ -81,7 +81,7 @@ const Tag = ({ tag }) => {
     )
 }
 
-const Post = ({postId, title, description, tags, imageURL }) => {
+const Post = ({ postId, title, description, tags, imageURL }) => {
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -97,48 +97,48 @@ const Post = ({postId, title, description, tags, imageURL }) => {
                                     fontWeight: 'bold',
                                     color: '#0C356A',
                                     whiteSpace: 'nowrap',
-                                }}>{title} 
-                                </Link>
+                                }}>{title}
+                            </Link>
                         </Box>
                         <Box className={styles.description}
-                        sx={{
-                            color: '#313b40',
-                        }}>
+                            sx={{
+                                color: '#313b40',
+                            }}>
                             {description}
                         </Box>
                     </Box>
                     {/* tags */}
                     <Box sx={{ margin: '10px', marginBottom: '5px', width: "95%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
                         <LFTag tag={'LOST'} />
-                        <Tag tag={'tag1'} />  
-                        <Tag tag={'tag2'} /> {/* only add availabe tags*/} 
+                        <Tag tag={'tag1'} />
+                        <Tag tag={'tag2'} /> {/* only add availabe tags*/}
                         <Tag tag={'tag3'} />
                         <Tag tag={'tag4'} />
                     </Box>
                 </Box>
                 {/* image(s) */}
-                <Box sx={{ width: '200px', height: 'auto', bgcolor: '#FFC436', margin: '10px', borderRadius: '10px', overflow: 'hidden'}}
-                >
+                <Box className={styles.imgContainer}>
                     {/* img here */}
                     {imageURL ? (
-                        <img src={imageURL} alt="img" 
-                            style={{ 
-                            width: '100%',  // Makes the image stretch to the full width of the box
-                            height: '100%',  // Fills the height of the box
-                            objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
-                        }} />
+                        <img src={imageURL} alt="img"
+                            style={{
+                                width: '100%',  // Makes the image stretch to the full width of the box
+                                height: 'auto',  // Fills the height of the box
+                                objectFit: 'contain',  // Ensures the whole image fits inside the box without cropping
+                                borderRadius: '10px',
+                            }} />
                     ) : (
                         <p>No image to display</p>
                     )}
-                
                 </Box>
             </Box>
         </Box>
     )
 }
 
-const PostList = () => {
+const {handleLogout, isLoggingOut, error} = useLogout();
 
+const PostList = () => {
     const [posts, setPosts] = useState([])
     // const [postName, setPostName] = useState('')
     // const [searchItem, searchItemName] = useState('')
@@ -156,6 +156,25 @@ const PostList = () => {
     useEffect(() => {
         updatePosts()
     }, [])
+
+    /* Pagination */
+    const pageSize = 10; // Num of posts show on a single page
+    const numPage = Math.ceil(posts.length / pageSize);
+    const [pagi, setPagi] = useState({
+        count: 0,
+        from: 0,
+        to: pageSize,
+    });
+    useEffect(() => {
+        setPagi({ ...pagi, count: numPage });
+    }, [])
+    const currentData = posts.slice(pagi.from, pagi.to);
+    const handlePageChange = (e, page) => {
+        const from = (page - 1) * pageSize;
+        const to = (page - 1) * pageSize + pageSize;
+        setPagi({ ...pagi, from: from, to: to })
+    }
+
     /*
     This is where information retrieval to create new posts will be done. 
     We can limit the amount of posts with a modulo function.
@@ -179,31 +198,41 @@ const PostList = () => {
     //         imageURL={'...'}
     //     />
     // ));
-    
-    const {handleLogout, isLoggingOut, error} = useLogout();
+  
     return (
-        // Box or wrapper around the posts
-        <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
-            <button onClick={handleLogout}>Logout</button>
-            {/* {post}  Render the array of Post components inside the box */}
-            {posts.map(({postID, title, description, imageURL}) => (
-                <Post  
-                    key={postID}     
-                    postId={postID}   // Unique key for each post
-                    title={title} // Unique title for each post
-                    description={description}
-                    tags={[]}
-                    imageURL={imageURL}
-                />
-            ))}
+        <Box sx={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center'
+        }}>
+            {/* // Box or wrapper around the posts */}
+            <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
+                {/* {post}  Render the array of Post components inside the box */}
+                {/* instead of rendering all the posts at once, only show data on the current page */}
+                {currentData.map(({ postID, title, description, imageURL }) => (
+                    <Post
+                        key={postID}
+                        postId={postID}   // Unique key for each post
+                        title={title} // Unique title for each post
+                        description={description}
+                        tags={[]}
+                        imageURL={imageURL}
+                    />
+                ))}
+            </Box>
+            <Pagination
+                count={numPage}
+                color="primary"
+                onChange={handlePageChange}
+                sx={{ margin: "20px 0px" }}
+            />
         </Box>
     );
 };
 
 const ForumPage = () => {
     return (
-        <Box sx={{bgcolor: '#0174BE'}}>
-            <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around',}}></Box>
+        <button onClick={handleLogout}>Logout</button>
+        <Box sx={{ bgcolor: '#0174BE' }}>
+            <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
             <Navbar></Navbar>
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce' }}>
@@ -225,34 +254,9 @@ const ForumPage = () => {
     )
 }
 
-//From google ai
-async function getDocumentById(collectionName, documentId) {
-    const docRef = doc(firestore, collectionName, documentId);
-  
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data(); 
-      } else {
-        console.log("No such document!");
-      }
-    } catch (error) {
-      console.error("Error getting document:", error);
-    }
-  }
-// Example usage
-/*
-getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
-.then(data => {
-    if (data) {
-    console.log("Document data:", data);
-    }
-});
-*/
-
 //I used this webpage to figure it out
 // https://firebase.google.com/docs/firestore/query-data/order-limit-data#web
-const q = query(collection(firestore,"posts"), orderBy("timestamp", "desc"), limit(3));
+const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
 const docs = await getDocs(q);
 
 // docs.forEach((doc) => {
@@ -268,12 +272,10 @@ const removePost = async (documentId) => {
     if (docSnap.exists()) {
         await deleteDoc(docRef)
     }
-    else
-    {
+    else {
         console.log("Can't find the post!");
     }
-
-  }
+}
 
 // removePost()
 

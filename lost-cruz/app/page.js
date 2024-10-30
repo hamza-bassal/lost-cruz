@@ -2,9 +2,11 @@
 
 import ForumPage from "./forum/page";  // Capitalize the component name
 import useAuthStore from "./store/authStore"
+import Home from "./welcome/page"
 
 // Alternatively, define the component explicitly
 const ForumPageComponent = () => <ForumPage />;  // Correct arrow function syntax
+const HomePageComponent = () => <Home />
 
 export default function Home() {
     const authUser = useAuthStore(state => state.user);
@@ -12,7 +14,7 @@ export default function Home() {
         // TODO <Route path='/' element={authUser ? <Forum/> : <Naigate to="/auth"/> }
         <div>
             {/* Render the ForumPage component */}
-            <ForumPageComponent />
+            <HomePageComponent />
 
             {/* for testing purposes: */}
             {/*<Home />*/}

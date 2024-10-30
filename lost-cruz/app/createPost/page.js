@@ -20,8 +20,6 @@ import AddLocationIcon from "@mui/icons-material/AddLocation";
 import ArticleIcon from "@mui/icons-material/Article";
 import { useRouter } from "next/navigation"; // Import Next.js router
 
-import Image from 'next/image';
-
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, firestore } from "../../firebase"
 import { collection, addDoc } from 'firebase/firestore';
@@ -88,15 +86,15 @@ const CreatePost = () => {
       lostOrFound: lostOrFound,
       timestamp: new Date(),
     })
-    .then((docRef) => {
-      console.log("Document written with ID: ", docRef.id);
-    })
-    .catch((error) => {
-      console.error("Error adding document: ", error);
-    });
+      .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+      });
 
     // Reset form, doesnt reset current form entries
-    
+
     setFile(null);
     setTitle("")
     setDescription("");
@@ -114,7 +112,7 @@ const CreatePost = () => {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        bgcolor: "white",
+        bgcolor: '#FCF7ED'
       }}
     >
       {/* close + send */}
@@ -138,48 +136,62 @@ const CreatePost = () => {
         component="form"
         sx={{
           width: "100%",
-          bgcolor: "white",
           display: "flex",
           flexDirection: "column",
         }}
       >
-        {/* title */}
-        <TextField
-          required
-          fullWidth
-          multiline
-          id="title"
-          variant="standard"
-          placeholder="Title"
-          // InputProps={{ style: { fontSize: 30 } }}
-          // InputLabelProps={{ style: { fontSize: 30 } }}
-          sx={{
-            alignSelf: "center",
-            padding: "20px",
-            paddingLeft: "7.5%",
-            paddingRight: "7.5%",
-          }}
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        {/* title container */}
+        <Box sx={{
+          width: 'inherit',
+          alignSelf: "center",
+          padding: "20px",
+          paddingLeft: "7.5%",
+          paddingRight: "7.5%",
+        }}>
+          {/* input title */}
+          <TextField
+            required
+            fullWidth
+            multiline
+            id="title"
+            variant="standard"
+            placeholder="Title"
+            InputProps={{ style: { fontSize: 30 } }}
+            InputLabelProps={{ style: { fontSize: 30 } }}
+            sx={{
+              bgcolor: 'white',
+              borderRadius: '5px',
+              paddingLeft: '5px',
+            }}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </Box>
 
-        {/* post body */}
-        <TextField
-          fullWidth
-          multiline
-          rows={15}
-          id="description"
-          placeholder="Description"
-          InputProps={{ style: { fontSize: 20 } }}
-          sx={{
-            alignSelf: "center",
-            padding: "20px",
-            paddingLeft: "7.5%",
-            paddingRight: "7.5%",
-          }}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+
+        {/* post body container */}
+        <Box sx={{
+          width: 'inherit',
+          alignSelf: "center",
+          padding: "20px",
+          paddingLeft: "7.5%",
+          paddingRight: "7.5%",
+        }}>
+          {/* input description */}
+          <TextField
+            fullWidth
+            multiline
+            rows={15}
+            id="description"
+            placeholder="Description"
+            InputProps={{ style: { fontSize: 20 } }}
+            sx={{
+              bgcolor: 'white'
+            }}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </Box>
 
         {/* Email, redundant? Email should be linked to profile. */}
         <Box className={styles.inputBox}>
@@ -190,6 +202,7 @@ const CreatePost = () => {
             variant="standard"
             fullWidth
             placeholder="email, redundant?"
+            sx={{ bgcolor: 'white', paddingLeft: '3px', borderRadius: '5px' }}
           ></TextField>
         </Box>
 
@@ -202,6 +215,7 @@ const CreatePost = () => {
             variant="standard"
             fullWidth
             placeholder="tags"
+            sx={{ bgcolor: 'white', paddingLeft: '3px', borderRadius: '5px' }}
           ></TextField>
         </Box>
 

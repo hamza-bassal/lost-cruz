@@ -9,7 +9,7 @@ import SendIcon from '@mui/icons-material/Send';
 
 import styles from "./contact.module.css"
 
-const contactForm = () => {
+const ContactForm = () => {
     return (
         <Box sx={{
             minHeight: '100vh',
@@ -66,4 +66,4 @@ const contactForm = () => {
     )
 }
 
-export default contactForm
+export default ContactForm

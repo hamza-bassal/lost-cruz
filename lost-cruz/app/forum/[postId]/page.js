@@ -8,9 +8,9 @@ import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CommentIcon from '@mui/icons-material/Comment';
+import { useEffect, useState } from "react";
 import { firestore } from '@/firebase'
 import { doc, getDoc,} from 'firebase/firestore'
-import { useEffect, useState } from "react";
 
 import styles from "./post.module.css"
 
@@ -39,6 +39,23 @@ const SingleComment = () => {
             </Box>
         </Box>
     )
+}
+
+
+// postId retrieves data
+async function getDocumentById(collectionName, documentId) {
+    const docRef = doc(firestore, collectionName, documentId);
+  
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data(); 
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
 }
 
 const CommentList = () => {
@@ -131,7 +148,9 @@ const PostPage = ( {params} ) => {
                                 <Box sx={{ maxWidth: '80%', }}>
                                     <h1 className={styles.title}>{title}</h1>
                                 </Box>
-                                <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
+                                <Link href={`/forum/contact/${params.postId}`} sx={{ bgcolor: "#0174BE", height: '50px' }}>
+                                    <Button variant="contained" sx={{ bgcolor: "#0174BE", height: '50px' }}>Contact</Button>
+                                </Link>
                             </Box>
 
                             {/* paragraph + img */}
@@ -143,13 +162,13 @@ const PostPage = ( {params} ) => {
                                 <Box sx={{ maxWidth: 0.5, overflow: 'auto', wordWrap: 'break-word' }}>
                                     <p>{desc}</p>
                                 </Box>
-                                <Box sx={{ maxWidth: 0.5, maxHeight: 0.5, bgcolor: '#FFC436', width: '300px', height: '350px', marginLeft: '5px' }}>
+                                <Box sx={{ maxWidth: 0.5, maxHeight: 0.5, width: '300px', height: 'auto', marginLeft: '5px' }}>
                                     {imageUrl ? (
                                         <img src={imageUrl} alt="img" 
                                             style={{ 
                                             width: '100%',  // Makes the image stretch to the full width of the box
                                             height: '100%',  // Fills the height of the box
-                                            objectFit: 'contain'  // Ensures the whole image fits inside the box without cropping
+                                            objectFit: 'contain',  // Ensures the whole image fits inside the box without cropping
                                         }} />
                                     ) : (
                                         <p>No image to display</p>
@@ -222,30 +241,5 @@ const PostPage = ( {params} ) => {
 
 }
 
-//From google ai
-async function getDocumentById(collectionName, documentId) {
-    const docRef = doc(firestore, collectionName, documentId);
-  
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data(); 
-      } else {
-        console.log("No such document!");
-      }
-    } catch (error) {
-      console.error("Error getting document:", error);
-    }
-}
-  
-// Example usage
-/*
-getDocumentById("posts", "Q60YabICxsgTWuBCIGnP")
-.then(data => {
-    if (data) {
-    console.log("Document data:", data);
-    }
-});
-*/
-
 export default PostPage
+

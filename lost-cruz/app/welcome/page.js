@@ -3,7 +3,7 @@
 'use client'
 
 import { useState } from 'react';
-import { Box, Button, FormControl, IconButton, TextField } from '@mui/material'
+import { Box, Button, FormControl, IconButton, TextField, Link } from '@mui/material'
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -126,6 +126,28 @@ export default function Home() {
                 fontWeight: 'bold',
                 margin: 'auto',
               }}>LOGIN</Button></Box>
+          <Link href={`/forum`}
+             sx={{
+               paddingTop: '30px',
+               width: 1,
+               display: 'flex',
+               textDecoration: 'none'
+             }}>
+            <Box
+              sx={{
+                paddingTop: '30px',
+                width: 1,
+                display: 'flex',
+              }}>
+                <Button variant='contained'
+                sx={{
+                  width: 0.75,
+                  bgcolor: '#FFC436',
+                  fontWeight: 'bold',
+                  margin: 'auto',
+                }}>Continue as Guest</Button>
+              </Box>
+          </Link>
         </Box>
 
         {login &&
