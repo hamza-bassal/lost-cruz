@@ -10,10 +10,12 @@ const useLogout = () => {
     const logoutUser = useAuthStore((state) => state.logout);
 
     const handleLogout = async () => {
+        console.log("in handle logout");
         try{
             await signOut();
             localStorage.removeItem('user-info');
             logoutUser();
+            alert("Logged out successfully!");
             router.push("/auth");
         } catch (error){
             console.log(error);
