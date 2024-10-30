@@ -2,7 +2,7 @@
 
 'use client'
 
-import { Container, Box, Button, Link, IconButton } from "@mui/material"
+import { Container, Box, Button, Link, IconButton, Popover, Typography } from "@mui/material"
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FlagIcon from '@mui/icons-material/Flag';
 import ShareIcon from '@mui/icons-material/Share';
@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CommentIcon from '@mui/icons-material/Comment';
+import { useState } from 'react';
 
 import styles from "./post.module.css"
 
@@ -58,7 +59,7 @@ const CommentList = () => {
 const badWords = ["badword1", "badword2", "badword3"]
 const contactInfoPatterns = [ /\d{3}-\d{3}-\d{4}/, /\(\d{3}\) \d{3}-\d{4}/, /\d{3} \d{3} \d{4}/, /\d{3}\.\d{3}\.\d{4}/, /\d{3} \d{4} \d{4}/, /\d{3}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3}/, /\d{3}-\d{4}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3} \d{3}/, /\d{3}-\d{4}-\d{4}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3} \d{3} \d{3}/, /\d{1,5}\s[A-Za-z0-9\s]+(?:Ave|Avenue|St|Street|Rd|Road|Blvd|Boulevard|Dr|Drive|Ct|Court|Ln|Lane|Way)\.?/]
 
-function filterText(text){
+function FilterText(text){
     let filteredText = text;
     badWords.forEach(word => {
         const regex = new RegExp(`\\b${word}\\b`, "gi"); 
@@ -88,9 +89,58 @@ const Tag = ({ tagName }) => {
     )
 }
 
+const ShareButton = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const copyLinkToClipboard = () => {
+        const linkToCopy = window.location.href;
+        navigator.clipboard.writeText(linkToCopy)
+            .then(() => {
+                console.log("Link copied to clipboard");
+                handleClose();
+            })
+            .catch(err => {
+                console.error("Could not copy text: ", err);
+            });
+    };
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    return (
+        <>
+            <IconButton onClick={handleClick}>
+                <ShareIcon sx={{ paddingLeft: '3px', color: '#0174BE' }} />
+            </IconButton>
+            <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Typography sx={{ padding: '10px' }}>
+                    <Button onClick={copyLinkToClipboard}>Copy Link to Clipboard</Button>
+                </Typography>
+            </Popover>
+        </>
+    );
+};
+
 const PostPage = () => {
     const description = "I live at 123 Fake Street. Call me at 123-456-7890. This is a badword1 and badword2 example.";
-    const cleanedDescription = filterText(description);
+    const cleanedDescription = FilterText(description);
     return (
         <div>
             <Navbar />
@@ -168,20 +218,17 @@ const PostPage = () => {
                             {/* location + report + share */}
                             <Box sx={{ paddingBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <IconButton>
-                                        <LocationOnIcon sx={{ color: "#0174BE" }} />
-                                    </IconButton>
+                                    <LocationOnIcon sx={{ color: "#0174BE" }} />
                                     <Link href="#" variant="body2">location details ...</Link>
                                 </Box>
-                                <Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <IconButton>
                                         <FlagIcon sx={{ paddingRight: '3px', color: '#0174BE', }} />
                                     </IconButton>
-
-                                    <IconButton>
-                                        <ShareIcon sx={{ paddingLeft: '3px', color: '#0174BE', }} />
-                                    </IconButton>
-
+                                    {/* Use a Box instead of a Button */}
+                                    <Box>
+                                        <ShareButton />
+                                    </Box>
                                 </Box>
                             </Box>
                         </Box>
