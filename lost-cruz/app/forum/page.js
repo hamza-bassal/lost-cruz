@@ -136,7 +136,7 @@ const Post = ({ postId, title, description, tags, imageURL }) => {
     )
 }
 
-const {handleLogout, isLoggingOut, error} = useLogout();
+
 
 const PostList = () => {
     const [posts, setPosts] = useState([])
@@ -198,13 +198,14 @@ const PostList = () => {
     //         imageURL={'...'}
     //     />
     // ));
-  
+    const {handleLogout, isLoggingOut, error} = useLogout();
     return (
         <Box sx={{
             display: 'flex', flexDirection: 'column', alignItems: 'center'
         }}>
             {/* // Box or wrapper around the posts */}
             <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
+            <button onClick={handleLogout}>Logout</button>
                 {/* {post}  Render the array of Post components inside the box */}
                 {/* instead of rendering all the posts at once, only show data on the current page */}
                 {currentData.map(({ postID, title, description, imageURL }) => (
@@ -230,7 +231,6 @@ const PostList = () => {
 
 const ForumPage = () => {
     return (
-        <button onClick={handleLogout}>Logout</button>
         <Box sx={{ bgcolor: '#0174BE' }}>
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
             <Navbar></Navbar>
