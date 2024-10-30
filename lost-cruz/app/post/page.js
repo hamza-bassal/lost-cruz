@@ -138,6 +138,19 @@ const ShareButton = () => {
         handleClose();
     };
 
+    const openTwitter = async () => {
+        const success = await copyLinkToClipboard();
+        if (success) {
+            const tweetText = "Check out this post from Lost@Cruz"; 
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(window.location.href)}`;
+            setSocialMediaLink(twitterUrl);
+            setOpenInstructions(true); 
+        } else {
+            alert("Failed to copy link. Please try again.");
+        }
+        handleClose();
+    };
+
     const handleDialogClose = () => {
         setOpenInstructions(false);
     };
@@ -179,12 +192,16 @@ const ShareButton = () => {
             >
                 {/* Icons */}
                 <Typography sx={{ padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    Share this post on:
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '10px' }}>
                         <IconButton onClick={openInstagram} sx={{ marginRight: '5px' }}>
                             <img src="/instagram.png" alt="Instagram" style={{ width: 24, height: 24 }} />
                         </IconButton>
                         <IconButton onClick={openFacebook} sx={{ marginLeft: '5px' }}>
                             <img src="/facebook.png" alt="Facebook" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                        <IconButton onClick={openTwitter} sx={{ marginLeft: '5px' }}>
+                            <img src="/twitter.svg" alt="Twitter" style={{ width: 24, height: 24 }} />
                         </IconButton>
                         <IconButton onClick={openMail} sx={{ marginLeft: '5px' }}>
                             <img src="/mail.svg" alt="Mail" style={{ width: 24, height: 24 }} />
