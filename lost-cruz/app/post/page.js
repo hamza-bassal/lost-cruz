@@ -3,6 +3,7 @@
 'use client'
 
 import { Container, Box, Button, Link, IconButton, Popover, Typography } from "@mui/material"
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FlagIcon from '@mui/icons-material/Flag';
 import ShareIcon from '@mui/icons-material/Share';
@@ -91,23 +92,69 @@ const Tag = ({ tagName }) => {
 
 const ShareButton = () => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [openInstructions, setOpenInstructions] = useState(false);
+    const [socialMediaLink, setSocialMediaLink] = useState('');
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     const copyLinkToClipboard = () => {
         const linkToCopy = window.location.href;
-        navigator.clipboard.writeText(linkToCopy)
+        return navigator.clipboard.writeText(linkToCopy)
             .then(() => {
                 console.log("Link copied to clipboard");
-                handleClose();
+                return true;
             })
             .catch(err => {
                 console.error("Could not copy text: ", err);
+                return false;
             });
     };
+
+    const openInstagram = async () => {
+        const success = await copyLinkToClipboard();
+        if (success) {
+            setSocialMediaLink(`https://www.instagram.com/?url=${encodeURIComponent(window.location.href)}`);
+            setOpenInstructions(true); 
+        } else {
+            alert("Failed to copy link. Please try again.");
+        }
+        handleClose();
+    };
+
+    const openFacebook = async () => {
+        const success = await copyLinkToClipboard();
+        if (success) {
+            setSocialMediaLink(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`);
+            setOpenInstructions(true); 
+        } else {
+            alert("Failed to copy link. Please try again.");
+        }
+        handleClose();
+    };
+
+    const handleDialogClose = () => {
+        setOpenInstructions(false);
+    };
+
+    const handleOpenSocialMedia = () => {
+        window.open(socialMediaLink, '_blank');
+        handleDialogClose();
+    };
+
+    const openMail = () => {
+        const subject = "Check out this post from Lost@Cruz";
+        const body = `Here's the link: ${window.location.href}`;
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(mailtoLink, '_blank');
+        handleClose();
+    };
+
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
@@ -130,10 +177,40 @@ const ShareButton = () => {
                     horizontal: 'center',
                 }}
             >
-                <Typography sx={{ padding: '10px' }}>
+                {/* Icons */}
+                <Typography sx={{ padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '10px' }}>
+                        <IconButton onClick={openInstagram} sx={{ marginRight: '5px' }}>
+                            <img src="/instagram.png" alt="Instagram" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                        <IconButton onClick={openFacebook} sx={{ marginLeft: '5px' }}>
+                            <img src="/facebook.png" alt="Facebook" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                        <IconButton onClick={openMail} sx={{ marginLeft: '5px' }}>
+                            <img src="/mail.svg" alt="Mail" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                    </Box>
                     <Button onClick={copyLinkToClipboard}>Copy Link to Clipboard</Button>
                 </Typography>
             </Popover>
+
+            {/* Instructions Dialog */}
+            <Dialog open={openInstructions} onClose={handleDialogClose}>
+                <DialogTitle>Instructions</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        After clicking "OK," a new tab will open with your selected social media platform. Please log in and paste the link into your story or a direct message.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleOpenSocialMedia} color="primary">
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };
@@ -225,7 +302,7 @@ const PostPage = () => {
                                     <IconButton>
                                         <FlagIcon sx={{ paddingRight: '3px', color: '#0174BE', }} />
                                     </IconButton>
-                                    {/* Use a Box instead of a Button */}
+                                    {/* Share button which has a popout panel so it calls a seprate component */}
                                     <Box>
                                         <ShareButton />
                                     </Box>
