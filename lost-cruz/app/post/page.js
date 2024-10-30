@@ -2,7 +2,8 @@
 
 'use client'
 
-import { Container, Box, Button, Link, IconButton } from "@mui/material"
+import { Container, Box, Button, Link, IconButton, Popover, Typography } from "@mui/material"
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FlagIcon from '@mui/icons-material/Flag';
 import ShareIcon from '@mui/icons-material/Share';
@@ -10,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CommentIcon from '@mui/icons-material/Comment';
+import { useState } from 'react';
 
 import styles from "./post.module.css"
 
@@ -58,7 +60,7 @@ const CommentList = () => {
 const badWords = ["badword1", "badword2", "badword3"]
 const contactInfoPatterns = [ /\d{3}-\d{3}-\d{4}/, /\(\d{3}\) \d{3}-\d{4}/, /\d{3} \d{3} \d{4}/, /\d{3}\.\d{3}\.\d{4}/, /\d{3} \d{4} \d{4}/, /\d{3}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3}/, /\d{3}-\d{4}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3} \d{3}/, /\d{3}-\d{4}-\d{4}-\d{4}-\d{4}/, /\d{3}\.\d{4}\.\d{4}\.\d{4}\.\d{4}/, /\d{3} \d{4} \d{4} \d{4} \d{4}/, /\d{3}-\d{3}-\d{3}-\d{3}-\d{3}-\d{3}/, /\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}\.\d{3}/, /\d{3} \d{3} \d{3} \d{3} \d{3} \d{3}/, /\d{1,5}\s[A-Za-z0-9\s]+(?:Ave|Avenue|St|Street|Rd|Road|Blvd|Boulevard|Dr|Drive|Ct|Court|Ln|Lane|Way)\.?/]
 
-function filterText(text){
+function FilterText(text){
     let filteredText = text;
     badWords.forEach(word => {
         const regex = new RegExp(`\\b${word}\\b`, "gi"); 
@@ -88,9 +90,151 @@ const Tag = ({ tagName }) => {
     )
 }
 
+const ShareButton = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [openInstructions, setOpenInstructions] = useState(false);
+    const [socialMediaLink, setSocialMediaLink] = useState('');
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const copyLinkToClipboard = () => {
+        const linkToCopy = window.location.href;
+        return navigator.clipboard.writeText(linkToCopy)
+            .then(() => {
+                console.log("Link copied to clipboard");
+                return true;
+            })
+            .catch(err => {
+                console.error("Could not copy text: ", err);
+                return false;
+            });
+    };
+
+    const openInstagram = async () => {
+        const success = await copyLinkToClipboard();
+        if (success) {
+            setSocialMediaLink(`https://www.instagram.com/?url=${encodeURIComponent(window.location.href)}`);
+            setOpenInstructions(true); 
+        } else {
+            alert("Failed to copy link. Please try again.");
+        }
+        handleClose();
+    };
+
+    const openFacebook = async () => {
+        const success = await copyLinkToClipboard();
+        if (success) {
+            setSocialMediaLink(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`);
+            setOpenInstructions(true); 
+        } else {
+            alert("Failed to copy link. Please try again.");
+        }
+        handleClose();
+    };
+
+    const openTwitter = async () => {
+        const success = await copyLinkToClipboard();
+        if (success) {
+            const tweetText = "Check out this post from Lost@Cruz"; 
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(window.location.href)}`;
+            setSocialMediaLink(twitterUrl);
+            setOpenInstructions(true); 
+        } else {
+            alert("Failed to copy link. Please try again.");
+        }
+        handleClose();
+    };
+
+    const handleDialogClose = () => {
+        setOpenInstructions(false);
+    };
+
+    const handleOpenSocialMedia = () => {
+        window.open(socialMediaLink, '_blank');
+        handleDialogClose();
+    };
+
+    const openMail = () => {
+        const subject = "Check out this post from Lost@Cruz";
+        const body = `Here's the link: ${window.location.href}`;
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(mailtoLink, '_blank');
+        handleClose();
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    return (
+        <>
+            <IconButton onClick={handleClick}>
+                <ShareIcon sx={{ paddingLeft: '3px', color: '#0174BE' }} />
+            </IconButton>
+            <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                {/* Icons */}
+                <Typography sx={{ padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    Share this post on:
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '10px' }}>
+                        <IconButton onClick={openInstagram} sx={{ marginRight: '5px' }}>
+                            <img src="/instagram.png" alt="Instagram" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                        <IconButton onClick={openFacebook} sx={{ marginLeft: '5px' }}>
+                            <img src="/facebook.png" alt="Facebook" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                        <IconButton onClick={openTwitter} sx={{ marginLeft: '5px' }}>
+                            <img src="/twitter.svg" alt="Twitter" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                        <IconButton onClick={openMail} sx={{ marginLeft: '5px' }}>
+                            <img src="/mail.svg" alt="Mail" style={{ width: 24, height: 24 }} />
+                        </IconButton>
+                    </Box>
+                    <Button onClick={copyLinkToClipboard}>Copy Link to Clipboard</Button>
+                </Typography>
+            </Popover>
+
+            {/* Instructions Dialog */}
+            <Dialog open={openInstructions} onClose={handleDialogClose}>
+                <DialogTitle>Instructions</DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        After clicking "OK," a new tab will open with your selected social media platform. Please log in and paste the link into your story or a direct message.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleOpenSocialMedia} color="primary">
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+};
+
 const PostPage = () => {
     const description = "I live at 123 Fake Street. Call me at 123-456-7890. This is a badword1 and badword2 example.";
-    const cleanedDescription = filterText(description);
+    const cleanedDescription = FilterText(description);
     return (
         <div>
             <Navbar />
@@ -168,20 +312,17 @@ const PostPage = () => {
                             {/* location + report + share */}
                             <Box sx={{ paddingBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <IconButton>
-                                        <LocationOnIcon sx={{ color: "#0174BE" }} />
-                                    </IconButton>
+                                    <LocationOnIcon sx={{ color: "#0174BE" }} />
                                     <Link href="#" variant="body2">location details ...</Link>
                                 </Box>
-                                <Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <IconButton>
                                         <FlagIcon sx={{ paddingRight: '3px', color: '#0174BE', }} />
                                     </IconButton>
-
-                                    <IconButton>
-                                        <ShareIcon sx={{ paddingLeft: '3px', color: '#0174BE', }} />
-                                    </IconButton>
-
+                                    {/* Share button which has a popout panel so it calls a seprate component */}
+                                    <Box>
+                                        <ShareButton />
+                                    </Box>
                                 </Box>
                             </Box>
                         </Box>
