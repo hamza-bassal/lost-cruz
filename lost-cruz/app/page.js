@@ -1,11 +1,14 @@
 'use client'
 
 import ForumPage from "./forum/page";  // Capitalize the component name
+import AuthPage from "./auth/page";  // Capitalize the component name
+
 import useAuthStore from "./store/authStore"
 //import Home from "./welcome/page"
 
 // Alternatively, define the component explicitly
 const ForumPageComponent = () => <ForumPage />;  // Correct arrow function syntax
+const AuthPageComponent = () => <AuthPage />;
 //const HomePageComponent = () => <Home />
 
 export default function Home() {
@@ -14,7 +17,7 @@ export default function Home() {
         // TODO <Route path='/' element={authUser ? <Forum/> : <Naigate to="/auth"/> }
         <div>
             {/* Render the ForumPage component */}
-            <ForumPageComponent />
+            <AuthPageComponent />
 
             {/* for testing purposes: */}
             {/*<Home />*/}
