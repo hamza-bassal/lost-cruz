@@ -23,6 +23,7 @@ import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
 
+import useLogout from "../hooks/useLogout"
 
 const LFTag = ({ tag }) => {
     // Lost / Found
@@ -135,6 +136,8 @@ const Post = ({ postId, title, description, tags, imageURL }) => {
     )
 }
 
+const {handleLogout, isLoggingOut, error} = useLogout();
+
 const PostList = () => {
     const [posts, setPosts] = useState([])
     // const [postName, setPostName] = useState('')
@@ -195,7 +198,7 @@ const PostList = () => {
     //         imageURL={'...'}
     //     />
     // ));
-
+  
     return (
         <Box sx={{
             display: 'flex', flexDirection: 'column', alignItems: 'center'
@@ -225,9 +228,9 @@ const PostList = () => {
     );
 };
 
-const forumPage = () => {
-
+const ForumPage = () => {
     return (
+        <button onClick={handleLogout}>Logout</button>
         <Box sx={{ bgcolor: '#0174BE' }}>
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
             <Navbar></Navbar>
@@ -256,9 +259,9 @@ const forumPage = () => {
 const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
 const docs = await getDocs(q);
 
-docs.forEach((doc) => {
-    console.log(doc.id, ' => ', doc.data());
-});
+// docs.forEach((doc) => {
+//     console.log(doc.id, ' => ', doc.data());
+// });
 
 
 //Remove Post
@@ -276,4 +279,4 @@ const removePost = async (documentId) => {
 
 // removePost()
 
-export default forumPage
+export default ForumPage
