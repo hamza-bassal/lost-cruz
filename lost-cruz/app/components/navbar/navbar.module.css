@@ -73,6 +73,26 @@
     box-shadow: 2px 2px 5px gray;
 }
 
+.profdropdownBox {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #0174BE;
+    border-radius: 10px;
+    position: absolute;
+    top: 55px;
+    right: 0;
+    width: 100px;
+    background-color: white;
+    padding: 10px 10px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    box-shadow: 2px 2px 5px gray;
+}
+
 .hr {
     margin-top: 10px;
     border-top: 1px dashed #0174BE;

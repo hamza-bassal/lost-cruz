@@ -17,9 +17,11 @@
 .loginBox {
   position: fixed;
   width: 650px;
-  height: 375px;
-  top: 22.5%;
-  left: 25%;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%);
+  margin-left: -325px;
   background-color: #FCF7ED;
   border: 5px double #0174BE;
   border-radius: 25px;
@@ -34,9 +36,11 @@
 .helpBox {
   position: fixed;
   width: 650px;
-  height: 375px;
-  top: 22.5%;
-  left: 25%;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%);
+  margin-Left: -325px;
   background-color: #FCF7ED;
   border: 5px double #0174BE;
   border-radius: 25px;

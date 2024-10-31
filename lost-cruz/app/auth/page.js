@@ -3,7 +3,7 @@
 'use client'
 
 import { useState } from 'react';
-import { Box, Button, FormControl, IconButton, TextField } from '@mui/material'
+import { Box, Button, IconButton, Link } from '@mui/material'
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -16,7 +16,6 @@ export default function AuthPage() {
 
   const [showLogin, setShowLogin] = useState(true);
 
-  /* previous login code
   const [login, setLogin] = useState(false)
   const [help, setHelp] = useState(false)
 
@@ -24,7 +23,7 @@ export default function AuthPage() {
     return (
       <Box className={styles.loginBox}>
         <Box>
-          <IconButton onClick={() => { setLogin(false) }}
+          <IconButton onClick={() => { setLogin(false); setShowLogin(true); }}
             sx={{ color: '#0174BE' }}>
             <CloseIcon fontSize="large" />
           </IconButton>
@@ -35,29 +34,29 @@ export default function AuthPage() {
               color: '#0C356A',
               textAlign: 'center',
               textDecoration: 'underline',
-              cursor: 'default'
+              cursor: 'default',
+              marginBottom: '20px',
             }}
-          >LOGIN</Box>
+          >{showLogin ? "LOGIN" : "SIGN UP"}</Box>
         </Box>
-        <FormControl
-          sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}
-        >
-          <Box>
-            <TextField fullWidth id='username' label='username' variant='filled' size='small'></TextField>
-          </Box>
-
-          <Box>
-            <TextField fullWidth id='password' label='password' variant='filled' size='small'></TextField>
-          </Box>
-
-        </FormControl>
-        <Button variant='contained' sx={{ width: '50%', alignSelf: 'center', marginTop: '10px', marginBottom: '10px' }}>SIGN IN</Button>
+        {/* goes to login or signup page on user choice */}
+        <Box>
+          {showLogin ? <Login /> : <Signup />}
+          <Button onClick={() => setShowLogin(!showLogin)}>
+            {showLogin ? "Need an account? Sign up" : "Already have an account? Log in"}
+          </Button>
+          {/* same as above but with no box */}
+          {/* <Box mx={2} fontSize={14}>
+						{showLogin ? "Don't have an account?" : "Already have an account?"}
+					</Box>
+					<Box onClick={() => setShowLogin(!showLogin)} color={"blue.500"} cursor={"pointer"}>
+						{showLogin ? "Sign up" : "Log in"}
+					</Box> */}
+        </Box>
       </Box>
     )
   }
-    */
 
-  /*
   const HelpBox = () => {
     return (
       <Box className={styles.helpBox}>
@@ -74,10 +73,11 @@ export default function AuthPage() {
               textAlign: 'center',
               textDecoration: 'underline',
               cursor: 'default',
+              marginBottom: '20px',
             }}
           >ABOUT US</Box>
         </Box>
-        <Box sx={{ wordWrap: 'break-word' }}>
+        <Box sx={{ wordWrap: 'break-word', marginBottom: '20px' }}>
           <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
           <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext</p>
           <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttext</p>
@@ -86,7 +86,6 @@ export default function AuthPage() {
       </Box>
     )
   }
-    */
 
   return (
     <div className={styles.page}>
@@ -109,18 +108,6 @@ export default function AuthPage() {
             userSelect: 'none',
           }}>Lost@Cruz</h1>
 
-{/*         prints Login or Signup respectively, and loads that specific page     */}
-          <h1 style={{
-            color: '#FFC436',
-            fontSize: '60px',
-            fontWeight: 'bold',
-            paddingBottom: '50px',
-            textDecoration: 'underline',
-            textDecorationStyle: 'double',
-            cursor: 'default',
-            userSelect: 'none',
-          }}>{showLogin ? "Log in" : "Sign up"}</h1>
-
           {/* text body */}
           <Box sx={{
             maxWidth: 0.75,
@@ -128,10 +115,10 @@ export default function AuthPage() {
             wordWrap: 'break-word',
             paddingLeft: '40px',
           }}>
-            {/* <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
+            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
             <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext</p>
             <p style={{ marginBottom: '20px' }}>texttexttexttexttexttexttexttexttext</p>
-            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p> */}
+            <p style={{ marginBottom: '20px' }}>texttexttexttexttext</p>
           </Box>
 
           {/* Log-in Button */}
@@ -140,39 +127,30 @@ export default function AuthPage() {
               paddingTop: '30px',
               width: 1,
               display: 'flex',
+              flexDirection:'column',
+              alignItems: 'center',
             }}>
-
-              {/* goes to login or signup page on user choice */}
-              <div>
-                {showLogin ? <Login /> : <Signup />}
-                <button onClick={() => setShowLogin(!showLogin)}>
-                  {showLogin ? "Need an account? Sign up" : "Already have an account? Log in"}
-                </button>
-              </div>
-
-              {/* same as above but with no box */}
-              {/* <Box mx={2} fontSize={14}>
-						{showLogin ? "Don't have an account?" : "Already have an account?"}
-					</Box>
-					<Box onClick={() => setShowLogin(!showLogin)} color={"blue.500"} cursor={"pointer"}>
-						{showLogin ? "Sign up" : "Log in"}
-					</Box> */}
-              
-              
-              {/* <Button variant='contained'
-              
-              // onClick={() => { setLogin(true); setHelp(false); }}
+            <Button variant='contained'
+              onClick={() => { setLogin(true); setHelp(false); }}
               sx={{
                 width: 0.75,
                 bgcolor: '#FFC436',
                 fontWeight: 'bold',
                 margin: 'auto',
-              }}>LOGIN</Button> */}
-              </Box>
+              }}>LOGIN</Button>
+            {/* Continue as guest */}
+            <Link href={`/forum`}>
+              <Box
+                sx={{
+                  paddingTop: '15px',
+                  color: 'white',
+                  fontSize: 'small',
+                }}>Continue as Guest</Box>
+            </Link>
+          </Box>
+
         </Box>
-
-
-        {/* {login && <LoginBox></LoginBox>} */}
+        {login && <LoginBox />}
 
         {/* Footer */}
         <Box sx={{
@@ -194,7 +172,7 @@ export default function AuthPage() {
             cursor: 'pointer'
           }} />
 
-        {/* {help && <HelpBox />} */}
+        {help && <HelpBox />}
 
       </div>
     </div>

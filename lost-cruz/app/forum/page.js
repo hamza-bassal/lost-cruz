@@ -23,8 +23,6 @@ import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
 
-import useLogout from "../hooks/useLogout"
-
 const LFTag = ({ tag }) => {
     // Lost / Found
     return (
@@ -198,14 +196,12 @@ const PostList = () => {
     //         imageURL={'...'}
     //     />
     // ));
-    const {handleLogout, isLoggingOut, error} = useLogout();
     return (
         <Box sx={{
             display: 'flex', flexDirection: 'column', alignItems: 'center'
         }}>
             {/* // Box or wrapper around the posts */}
             <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
-            <button onClick={handleLogout}>Logout</button>
                 {/* {post}  Render the array of Post components inside the box */}
                 {/* instead of rendering all the posts at once, only show data on the current page */}
                 {currentData.map(({ postID, title, description, imageURL }) => (
@@ -235,7 +231,7 @@ const ForumPage = () => {
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
             <Navbar></Navbar>
             {/* background */}
-            <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce' }}>
+            <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce', position: 'absolute'}}>
                 <Box sx={{ width: 0.75, height: '100%', bgcolor: '#fcf7ed', margin: 'auto', borderStyle: 'solid', borderWidth: '1px', borderColor: 'lightgray' }}>
 
                     {/* post List */}

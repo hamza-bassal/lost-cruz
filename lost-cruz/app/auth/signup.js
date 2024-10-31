@@ -1,6 +1,7 @@
 // app/auth/signup.js
 import { useState } from 'react';
 import useSignUpWithEmailAndPassword from '../hooks/useSignUpWithEmailAndPassword'
+import { Button } from '@mui/material';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +30,7 @@ const Signup = () => {
   };
 
   return <>
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '10px' }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: 'inherit', gap: '10px' }}>
       <label>Email:</label>
       <input
         type="email"
@@ -37,6 +38,10 @@ const Signup = () => {
         value={inputs.email}
         onChange={handleChange}
         required
+        style={{
+          height: '30px',
+          padding: '5px',
+        }}
       />
       <label>Username:</label>
       <input
@@ -45,6 +50,10 @@ const Signup = () => {
         value={inputs.username}
         onChange={handleChange}
         required
+        style={{
+          height: '30px',
+          padding: '5px',
+        }}
       />
       <label>Full Name:</label>
       <input
@@ -53,6 +62,10 @@ const Signup = () => {
         value={inputs.fullName}
         onChange={handleChange}
         required
+        style={{
+          height: '30px',
+          padding: '5px',
+        }}
       />
       <label>Password:</label>
       <input
@@ -61,6 +74,10 @@ const Signup = () => {
         value={inputs.password}
         onChange={handleChange}
         required
+        style={{
+          height: '30px',
+          padding: '5px',
+        }}
       />
       <label>Confirm Password:</label>
       <input
@@ -69,6 +86,10 @@ const Signup = () => {
         value={inputs.confirmPassword}
         onChange={handleChange}
         required
+        style={{
+          height: '30px',
+          padding: '5px',
+        }}
       />
 
         {error && (
@@ -78,7 +99,10 @@ const Signup = () => {
         )}
 
 
-      <button type="submit" onClick={() => signup(inputs)}>Sign up</button>
+      <Button 
+        variant='contained'
+        sx={{margin: "30px 0px 10px 0px"}}    
+      type="submit" onClick={() => signup(inputs)}>Sign up</Button>
     </form>
   </>
   }

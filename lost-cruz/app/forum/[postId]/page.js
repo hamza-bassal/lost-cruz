@@ -251,10 +251,10 @@ const PostPage = ( {params} ) => {
 
     return (
         <div>
-            <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around',}}></Box>
+            <Box sx={{bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}></Box>
             <Navbar />
             {/* background */}
-            <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce' }}>
+            <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce', position: 'absolute' }}>
 
                 {/* tags */}
                 <Box className={styles.tagGroup}>
