@@ -98,15 +98,3 @@
     border-top: 1px dashed #0174BE;
     width: 200px;
 }
-
-.profItem {
-    cursor: pointer;
-    width: inherit;
-    height: 30px;
-    text-align: center;
-    padding: 5px;
-}
-.profItem:hover {
-    text-decoration: underline;
-    text-underline-offset: 5px;
-}
