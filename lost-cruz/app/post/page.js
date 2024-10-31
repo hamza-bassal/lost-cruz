@@ -192,7 +192,7 @@ const ShareButton = () => {
             >
                 {/* Icons */}
                 <Typography sx={{ padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    Share this post on:
+                        <p>Share this post on:</p>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '10px' }}>
                         <IconButton onClick={openInstagram} sx={{ marginRight: '5px' }}>
                             <img src="/instagram.png" alt="Instagram" style={{ width: 24, height: 24 }} />
@@ -216,15 +216,15 @@ const ShareButton = () => {
                 <DialogTitle>Instructions</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        After clicking "OK," a new tab will open with your selected social media platform. Please log in and paste the link into your story or a direct message.
+                        <p>After clicking "OK," a new tab will open with your selected social media platform. Please log in and paste the link into your story or a direct message.</p>
                     </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="primary">
-                        Cancel
+                        <p>Cancel</p>
                     </Button>
                     <Button onClick={handleOpenSocialMedia} color="primary">
-                        OK
+                        <p>OK</p>
                     </Button>
                 </DialogActions>
             </Dialog>
