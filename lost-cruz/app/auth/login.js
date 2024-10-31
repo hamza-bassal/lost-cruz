@@ -1,6 +1,7 @@
 // app/auth/login.js
 import {useState} from 'react';
 import useLogin from "../hooks/useLogin"
+import { Button } from '@mui/material';
 
 const Login = () => {
 
@@ -24,7 +25,7 @@ const Login = () => {
   };
   const {loading,error,login} = useLogin()
   return <>
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px', gap: '10px' }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: 'inherit', gap: '10px' }}>
       <label>Email:</label>
       <input
         type="email"
@@ -32,6 +33,10 @@ const Login = () => {
         value={inputs.email}
         onChange={handleChange}
         required
+        style={{
+          height: '30px',
+          padding: '5px',
+        }}
       />
       <label>Password:</label>
       <input
@@ -40,13 +45,21 @@ const Login = () => {
         value={inputs.password}
         onChange={handleChange}
         required
+        style={{
+          height: '30px',
+          padding: '5px',
+        }}
       />
       {error && (
           <p style={{ color: 'red', marginTop: '10px' }}>
             {error.message}
           </p>
         )}
-      <button type="submit" onClick={() => login(inputs)}>Log in</button>
+      <Button
+      variant='contained'
+      type="submit"
+      sx={{margin: "30px 0px 10px 0px"}}
+      onClick={() => login(inputs)}>Log in</Button>
     </form>
   </>
   }
