@@ -9,6 +9,10 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import styles from "./page.module.css";
 
+import { GoogleAuthProvider } from "firebase/auth";
+
+const provider = new GoogleAuthProvider();
+
 export default function Home() {
   const [login, setLogin] = useState(false)
   const [help, setHelp] = useState(false)
@@ -47,6 +51,36 @@ export default function Home() {
         <Button variant='contained' sx={{ width: '50%', alignSelf: 'center', marginTop: '10px', marginBottom: '10px' }}>SIGN IN</Button>
       </Box>
     )
+  }
+
+  const GoogleSignInButton = () => {
+    const [error, setError] = useState(null);
+  
+    const handleSignIn = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        // Redirect or update UI after successful sign-in
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+  
+    return (
+      <Box
+              sx={{
+                paddingTop: '30px',
+                width: 1,
+                display: 'flex',
+              }}>
+                <Button variant='contained'
+                sx={{
+                  width: 0.75,
+                  bgcolor: '#FFC436',
+                  fontWeight: 'bold',
+                  margin: 'auto',
+                }}>Google Login</Button>
+              </Box>
+    );
   }
 
   const HelpBox = () => {
@@ -113,6 +147,7 @@ export default function Home() {
           </Box>
 
           {/* Log-in Button */}
+          <GoogleSignInButton></GoogleSignInButton>
           <Box
             sx={{
               paddingTop: '30px',
@@ -125,7 +160,8 @@ export default function Home() {
                 bgcolor: '#FFC436',
                 fontWeight: 'bold',
                 margin: 'auto',
-              }}>LOGIN</Button></Box>
+              }}>BEANS</Button>
+              </Box>
           <Link href={`/forum`}
              sx={{
                paddingTop: '30px',
