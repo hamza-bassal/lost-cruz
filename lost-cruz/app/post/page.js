@@ -216,7 +216,7 @@ const ShareButton = () => {
                 <DialogTitle>Instructions</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        <p>After clicking "OK," a new tab will open with your selected social media platform. Please log in and paste the link into your story or a direct message.</p>
+                        After clicking &quot;OK,&quot; a new tab will open with your selected social media platform. Please log in and paste the link into your story or a direct message.
                     </Typography>
                 </DialogContent>
                 <DialogActions>
