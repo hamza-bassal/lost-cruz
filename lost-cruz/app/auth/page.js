@@ -57,6 +57,36 @@ export default function AuthPage() {
     )
   }
 
+  const GoogleSignInButton = () => {
+    const [error, setError] = useState(null);
+  
+    const handleSignIn = async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        // Redirect or update UI after successful sign-in
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+  
+    return (
+      <Box
+              sx={{
+                paddingTop: '30px',
+                width: 1,
+                display: 'flex',
+              }}>
+                <Button variant='contained'
+                sx={{
+                  width: 0.75,
+                  bgcolor: '#FFC436',
+                  fontWeight: 'bold',
+                  margin: 'auto',
+                }}>Google Login</Button>
+              </Box>
+    );
+  }
+
   const HelpBox = () => {
     return (
       <Box className={styles.helpBox}>
@@ -122,6 +152,7 @@ export default function AuthPage() {
           </Box>
 
           {/* Log-in Button */}
+          <GoogleSignInButton></GoogleSignInButton>
           <Box
             sx={{
               paddingTop: '30px',
