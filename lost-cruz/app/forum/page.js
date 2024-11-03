@@ -23,6 +23,23 @@ import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
 
+import { auth } from "@/firebase";
+import {onAuthStateChanged} from "firebase/auth"
+
+auth.onAuthStateChanged((user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/v8/firebase.User
+      console.log(user)
+      var uid = user.uid;
+      // ...
+    } else {
+      // User is signed out
+      // ...
+    }
+  });
+  
+
 const LFTag = ({ tag }) => {
     // Lost / Found
     return (

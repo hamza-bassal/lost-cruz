@@ -74,8 +74,8 @@ export default function AuthPage() {
     const handleSignIn = async () => {
       try {
         await signInWithPopup(auth, provider).then((date)=>{
-          setValue(data.user.email)
-          localStorage.setItem("email",data.user.email)
+          //setValue(data.user.email)
+          //localStorage.setItem("email",data.user.email)
         });
         // Redirect or update UI after successful sign-in
         router.push("/forum")
