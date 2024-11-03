@@ -14,7 +14,7 @@ import Signup from "./signup";
 
 import {signInWithPopup} from 'firebase/auth'
 import {auth, provider} from '@/firebase'
-import forum from "@/app/forum/page"
+import { useRouter } from "next/navigation"; // Import Next.js router
 
 export default function AuthPage() {
 
@@ -65,8 +65,11 @@ export default function AuthPage() {
     //https://youtu.be/5IZdrh1kHHw?si=2IPR-S0dmTZA8Nzd
     //Video on cookies
     //https://www.youtube.com/watch?v=Avfa7RrPx_Q
+    //User ID
+    //email
     const [error, setError] = useState(null);
     const [value, setValue] = useState('');
+    const router = useRouter();
     
     const handleSignIn = async () => {
       try {
@@ -75,7 +78,7 @@ export default function AuthPage() {
           localStorage.setItem("email",data.user.email)
         });
         // Redirect or update UI after successful sign-in
-
+        router.push("/forum")
       } catch (err) {
         setError(err.message);
       }
