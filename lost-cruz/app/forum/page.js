@@ -21,6 +21,9 @@ import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
 
+import { useRequireAuth } from '../hooks/useRequireAuth';
+
+
 const LFTag = ({ tag }) => {
     // Lost / Found
     return (
@@ -224,6 +227,17 @@ const PostList = () => {
 };
 
 const ForumPage = () => {
+    const [isClient, setIsClient] = useState(false);
+    const authUser1 = useRequireAuth();
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    if (!isClient || !authUser1) {
+        return null;
+    }
+
     return (
         <Box sx={{ bgcolor: '#0174BE' }}>
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>

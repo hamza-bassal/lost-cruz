@@ -18,6 +18,9 @@ import styles from "./post.module.css"
 import Navbar from "../../components/navbar/Navbar"
 import TopBtn from "../../components/topBtn/TopBtn"
 
+import { useRequireAuth } from '../../hooks/useRequireAuth';
+
+
 const SingleComment = () => {
     return (
         <Box className={styles.commentContainer}>
@@ -234,20 +237,41 @@ const ShareButton = () => {
 
 const PostPage = ( {params} ) => {
 
+    const [isClient, setIsClient] = useState(false);
+    const authUser1 = useRequireAuth();
+    const [post, setPost] = useState({ title: '', description: '', imageURL: '', userID: '' });
+
+    // const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+
+    // if (!authUser1) {
+    //     // Show nothing or a loading spinner while redirecting
+    //     return null;
+    // }
+
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
     const [imageUrl, setImg] = useState("")
+    const [userID, setUserID] = useState("")
 
     useEffect(() => {
+        setIsClient(true);
         async function fetchData() {
           const data = await getDocumentById('posts', params.postId);
           setTitle(data.title);
           setDesc(data.description)
           setImg(data.imageURL)
+          setUserID(data.userID)
         }
     
         fetchData();
       }, []);
+
+      if (!isClient || !authUser1) return null;
+
+        //   console.log(`title is ${title}`)
+        //   console.log(`desc is ${desc}`)
+        //   console.log(`imageURL is ${imageUrl}`)
+        //   console.log(`userId is ${userID}`)
 
     return (
         <div>
