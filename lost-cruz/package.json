@@ -28,5 +28,10 @@
   "devDependencies": {
     "eslint": "^8",
     "eslint-config-next": "14.2.15"
-  }
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
+  "main": "firebase.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

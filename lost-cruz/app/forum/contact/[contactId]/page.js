@@ -12,9 +12,7 @@ import { Box, IconButton, TextField, Link } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from "next/navigation"; // Import Next.js router
-import { useState, useEffect } from 'react'
-import { firestore } from '@/firebase'
-import { doc, getDoc,} from 'firebase/firestore'
+import { useState } from 'react'
 
 import useUserEmail from "../../../hooks/useUserEmail";
 
@@ -49,23 +47,7 @@ const ContactForm = ( {params} ) => {
 
     // const [email, setEmail] = useState("")
     const [status, setStatus] = useState('');
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //       const data = await getDocumentById('posts', params.postId);
-    //       setEmail(data.email);
-    //     }
-    
-    //     fetchData();
-    // }, []);
-
-    // useEffect(() => {
-    //     fetch('/api/hello')
-    //       .then((res) => res.json())
-    //       .then((data) => setData(data.message))
-    //       .catch((err) => console.log('Error fetching data:', err));
-    // }, []);
+    const [formData, setFormData] = useState({ name: '', email: '', message: '', postID: params.contactId});
         
 
     const handleChange = (e) => {

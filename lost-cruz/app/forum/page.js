@@ -9,10 +9,8 @@ import {
     doc,
     getDocs,
     query,
-    setDoc,
     deleteDoc,
     getDoc,
-    addDoc,
 } from 'firebase/firestore'
 
 import { orderBy, limit } from "firebase/firestore";

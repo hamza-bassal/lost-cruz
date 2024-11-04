@@ -7,12 +7,34 @@ import styles from "./navbar.module.css";
 import { useState } from "react";
 import useLogout from "@/app/hooks/useLogout"
 
-
 const Navbar = () => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
+    const [status, setStatus] = useState('');
 
     const { handleLogout, isLoggingOut, error } = useLogout();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        try {
+          const response = await fetch('/api/sendScheduledEmails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+    
+          if (response.ok) {
+            setStatus('Email sent successfully!');
+            router.push(`/forum/${params.contactId}`)
+          } else {
+            setStatus('Failed to send email.');
+          }
+        } catch (error) {
+          setStatus('Error: ' + error.message);
+        }
+    };
 
     const MenuBtn = () => {
         return (
@@ -137,6 +159,9 @@ const Navbar = () => {
                         <Box>
                             <Button onClick={handleLogout}>Logout</Button>
                         </Box>
+                        {/* <Box>
+                            <Button sx={{ color: '#FFC436' }} onClick={handleSubmit}>E-test</Button>
+                        </Box> */}
                     </Box>
                 }
             </Box>
