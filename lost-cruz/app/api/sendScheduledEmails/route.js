@@ -26,46 +26,38 @@ export async function POST() {
 
     const currentData = posts.slice(0, 10);
 
-    // Send emails to each user
-    // await Promise.all(
-    //   users.map(async (user) => {
-    //     const mjmlContent = template({ name: user.name });
-    //     const { html } = mjml2html(mjmlContent);
-
-    //     await transporter.sendMail({
-    //       from: process.env.EMAIL_USER,
-    //       to: user.email,
-    //       subject: 'Scheduled Email',
-    //       html,
-    //     });
-    //   })
-    // );
-
     users.map(async (user) => {
         // Format the posts into HTML
         const postsHtml = currentData
             .map(
                 ({ postID, title, description, imageURL }) => `
-                <h4 style="font-size: 18px; margin-bottom: 5px;">
-                <a href="https://lost-cruz.vercel.app/forum/${postID}" style="color: #1a0dab; text-decoration: none;">${title}</a>
-                </h4>
-                <p>${description}</p>
-            `
+                <table width="100%" style="border-collapse: collapse; margin-bottom: 20px;">
+                  <tr>
+                    <td style="vertical-align: top;">
+                      <h4 style="font-size: 18px; margin-bottom: 5px;">
+                        <a href="https://lost-cruz.vercel.app/forum/${postID}" style="color: #1a0dab; text-decoration: none;">${title}</a>
+                      </h4>
+                      <p>${description}</p>
+                    </td>
+                    <td style="width: 100px; vertical-align: top; padding-left: 10px;">
+                      <img src="${imageURL}" alt="Post Image" width="100" style="border-radius: 8px;" />
+                    </td>
+                  </tr>
+                </table>
+                `
             )
           .join('<br>'); // Adds spacing between posts
 
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
-            to: process.env.RECIPIENT,
-            replyTo: user.email,  // Ensures replies go to the original sender
+            to: user.email,
             subject: `Posts Digest by Lost@Cruz`,
             html: `
             <p>Hi ${user.name},</p>
             <p>Here are some recent posts:</p>
             ${postsHtml}
             <br><br>
-            <p><strong>Replies to this email will be sent to the original sender.</strong></p>
-            <p><strong>- Lost@Cruz</strong></p>
+            <p><strong>Lost@Cruz</strong></p>
           `,
         });
     })

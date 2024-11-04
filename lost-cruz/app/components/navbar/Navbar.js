@@ -11,7 +11,6 @@ const Navbar = () => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
     const [status, setStatus] = useState('');
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
     const { handleLogout, isLoggingOut, error } = useLogout();
 
@@ -160,9 +159,9 @@ const Navbar = () => {
                         <Box>
                             <Button onClick={handleLogout}>Logout</Button>
                         </Box>
-                        <Box>
+                        {/* <Box>
                             <Button sx={{ color: '#FFC436' }} onClick={handleSubmit}>E-test</Button>
-                        </Box>
+                        </Box> */}
                     </Box>
                 }
             </Box>
