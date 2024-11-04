@@ -12,7 +12,13 @@ import styles from "./page.module.css";
 import Login from "./login";
 import Signup from "./signup";
 
+import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated'; // Adjust the path as needed
+
+
 export default function AuthPage() {
+
+  // This hook redirects to a different page if the user is already authenticated
+  useRedirectIfAuthenticated();
 
   const [showLogin, setShowLogin] = useState(true);
 
