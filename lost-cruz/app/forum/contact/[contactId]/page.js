@@ -24,24 +24,29 @@ import { useRequireAuth } from '../../../hooks/useRequireAuth';
 
 
 const ContactForm = ( {params} ) => {
-    
-    const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+    const [isClient, setIsClient] = useState(false);
+    const authUser1 = useRequireAuth();
+    const { email, loading, error } = useUserEmail(params.contactId);
+    const router = useRouter();
 
-    if (!authUser1) {
-        // Show nothing or a loading spinner while redirecting
-        return null;
-    }
+    // Client-side check
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    // const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+
+    // if (!authUser1) {
+    //     // Show nothing or a loading spinner while redirecting
+    //     return null;
+    // }
     
-    const { email, loading, error } = useUserEmail(params.contactId); // contactId is user id for some reason
     
-    //console.log("params contactId: ", params.contactId)
-    //console.log(`UserId is: ${userId}`)
     console.log(`Email is ${email}`)
 
     // if (loading) return <p>Loading...</p>;
     // if (error) return <p>Error: {error.message}</p>;
 
-    const router = useRouter();
     // const [email, setEmail] = useState("")
     const [status, setStatus] = useState('');
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
