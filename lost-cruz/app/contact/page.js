@@ -8,8 +8,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 
 import styles from "./contact.module.css"
+import { useRequireAuth } from '../hooks/useRequireAuth';
 
 const ContactForm = () => {
+    const authUser = useRequireAuth(); // Redirects to login if not authenticated
+
+    if (!authUser) {
+        // Show nothing or a loading spinner while redirecting
+        return null;
+    }
     return (
         <Box sx={{
             minHeight: '100vh',

@@ -23,6 +23,9 @@ import Navbar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 import AddBtn from "../components/addBtn/AddBtn"
 
+import { useRequireAuth } from '../hooks/useRequireAuth';
+
+
 const LFTag = ({ tag }) => {
     // Lost / Found
     return (
@@ -226,6 +229,13 @@ const PostList = () => {
 };
 
 const ForumPage = () => {
+    const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+
+    if (!authUser1) {
+        // Show nothing or a loading spinner while redirecting
+        return null;
+    }
+
     return (
         <Box sx={{ bgcolor: '#0174BE' }}>
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>

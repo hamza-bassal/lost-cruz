@@ -24,11 +24,24 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, firestore } from "../../firebase"
 import { collection, addDoc } from 'firebase/firestore';
 
+import useAuthStore from "../store/authStore";
+
 
 import styles from "./createPost.module.css";
 
+import { useRequireAuth } from '../hooks/useRequireAuth';
+
+
 const CreatePost = () => {
+  const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+
+    if (!authUser1) {
+        // Show nothing or a loading spinner while redirecting
+        return null;
+    }
+    
   const router = useRouter(); // Initialize Next.js router
+  const authUser = useAuthStore((state) => state.user);
 
   // uploading picture
   const [file, setFile] = useState(null);
@@ -77,6 +90,7 @@ const CreatePost = () => {
       setUploading(false);
     }
 
+
     // adding metadata to firestore
     const postsCollection = collection(firestore, "posts");
     await addDoc(postsCollection, {
@@ -85,7 +99,8 @@ const CreatePost = () => {
       imageURL: url,
       lostOrFound: lostOrFound,
       timestamp: new Date(),
-    })
+      userID: authUser.uid, 
+    }) // added userID: authUser.uid to add uid of user into each post
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
       })
