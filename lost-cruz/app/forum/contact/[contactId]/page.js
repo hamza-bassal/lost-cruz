@@ -23,23 +23,7 @@ const ContactForm = ( {params} ) => {
     const router = useRouter();
     // const [email, setEmail] = useState("")
     const [status, setStatus] = useState('');
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //       const data = await getDocumentById('posts', params.postId);
-    //       setEmail(data.email);
-    //     }
-    
-    //     fetchData();
-    // }, []);
-
-    // useEffect(() => {
-    //     fetch('/api/hello')
-    //       .then((res) => res.json())
-    //       .then((data) => setData(data.message))
-    //       .catch((err) => console.log('Error fetching data:', err));
-    // }, []);
+    const [formData, setFormData] = useState({ name: '', email: '', message: '', postID: params.contactId});
         
 
     const handleChange = (e) => {
