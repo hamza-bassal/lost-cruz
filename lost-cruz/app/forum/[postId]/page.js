@@ -237,12 +237,16 @@ const ShareButton = () => {
 
 const PostPage = ( {params} ) => {
 
-    const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+    const [isClient, setIsClient] = useState(false);
+    const authUser1 = useRequireAuth();
+    const [post, setPost] = useState({ title: '', description: '', imageURL: '', userID: '' });
 
-    if (!authUser1) {
-        // Show nothing or a loading spinner while redirecting
-        return null;
-    }
+    // const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+
+    // if (!authUser1) {
+    //     // Show nothing or a loading spinner while redirecting
+    //     return null;
+    // }
 
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
@@ -250,6 +254,7 @@ const PostPage = ( {params} ) => {
     const [userID, setUserID] = useState("")
 
     useEffect(() => {
+        setIsClient(true);
         async function fetchData() {
           const data = await getDocumentById('posts', params.postId);
           setTitle(data.title);
@@ -260,6 +265,8 @@ const PostPage = ( {params} ) => {
     
         fetchData();
       }, []);
+
+      if (!isClient || !authUser1) return null;
 
         //   console.log(`title is ${title}`)
         //   console.log(`desc is ${desc}`)

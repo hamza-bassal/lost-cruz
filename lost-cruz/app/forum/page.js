@@ -229,10 +229,14 @@ const PostList = () => {
 };
 
 const ForumPage = () => {
-    const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+    const [isClient, setIsClient] = useState(false);
+    const authUser1 = useRequireAuth();
 
-    if (!authUser1) {
-        // Show nothing or a loading spinner while redirecting
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    if (!isClient || !authUser1) {
         return null;
     }
 
