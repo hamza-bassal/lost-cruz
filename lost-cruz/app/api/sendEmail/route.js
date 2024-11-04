@@ -14,11 +14,19 @@ export async function POST(request) {
 
   try {
     // Send the email
+    console.log(email)
     await transporter.sendMail({
-      from: email,
-      to: process.env.RECIPIENT_EMAIL,
+      from: process.env.EMAIL_USER,
+      to: process.env.RECIPIENT,
+      replyTo: email,  // Ensures replies go to the original sender
       subject: `New message from ${name}`,
-      text: message,
+      text: `${message}\n\n\nReplies to this email will be sent to the original sender.\n- Lost@Cruz`,
+      html: `
+        <p>${message}</p>
+        <br><br> <!-- Adds two blank lines -->
+        <p><strong>Replies to this email will be sent to the original sender.</strong></p>
+        <p><strong>- Lost@Cruz<strong></p>
+      `,
     });
 
     // Respond with a success message
