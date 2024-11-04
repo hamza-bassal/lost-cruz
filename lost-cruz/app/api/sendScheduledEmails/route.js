@@ -53,7 +53,7 @@ export async function POST() {
             to: user.email,
             subject: `Posts Digest by Lost@Cruz`,
             html: `
-            <p>Hi ${user.name},</p>
+            <p>Hi ${user.username},</p>
             <p>Here are some recent posts:</p>
             ${postsHtml}
             <br><br>
