@@ -12,9 +12,7 @@ import { Box, IconButton, TextField, Link } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from "next/navigation"; // Import Next.js router
-import { useState, useEffect } from 'react'
-import { firestore } from '@/firebase'
-import { doc, getDoc,} from 'firebase/firestore'
+import { useState } from 'react'
 
 import styles from "./contact.module.css"
 
