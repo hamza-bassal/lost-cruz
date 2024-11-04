@@ -113,7 +113,7 @@ const ContactForm = ( {params} ) => {
             </Box>
 
             {/* Title */}
-            <Box className={styles.title}>Contact Form - contacting: {email}</Box>
+            <Box className={styles.title}>Contact Form</Box>
 
             {/* Name */}
             <Box className={styles.inputBox} sx={{ gap: '50px' }}>
