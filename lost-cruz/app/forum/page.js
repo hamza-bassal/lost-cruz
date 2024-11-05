@@ -26,19 +26,29 @@ import AddBtn from "../components/addBtn/AddBtn"
 import { auth } from "@/firebase";
 import {onAuthStateChanged} from "firebase/auth"
 
+import { useRouter } from "next/navigation"; // Import Next.js router
+
+//https://firebase.google.com/docs/auth/web/manage-users
 auth.onAuthStateChanged((user) => {
+    const router = useRouter();
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/v8/firebase.User
-      console.log(user)
       var uid = user.uid;
+      console.log(user)
       // ...
     } else {
       // User is signed out
       // ...
+      console.log("Loged out")
+      router.push("/")
     }
   });
-  
+
+const please_work_stupid_routing()
+{
+    
+}
 
 const LFTag = ({ tag }) => {
     // Lost / Found
