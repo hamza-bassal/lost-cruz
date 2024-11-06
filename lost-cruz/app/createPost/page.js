@@ -44,7 +44,6 @@ const CreatePost = () => {
   const [lostOrFound, setStatus] = useState("LOST");  // Default value is "LOST"
   const [location, setLocation] = useState("");
   const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
-
   
     if (!authUser1) {
         // Show nothing or a loading spinner while redirecting
