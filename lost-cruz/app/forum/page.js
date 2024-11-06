@@ -172,6 +172,7 @@ const PostList = () => {
         const from = (page - 1) * pageSize;
         const to = (page - 1) * pageSize + pageSize;
         setPagi({ ...pagi, from: from, to: to })
+        window.scroll(0, 0);
     }
 
     /*

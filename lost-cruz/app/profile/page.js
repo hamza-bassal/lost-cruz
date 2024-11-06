@@ -5,22 +5,90 @@
 import { Box, Container, IconButton, Link } from "@mui/material"
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useEffect, useState } from "react";
+import { firestore } from "@/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs, query, where } from "firebase/firestore"
 
 import NavBar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
 
 import styles from "./profile.module.css"
 
-const profile = () => {
-    // single post block
-    const Post = ({ title, time }) => {
+import { useRequireAuth } from '../hooks/useRequireAuth';
+
+
+const Profile = () => {
+    const [isClient, setIsClient] = useState(false);
+    const authUser1 = useRequireAuth();
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    /* Get current user id + information */
+    const auth = getAuth();
+    const [userId, setUserId] = useState("")
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            updateUserProfile(user);
+        }
+    });
+    function updateUserProfile(user) {
+        /* get current user id */
+        const id = user.uid;
+        setUserId(id);
+        /* fetch current user info */
+        const getUser = async () => {
+            const userRef = collection(firestore, "users")
+            const snapshot = query(userRef, where("uid", "==", id));
+            const docs = await getDocs(snapshot)
+            const info = []
+            docs.forEach((doc) => {
+                info.push(doc.data())
+            })
+            const userInfo = info[0];
+
+            /* Display username, id, profile image*/
+            const userName = userInfo.username;
+            // const userPic = user.photoURL;
+            document.getElementById("userName").textContent = userName;
+            document.getElementById("userId").textContent = id;
+            // document.getElementById("userPic").src = userPic;
+        }
+        getUser();
+    }
+
+    /* Fetch posts with the current user id */
+    const [posts, setPosts] = useState([])
+    const postRef = collection(firestore, "posts")
+    const getPost = async () => {
+        const snapshot = query(postRef, where("userID", "==", userId));
+        const docs = await getDocs(snapshot)
+        const postsList = []
+        docs.forEach((doc) => {
+            postsList.push({ postID: doc.id, ...doc.data() })
+        })
+        setPosts(postsList)
+    }
+    
+    useEffect(() => {
+        getPost()
+    }, [userId])
+
+    if (!isClient || !authUser1) {
+        return null;
+    }
+
+
+    /* single post block */
+    const Post = ({ postId, title, time }) => {
         return (
             <Box className={styles.post}>
                 <Box className={styles.titleTime}>
                     {/* Title */}
                     <Box className={styles.title}>
                         {/* title links to the single post page */}
-                        <Link href="#"
+                        <Link href={`/forum/${postId}`}
                             sx={{ textDecoration: 'none', color: 'black', '&:hover': { textDecoration: 'underline', textUnderlineOffset: '3px' } }}>
                             {title}
                         </Link>
@@ -77,7 +145,7 @@ const profile = () => {
                                     width: 'inherit',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
-                                }}>USERNAME</Box>
+                                }}><p id="userName">USERNAME</p></Box>
 
                                 <IconButton>
                                     {/* edit button: change the username */}
@@ -94,7 +162,7 @@ const profile = () => {
                                 overflow: 'hidden',
                                 wordWrap: 'break-word',
                                 textOverflow: 'ellipsis',
-                            }}>@id...</Box>
+                            }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span></Box>
                         </Box>
                     </Box>
 
@@ -111,12 +179,14 @@ const profile = () => {
 
                     {/* post lists */}
                     <Box className={styles.postList}>
-                        <Post title={'TITLETITLETITLETITLETITLETITLETITLETITLETITLETITLETITLETITLETITLETITLETITLE'} time={'Jan 1 2024 01:01:01'} />
-                        <Post title={'TITLE'} time={'Jan 1 2024 01:01:01'} />
-                        <Post title={'TITLE'} time={'Jan 1 2024 01:01:01'} />
-                        <Post title={'TITLE'} time={'Jan 1 2024 01:01:01'} />
-                        <Post title={'TITLE'} time={'Jan 1 2024 01:01:01'} />
-                        <Post title={'TITLE'} time={'Jan 1 2024 01:01:01'} />
+                        {posts.map(({ postID, title, timestamp }) => (
+                            <Post
+                                key={postID}
+                                postId={postID}
+                                title={title}
+                                time={timestamp.toDate().toLocaleString()}
+                            />
+                        ))}
 
                         <Box className={styles.divider}>end of list</Box>
                     </Box>
@@ -128,4 +198,4 @@ const profile = () => {
     )
 }
 
-export default profile
+export default Profile
