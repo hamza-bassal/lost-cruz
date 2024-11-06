@@ -209,7 +209,7 @@ const CreatePost = () => {
         </Box>
 
         {/* Email, redundant? Email should be linked to profile. */}
-        <Box className={styles.inputBox}>
+        {/* <Box className={styles.inputBox}>
           <label>Email Address: </label>
           <TextField
             id="email"
@@ -219,7 +219,7 @@ const CreatePost = () => {
             placeholder="email, redundant?"
             sx={{ bgcolor: 'white', paddingLeft: '3px', borderRadius: '5px' }}
           ></TextField>
-        </Box>
+        </Box> */}
 
         {/* Tags, optional, make array of tags */}
         <Box className={styles.inputBox} sx={{ gap: "30px" }}>

@@ -239,7 +239,7 @@ const PostPage = ( {params} ) => {
 
     const [isClient, setIsClient] = useState(false);
     const authUser1 = useRequireAuth();
-    const [post, setPost] = useState({ title: '', description: '', imageURL: '', userID: '' });
+    const [post, setPost] = useState({ title: '', description: '', imageURL: '', lostOrFound: ''});
 
     // const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
 
@@ -251,7 +251,7 @@ const PostPage = ( {params} ) => {
     const [title, setTitle] = useState("")
     const [desc, setDesc] = useState("")
     const [imageUrl, setImg] = useState("")
-    const [userID, setUserID] = useState("")
+    const [lostOrFound, setLostStatus] = useState("")
 
     useEffect(() => {
         setIsClient(true);
@@ -260,7 +260,7 @@ const PostPage = ( {params} ) => {
           setTitle(data.title);
           setDesc(data.description)
           setImg(data.imageURL)
-          setUserID(data.userID)
+          setLostStatus(data.lostOrFound)
         }
     
         fetchData();
@@ -271,7 +271,6 @@ const PostPage = ( {params} ) => {
         //   console.log(`title is ${title}`)
         //   console.log(`desc is ${desc}`)
         //   console.log(`imageURL is ${imageUrl}`)
-        //   console.log(`userId is ${userID}`)
 
     return (
         <div>
@@ -282,7 +281,7 @@ const PostPage = ( {params} ) => {
 
                 {/* tags */}
                 <Box className={styles.tagGroup}>
-                    <LFtag tagName={"LOST"} />
+                    <LFtag tagName={lostOrFound} />
                     <Tag tagName={"tag 1"} />
                     <Tag tagName={"tag 2"} />
                     <Tag tagName={"tag 3"} />
