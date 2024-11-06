@@ -267,11 +267,7 @@ const PostPage = ( {params} ) => {
           setUserID(data.userID)
           const postDate = data.timestamp.toDate();
           setDate(postDate.toLocaleDateString()); 
-          setTime(postDate.toLocaleTimeString()); 
-          console.log("date: ", date);
-          console.log("time: ", time);
-          setAuthor(data.authorName);
-          console.log("author: ", author);
+          setTime(postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));          setAuthor(data.authorName);
         }
     
         fetchData();
