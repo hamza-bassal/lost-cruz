@@ -34,26 +34,22 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
 
 const CreatePost = () => {
   const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
-
-    if (!authUser1) {
-        // Show nothing or a loading spinner while redirecting
-        return null;
-    }
-    
   const router = useRouter(); // Initialize Next.js router
   const authUser = useAuthStore((state) => state.user);
 
-  // uploading picture
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-
-  //title
   const [title, setTitle] = useState("");  // New state for title
   const [description, setDescription] = useState("");  // New state for title
   const [lostOrFound, setStatus] = useState("LOST");  // Default value is "LOST"
   const [location, setLocation] = useState("");
-
   const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
+
+  
+    if (!authUser1) {
+        // Show nothing or a loading spinner while redirecting
+        return null;
+    }  
 
   // called when an image is selected
   const handleFileChange = (event) => {
