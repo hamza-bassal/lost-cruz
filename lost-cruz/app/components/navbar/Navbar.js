@@ -77,8 +77,8 @@ const Navbar = () => {
     const Search = () => {
         return (
             <div className={styles.searchWrapper}>
-                <form className={styles.searchForm} method="get" action="/">
-                    <input className={styles.searchBar} type="text" placeholder="Search" />
+                <form className={styles.searchForm} method="get" action="/" id="searchForm">
+                    <input className={styles.searchBar} type="text" placeholder="Search" id="searchInput"/>
                     <IconButton>
                         <SearchIcon sx={{ color: '#0174BE' }} />
                     </IconButton>
