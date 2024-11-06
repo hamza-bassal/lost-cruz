@@ -267,7 +267,8 @@ const PostPage = ( {params} ) => {
           setLostStatus(data.lostOrFound)
           const postDate = data.timestamp.toDate();
           setDate(postDate.toLocaleDateString()); 
-          setTime(postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));          setAuthor(data.authorName);
+          setTime(postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));          
+          setAuthor(data.authorName);
         }
     
         fetchData();
