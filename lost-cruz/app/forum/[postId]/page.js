@@ -252,15 +252,22 @@ const PostPage = ( {params} ) => {
     const [desc, setDesc] = useState("")
     const [imageUrl, setImg] = useState("")
     const [lostOrFound, setLostStatus] = useState("")
+    const [author, setAuthor] = useState("")
+    const [date, setDate] = useState("")
+    const [time, setTime] = useState("")
 
     useEffect(() => {
         setIsClient(true);
         async function fetchData() {
           const data = await getDocumentById('posts', params.postId);
+          console.log("fetched data: ", data)
           setTitle(data.title);
           setDesc(data.description)
           setImg(data.imageURL)
           setLostStatus(data.lostOrFound)
+          const postDate = data.timestamp.toDate();
+          setDate(postDate.toLocaleDateString()); 
+          setTime(postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));          setAuthor(data.authorName);
         }
     
         fetchData();
@@ -354,9 +361,9 @@ const PostPage = ( {params} ) => {
                                     <Box sx={{ height: '30px', width: '30px', bgcolor: '#FFC436', borderRadius: '10px', marginLeft: '10px', cursor: 'pointer' }}>
                                         {/* profile img here */}
                                     </Box>
-                                    <Link href="#" sx={{ alignSelf: 'flex-end', textDecoration: 'none', color: 'black' }}>author</Link>
+                                    <Link href="#" sx={{ alignSelf: 'flex-end', textDecoration: 'none', color: 'black' }}>{author || 'Unknown Author'}</Link>
                                 </Box>
-                                <Box sx={{ alignSelf: 'flex-end', fontSize: 'small', color: 'gray' }}>hh:mm a/pm - MM/DD/YYYY</Box>
+                                <Box sx={{ alignSelf: 'flex-end', fontSize: 'small', color: 'gray' }}>{date} {time}</Box>
                             </Box>
 
                             <hr style={{ marginTop: '10px', marginBottom: '10px' }} />
@@ -399,9 +406,7 @@ const PostPage = ( {params} ) => {
                 </Box>
             </Container>
         </div>
-
     )
-
 }
 
 export default PostPage

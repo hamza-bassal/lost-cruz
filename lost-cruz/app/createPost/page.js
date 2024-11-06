@@ -28,25 +28,22 @@ import { useRequireAuth } from "../hooks/useRequireAuth";
 import styles from "./createPost.module.css";
 
 const CreatePost = () => {
-  const authUser1 = useRequireAuth(); // Ensures the user is authenticated
-  const router = useRouter(); 
+  const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+  const router = useRouter(); // Initialize Next.js router
   const authUser = useAuthStore((state) => state.user);
 
-  // Initialize all states here
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [lostOrFound, setStatus] = useState("LOST");
+  const [title, setTitle] = useState("");  // New state for title
+  const [description, setDescription] = useState("");  // New state for title
+  const [lostOrFound, setStatus] = useState("LOST");  // Default value is "LOST"
   const [location, setLocation] = useState("");
-  const [openLocBox, setOpenLocBox] = useState(false);
-
-  // Redirect to login if the user is not authenticated
-  useEffect(() => {
+  const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
+  
     if (!authUser1) {
-      return; // Show nothing or a loading spinner while redirecting
-    }
-  }, [authUser1]);
+        // Show nothing or a loading spinner while redirecting
+        return null;
+    }  
 
   // Handle file selection
   const handleFileChange = (event) => {
