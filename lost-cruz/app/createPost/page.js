@@ -1,5 +1,3 @@
-// This is the page for creating a post where the user can upload an image of the lost/found item.
-
 "use client";
 
 import {
@@ -12,69 +10,56 @@ import {
   Radio,
   Link,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import AddIcon from "@mui/icons-material/Add";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import ArticleIcon from "@mui/icons-material/Article";
-import { useRouter } from "next/navigation"; // Import Next.js router
+import { useRouter } from "next/navigation";
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage, firestore } from "../../firebase"
-import { collection, addDoc } from 'firebase/firestore';
+import { storage, firestore } from "../../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 import useAuthStore from "../store/authStore";
-
+import { useRequireAuth } from "../hooks/useRequireAuth";
 
 import styles from "./createPost.module.css";
 
-import { useRequireAuth } from '../hooks/useRequireAuth';
-
-
 const CreatePost = () => {
-  const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
-
-    if (!authUser1) {
-        // Show nothing or a loading spinner while redirecting
-        return null;
-    }
-    
-  const router = useRouter(); // Initialize Next.js router
+  const authUser1 = useRequireAuth(); // Ensures the user is authenticated
+  const router = useRouter(); 
   const authUser = useAuthStore((state) => state.user);
 
-  // uploading picture
+  // Initialize all states here
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-
-  //title
-  const [title, setTitle] = useState("");  // New state for title
-  const [description, setDescription] = useState("");  // New state for title
-  const [lostOrFound, setStatus] = useState("LOST");  // Default value is "LOST"
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [lostOrFound, setStatus] = useState("LOST");
   const [location, setLocation] = useState("");
+  const [openLocBox, setOpenLocBox] = useState(false);
 
-  const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
+  // Redirect to login if the user is not authenticated
+  useEffect(() => {
+    if (!authUser1) {
+      return; // Show nothing or a loading spinner while redirecting
+    }
+  }, [authUser1]);
 
-  // called when an image is selected
+  // Handle file selection
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
 
-  // when uploading a post!
+  // Handle post upload
   const handleUpload = async () => {
-
-    (title ? console.log("yaas there is a title") : console.log("nah no title"));
-    (description ? console.log("yes description") : console.log("no description"));
-    (location ? console.log("yes location") : console.log("no Location"));
-    console.log(lostOrFound)
-
-    // Check if required fields are filled
     if (!title || !description || !file) {
       alert("Please fill out all required fields.");
       return;
     }
 
-    // uploading picture
     setUploading(true);
     const storageRef = ref(storage, `images/${file.name}`);
 
@@ -82,43 +67,41 @@ const CreatePost = () => {
     try {
       await uploadBytes(storageRef, file);
       url = await getDownloadURL(storageRef);
-      console.log(url);
-      console.log("File Uploaded Successfuly");
     } catch (error) {
-      console.error("Error uploading the files", error)
+      console.error("Error uploading the file", error);
     } finally {
       setUploading(false);
     }
 
-
-    // adding metadata to firestore
     const postsCollection = collection(firestore, "posts");
     await addDoc(postsCollection, {
-      title: title,
-      description: description,
+      title,
+      description,
       imageURL: url,
-      lostOrFound: lostOrFound,
+      lostOrFound,
       timestamp: new Date(),
-      userID: authUser.uid, 
-    }) // added userID: authUser.uid to add uid of user into each post
+      userID: authUser.uid,
+    })
       .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
+        console.log("Document written with ID:", docRef.id);
       })
       .catch((error) => {
-        console.error("Error adding document: ", error);
+        console.error("Error adding document:", error);
       });
 
-    // Reset form, doesnt reset current form entries
-
     setFile(null);
-    setTitle("")
+    setTitle("");
     setDescription("");
     setLocation("");
     setStatus("LOST");
     alert("Post uploaded successfully!");
 
-    // Programmatically navigate to the forum page after successful upload
     router.push("/forum");
+  };
+
+  // If `authUser1` is null, display nothing or loading
+  if (!authUser1) {
+    return <p>Loading...</p>; // Or a spinner
   }
 
   return (
@@ -127,43 +110,24 @@ const CreatePost = () => {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        bgcolor: '#FCF7ED'
+        bgcolor: "#FCF7ED",
       }}
     >
-      {/* close + send */}
+      {/* Close and Send buttons */}
       <Box className={styles.closeSend}>
         <Link href={`/forum`}>
           <IconButton sx={{ color: "#0174BE" }}>
             <CloseIcon fontSize="large" />
           </IconButton>
         </Link>
-
-        {/*submits form entries */}
-        <Link > {/**href={`/forum`} prevents from entries uploading to firestore*/}
-          <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
-            <SendIcon fontSize="large" />
-          </IconButton>
-        </Link>
+        <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
+          <SendIcon fontSize="large" />
+        </IconButton>
       </Box>
 
-      {/* post content */}
-      <FormControl
-        component="form"
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {/* title container */}
-        <Box sx={{
-          width: 'inherit',
-          alignSelf: "center",
-          padding: "20px",
-          paddingLeft: "7.5%",
-          paddingRight: "7.5%",
-        }}>
-          {/* input title */}
+      {/* Form */}
+      <FormControl component="form" sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+        <Box sx={{ width: "inherit", alignSelf: "center", padding: "20px", paddingLeft: "7.5%", paddingRight: "7.5%" }}>
           <TextField
             required
             fullWidth
@@ -172,27 +136,13 @@ const CreatePost = () => {
             variant="standard"
             placeholder="Title"
             InputProps={{ style: { fontSize: 30 } }}
-            InputLabelProps={{ style: { fontSize: 30 } }}
-            sx={{
-              bgcolor: 'white',
-              borderRadius: '5px',
-              paddingLeft: '5px',
-            }}
+            sx={{ bgcolor: "white", borderRadius: "5px", paddingLeft: "5px" }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </Box>
 
-
-        {/* post body container */}
-        <Box sx={{
-          width: 'inherit',
-          alignSelf: "center",
-          padding: "20px",
-          paddingLeft: "7.5%",
-          paddingRight: "7.5%",
-        }}>
-          {/* input description */}
+        <Box sx={{ width: "inherit", alignSelf: "center", padding: "20px", paddingLeft: "7.5%", paddingRight: "7.5%" }}>
           <TextField
             fullWidth
             multiline
@@ -200,104 +150,52 @@ const CreatePost = () => {
             id="description"
             placeholder="Description"
             InputProps={{ style: { fontSize: 20 } }}
-            sx={{
-              bgcolor: 'white'
-            }}
+            sx={{ bgcolor: "white" }}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </Box>
 
-        {/* Email, redundant? Email should be linked to profile. */}
-        {/* <Box className={styles.inputBox}>
-          <label>Email Address: </label>
-          <TextField
-            id="email"
-            required
-            variant="standard"
-            fullWidth
-            placeholder="email, redundant?"
-            sx={{ bgcolor: 'white', paddingLeft: '3px', borderRadius: '5px' }}
-          ></TextField>
-        </Box> */}
-
-        {/* Tags, optional, make array of tags */}
-        <Box className={styles.inputBox} sx={{ gap: "30px" }}>
-          <label>Tags: </label>
-          <TextField
-            id="tags"
-            required
-            variant="standard"
-            fullWidth
-            placeholder="tags"
-            sx={{ bgcolor: 'white', paddingLeft: '3px', borderRadius: '5px' }}
-          ></TextField>
-        </Box>
-
-        {/* Lost or Found */}
         <RadioGroup
           defaultValue="LOST"
           row
-          sx={{
-            padding: "20px",
-            paddingLeft: "7.5%",
-            paddingRight: "7.5%",
-            gap: "20px",
-          }}
+          sx={{ padding: "20px", paddingLeft: "7.5%", paddingRight: "7.5%", gap: "20px" }}
           value={lostOrFound}
           onChange={(e) => setStatus(e.target.value)}
         >
-          <FormControlLabel
-            value="LOST"
-            control={<Radio />}
-            label="LOST"
-            sx={{ "& .MuiSvgIcon-root": { fontSize: 20 } }}
-          ></FormControlLabel>
-          <FormControlLabel
-            value="FOUND"
-            control={<Radio />}
-            label="FOUND"
-            sx={{ "& .MuiSvgIcon-root": { fontSize: 20 } }}
-          ></FormControlLabel>
+          <FormControlLabel value="LOST" control={<Radio />} label="LOST" />
+          <FormControlLabel value="FOUND" control={<Radio />} label="FOUND" />
         </RadioGroup>
       </FormControl>
 
-      <Box sx={{ height: "60px" }}></Box> {/* what for? */}
-      {/* To leave some space at the bottom so the tool bar won't block anything */}
+      <Box sx={{ height: "60px" }}></Box>
 
       {/* Tools */}
-      <Box
-        className={styles.toolBox}
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-      >
-        {/* Adding image, maybe have a button saying "Choose file" instead? */}
+      <Box className={styles.toolBox} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Box className={styles.inputBox}>
-          <label htmlFor="image-upload"> {/**changed to htmlFor from for */}
+          <label htmlFor="image-upload">
             <AddIcon className={styles.icon} />
           </label>
           <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            style={{ display: "none" }} /* removes "Choose file" button */
+            style={{ display: "none" }}
             id="image-upload"
           />
         </Box>
 
-        {/* Add Location, temporarily typing location instead*/}
         <Box className={styles.inputBox}>
-          <IconButton onClick={() => { setOpenLocBox(true) }}>
+          <IconButton onClick={() => setOpenLocBox(true)}>
             <AddLocationIcon className={styles.icon} />
           </IconButton>
         </Box>
-        {openLocBox &&
-          // A pop-up window asking for location
+
+        {openLocBox && (
           <Box className={styles.popup}>
-            {/* close button */}
-            <IconButton sx={{ color: "#0174BE" }} onClick={() => { setOpenLocBox(false) }}>
+            <IconButton sx={{ color: "#0174BE" }} onClick={() => setOpenLocBox(false)}>
               <CloseIcon />
             </IconButton>
-            {/* input location */}
             <Box className={styles.inputBox} sx={{ gap: "30px" }}>
               <label>Location: </label>
               <TextField
@@ -311,14 +209,7 @@ const CreatePost = () => {
               />
             </Box>
           </Box>
-        }
-
-        {/* Save to draft */}
-        <Box className={styles.inputBox}>
-          <IconButton>
-            <ArticleIcon className={styles.icon} />
-          </IconButton>
-        </Box>
+        )}
       </Box>
     </Box>
   );
