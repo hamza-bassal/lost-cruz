@@ -127,17 +127,17 @@ const CommentList = () => {
 
 const LFtag = ({ tagName }) => {
   return (
-    <box className={styles.lfTag}>
-      <box className={styles.tagText}>{tagName}</box>
-    </box>
+    <Box className={styles.lfTag}>
+      <Box className={styles.tagText}>{tagName}</Box>
+    </Box>
   );
 };
 
 const Tag = ({ tagName }) => {
   return (
-    <box className={styles.tag}>
-      <box className={styles.tagText}>{tagName}</box>
-    </box>
+    <Box className={styles.tag}>
+      <Box className={styles.tagText}>{tagName}</Box>
+    </Box>
   );
 };
 
@@ -376,7 +376,6 @@ const PostPage = ({ params }) => {
           console.log("Error: User not found in database");
         }
       }
-      console.log("Complete data fetched: ", data);
     }
     fetchData();
   }, []);

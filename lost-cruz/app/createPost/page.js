@@ -59,38 +59,36 @@ const CreatePost = () => {
     setFile(event.target.files[0]);
   };
 
-  // when uploading a post!
-  const handleUpload = async () => {
-    title ? console.log("yaas there is a title") : console.log("nah no title");
-    description
-      ? console.log("yes description")
-      : console.log("no description");
-    location ? console.log("yes location") : console.log("no Location");
-    console.log(lostOrFound);
+  // called when the user clicks the save location button to ensure that location is in database
+  const handleSaveLocation = () => {
+    if (location) {
+      setOpenLocBox(false);
+    } else {
+      alert("Please enter a location");
+    }
+  };
 
-    // Check if required fields are filled
-    if (!title || !description || !file) {
+  const handleUpload = async () => {
+    if (!title || !description || !file || !location) {
       alert("Please fill out all required fields.");
       return;
     }
 
-    // uploading picture
     setUploading(true);
     const storageRef = ref(storage, `images/${file.name}`);
-
     let url = "";
+
     try {
       await uploadBytes(storageRef, file);
       url = await getDownloadURL(storageRef);
-      console.log(url);
-      console.log("File Uploaded Successfuly");
+      console.log("File Uploaded Successfully");
     } catch (error) {
       console.error("Error uploading the files", error);
     } finally {
       setUploading(false);
     }
 
-    // adding metadata to firestore
+    // Upload the post data to Firestore
     const postsCollection = collection(firestore, "posts");
     await addDoc(postsCollection, {
       title: title,
@@ -99,8 +97,8 @@ const CreatePost = () => {
       lostOrFound: lostOrFound,
       timestamp: new Date(),
       userID: authUser.uid,
-      location: location,
-    }) // added userID: authUser.uid to add uid of user into each post
+      location: location, // Ensure location is included
+    })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
       })
@@ -108,8 +106,7 @@ const CreatePost = () => {
         console.error("Error adding document: ", error);
       });
 
-    // Reset form, doesnt reset current form entries
-
+    // Reset form fields after submission
     setFile(null);
     setTitle("");
     setDescription("");
@@ -117,18 +114,8 @@ const CreatePost = () => {
     setStatus("LOST");
     alert("Post uploaded successfully!");
 
-    // Programmatically navigate to the forum page after successful upload
+    // Redirect to the forum page after successful upload
     router.push("/forum");
-  };
-
-  // Function to help save the location with a button
-  const handleSaveLocation = () => {
-    if (location) {
-      console.log("Location saved:", location);
-      setOpenLocBox(false); // Close the location input box after saving
-    } else {
-      alert("Please enter a location");
-    }
   };
 
   return (
