@@ -12,7 +12,7 @@ import { Box, IconButton, TextField, Link } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from "next/navigation"; // Import Next.js router
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 
 import useUserEmail from "../../../hooks/useUserEmail";
 
@@ -24,7 +24,7 @@ import { useRequireAuth } from '../../../hooks/useRequireAuth';
 const ContactForm = ( {params} ) => {
     const [isClient, setIsClient] = useState(false);
     const authUser1 = useRequireAuth();
-    const { email, loading, error } = useUserEmail(params.contactId);
+    //const { email, loading, error } = useUserEmail(params.contactId);
     const router = useRouter();
 
     // Client-side check
@@ -40,7 +40,7 @@ const ContactForm = ( {params} ) => {
     // }
     
     
-    console.log(`Email is ${email}`)
+    //console.log(`Email is ${email}`)
 
     // if (loading) return <p>Loading...</p>;
     // if (error) return <p>Error: {error.message}</p>;
