@@ -12,7 +12,7 @@ import { Box, IconButton, TextField, Link } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from "next/navigation"; // Import Next.js router
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import useUserEmail from "../../../hooks/useUserEmail";
 
