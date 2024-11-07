@@ -4,7 +4,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #0174BE;
+  background-color: #0174be;
 }
 
 .container {
@@ -22,8 +22,8 @@
   left: 50%;
   transform: translateY(-50%);
   margin-left: -325px;
-  background-color: #FCF7ED;
-  border: 5px double #0174BE;
+  background-color: #fcf7ed;
+  border: 5px double #0174be;
   border-radius: 25px;
   opacity: 95%;
   box-shadow: 2px 2px 4px gray;
@@ -40,9 +40,9 @@
   top: 50%;
   left: 50%;
   transform: translateY(-50%);
-  margin-Left: -325px;
-  background-color: #FCF7ED;
-  border: 5px double #0174BE;
+  margin-left: -325px;
+  background-color: #fcf7ed;
+  border: 5px double #0174be;
   border-radius: 25px;
   opacity: 95%;
   box-shadow: 2px 2px 4px gray;

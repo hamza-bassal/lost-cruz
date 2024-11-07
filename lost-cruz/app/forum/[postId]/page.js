@@ -173,8 +173,8 @@ const ShareButton = () => {
     if (success) {
       setSocialMediaLink(
         `https://www.instagram.com/?url=${encodeURIComponent(
-          window.location.href
-        )}`
+          window.location.href,
+        )}`,
       );
       setOpenInstructions(true);
     } else {
@@ -188,8 +188,8 @@ const ShareButton = () => {
     if (success) {
       setSocialMediaLink(
         `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-          window.location.href
-        )}`
+          window.location.href,
+        )}`,
       );
       setOpenInstructions(true);
     } else {
@@ -203,7 +203,7 @@ const ShareButton = () => {
     if (success) {
       const tweetText = "Check out this post from Lost@Cruz";
       const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        tweetText
+        tweetText,
       )}&url=${encodeURIComponent(window.location.href)}`;
       setSocialMediaLink(twitterUrl);
       setOpenInstructions(true);
@@ -226,7 +226,7 @@ const ShareButton = () => {
     const subject = "Check out this post from Lost@Cruz";
     const body = `Here's the link: ${window.location.href}`;
     const mailtoLink = `mailto:?subject=${encodeURIComponent(
-      subject
+      subject,
     )}&body=${encodeURIComponent(body)}`;
     window.open(mailtoLink, "_blank");
     handleClose();
@@ -361,7 +361,7 @@ const PostPage = ({ params }) => {
       const postDate = data.timestamp.toDate();
       setDate(postDate.toLocaleDateString());
       setTime(
-        postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       );
 
       // Parse the author's username using the userID

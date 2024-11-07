@@ -55,11 +55,13 @@ const CreatePost = () => {
   const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
   const [isClient, setIsClient] = useState(false); //check if everything is loaded
 
-  useEffect(() => { //if everything has loaded, set isClient to true
+  useEffect(() => {
+    //if everything has loaded, set isClient to true
     setIsClient(true);
   }, []);
 
-  if (!isClient) { //if not loaded, show nothing
+  if (!isClient) {
+    //if not loaded, show nothing
     return null;
   }
 

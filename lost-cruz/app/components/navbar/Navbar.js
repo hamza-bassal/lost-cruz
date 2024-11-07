@@ -1,172 +1,243 @@
-'use client'
+"use client";
 
-import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link, Button } from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
-import MenuIcon from '@mui/icons-material/Menu';
+import {
+  Box,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  IconButton,
+  Link,
+  Button,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import MenuIcon from "@mui/icons-material/Menu";
 import styles from "./navbar.module.css";
 import { useState } from "react";
-import useLogout from "@/app/hooks/useLogout"
+import useLogout from "@/app/hooks/useLogout";
 
 const Navbar = () => {
-    const [open, setOpen] = useState(false); // filter
-    const [prof, setProf] = useState(false); // profile
-    const [status, setStatus] = useState('');
+  const [open, setOpen] = useState(false); // filter
+  const [prof, setProf] = useState(false); // profile
+  const [status, setStatus] = useState("");
 
-    const { handleLogout, isLoggingOut, error } = useLogout();
+  const { handleLogout, isLoggingOut, error } = useLogout();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        try {
-          const response = await fetch('/api/sendScheduledEmails', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-    
-          if (response.ok) {
-            setStatus('Email sent successfully!');
-            router.push(`/forum/${params.contactId}`)
-          } else {
-            setStatus('Failed to send email.');
-          }
-        } catch (error) {
-          setStatus('Error: ' + error.message);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const MenuBtn = () => {
-        return (
-            <div className={styles.dropdown}>
-                <IconButton>
-                    <MenuIcon
-                        fontSize="large"
-                        onClick={() => {
-                            setOpen(prev => !prev);
-                            setProf(false);
-                        }}
-                        sx={{
-                            color: '#FCF7ED',
-                            padding: '0px',
-                        }} />
-                </IconButton>
+    try {
+      const response = await fetch("/api/sendScheduledEmails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-                {open && <div className={styles.dropdownBox}>
-                    <FormGroup row>
-                        <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Lost" />
-                        <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Found" />
-                    </FormGroup>
-                    <hr className={styles.hr} />
-                    <FormGroup row>
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                    </FormGroup>
-                </div>}
-            </div>
-        )
+      if (response.ok) {
+        setStatus("Email sent successfully!");
+        router.push(`/forum/${params.contactId}`);
+      } else {
+        setStatus("Failed to send email.");
+      }
+    } catch (error) {
+      setStatus("Error: " + error.message);
     }
+  };
 
-    const Search = () => {
-        return (
-            <div className={styles.searchWrapper}>
-                <form className={styles.searchForm} method="get" action="/">
-                    <input className={styles.searchBar} type="text" placeholder="Search" />
-                    <IconButton>
-                        <SearchIcon sx={{ color: '#0174BE' }} />
-                    </IconButton>
-                </form>
-            </div>
-        )
-    }
-
+  const MenuBtn = () => {
     return (
-        <Box className={styles.navBar}
+      <div className={styles.dropdown}>
+        <IconButton>
+          <MenuIcon
+            fontSize="large"
+            onClick={() => {
+              setOpen((prev) => !prev);
+              setProf(false);
+            }}
             sx={{
-                position: 'fixed',
-                top: 0,
-                zIndex: 10,
-                bgcolor: '#0174BE',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-            }}>
-            {/* Logo */}
-            <Link href={`/forum`}>
-                <Box
-                    sx={{
-                        padding: '10px',
-                        fontWeight: 'bolder',
-                        fontSize: '20px',
-                        color: '#FCF7ED',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Lost@Cruz
-                </Box>
-            </Link>
+              color: "#FCF7ED",
+              padding: "0px",
+            }}
+          />
+        </IconButton>
 
-            {/* Search Bar */}
-            <Search />
+        {open && (
+          <div className={styles.dropdownBox}>
+            <FormGroup row>
+              <FormControlLabel
+                control={<Checkbox defaultChecked size="small" />}
+                label="Lost"
+              />
+              <FormControlLabel
+                control={<Checkbox defaultChecked size="small" />}
+                label="Found"
+              />
+            </FormGroup>
+            <hr className={styles.hr} />
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }} />
+                }
+                label="element"
+              />
+            </FormGroup>
+          </div>
+        )}
+      </div>
+    );
+  };
 
-            <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1em',
-                position: 'relative',
-                padding: '0px',
-            }}>
-                {/* Filter Button */}
-                <MenuBtn />
+  const Search = () => {
+    return (
+      <div className={styles.searchWrapper}>
+        <form className={styles.searchForm} method="get" action="/">
+          <input
+            className={styles.searchBar}
+            type="text"
+            placeholder="Search"
+          />
+          <IconButton>
+            <SearchIcon sx={{ color: "#0174BE" }} />
+          </IconButton>
+        </form>
+      </div>
+    );
+  };
 
-                {/* Profile */}
-                <Box sx={{
-                    width: '50px',
-                    height: '50px',
-                }}
-                    onClick={() => {
-                        setProf(prev => !prev);
-                        setOpen(false);
-                    }}
-                >
-                    <Box
-                        sx={{
-                            width: '80%',
-                            height: '80%',
-                            bgcolor: '#FFC436',
-                            margin: '10%',
-                            borderRadius: '10px',
-                            cursor: 'pointer'
-                        }}>
-                        {/* Profile Image */}
-                    </Box>
-                </Box>
+  return (
+    <Box
+      className={styles.navBar}
+      sx={{
+        position: "fixed",
+        top: 0,
+        zIndex: 10,
+        bgcolor: "#0174BE",
+        height: "50px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-around",
+      }}
+    >
+      {/* Logo */}
+      <Link href={`/forum`}>
+        <Box
+          sx={{
+            padding: "10px",
+            fontWeight: "bolder",
+            fontSize: "20px",
+            color: "#FCF7ED",
+            cursor: "pointer",
+          }}
+        >
+          Lost@Cruz
+        </Box>
+      </Link>
 
-                {
-                    prof &&
-                    <Box className={styles.profdropdownBox}>
-                        <Box>
-                            <Button href={"/profile"}>Profile</Button>
-                        </Box>
-                        <Box>
-                            <Button onClick={handleLogout}>Logout</Button>
-                        </Box>
-                        {/* <Box>
+      {/* Search Bar */}
+      <Search />
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: "1em",
+          position: "relative",
+          padding: "0px",
+        }}
+      >
+        {/* Filter Button */}
+        <MenuBtn />
+
+        {/* Profile */}
+        <Box
+          sx={{
+            width: "50px",
+            height: "50px",
+          }}
+          onClick={() => {
+            setProf((prev) => !prev);
+            setOpen(false);
+          }}
+        >
+          <Box
+            sx={{
+              width: "80%",
+              height: "80%",
+              bgcolor: "#FFC436",
+              margin: "10%",
+              borderRadius: "10px",
+              cursor: "pointer",
+            }}
+          >
+            {/* Profile Image */}
+          </Box>
+        </Box>
+
+        {prof && (
+          <Box className={styles.profdropdownBox}>
+            <Box>
+              <Button href={"/profile"}>Profile</Button>
+            </Box>
+            <Box>
+              <Button onClick={handleLogout}>Logout</Button>
+            </Box>
+            {/* <Box>
                             <Button sx={{ color: '#FFC436' }} onClick={handleSubmit}>E-test</Button>
                         </Box> */}
-                    </Box>
-                }
-            </Box>
-        </Box>
-    );
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
 };
 
 export default Navbar;

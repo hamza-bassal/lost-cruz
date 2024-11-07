@@ -4,7 +4,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #0174BE;
+  background-color: #0174be;
 }
 
 .container {
@@ -20,8 +20,8 @@
   height: 375px;
   top: 22.5%;
   left: 25%;
-  background-color: #FCF7ED;
-  border: 5px double #0174BE;
+  background-color: #fcf7ed;
+  border: 5px double #0174be;
   border-radius: 25px;
   opacity: 95%;
   box-shadow: 2px 2px 4px gray;
@@ -37,8 +37,8 @@
   height: 375px;
   top: 22.5%;
   left: 25%;
-  background-color: #FCF7ED;
-  border: 5px double #0174BE;
+  background-color: #fcf7ed;
+  border: 5px double #0174be;
   border-radius: 25px;
   opacity: 95%;
   box-shadow: 2px 2px 4px gray;

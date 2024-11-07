@@ -1,7 +1,7 @@
 // app/auth/signup.js
-import { useState } from 'react';
-import useSignUpWithEmailAndPassword from '../hooks/useSignUpWithEmailAndPassword'
-import { Button } from '@mui/material';
+import { useState } from "react";
+import useSignUpWithEmailAndPassword from "../hooks/useSignUpWithEmailAndPassword";
+import { Button } from "@mui/material";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,8 +13,8 @@ const Signup = () => {
     confirmPassword: "",
   });
 
-  const {loading, error, signup} = useSignUpWithEmailAndPassword();
-  
+  const { loading, error, signup } = useSignUpWithEmailAndPassword();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInputs({
@@ -29,82 +29,93 @@ const Signup = () => {
     console.log(inputs); // Logs email and password to the console
   };
 
-  return <>
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: 'inherit', gap: '10px' }}>
-      <label>Email:</label>
-      <input
-        type="email"
-        name="email"
-        value={inputs.email}
-        onChange={handleChange}
-        required
+  return (
+    <>
+      <form
+        onSubmit={handleSubmit}
         style={{
-          height: '30px',
-          padding: '5px',
+          display: "flex",
+          flexDirection: "column",
+          width: "inherit",
+          gap: "10px",
         }}
-      />
-      <label>Username:</label>
-      <input
-        type="text"
-        name="username"
-        value={inputs.username}
-        onChange={handleChange}
-        required
-        style={{
-          height: '30px',
-          padding: '5px',
-        }}
-      />
-      <label>Full Name:</label>
-      <input
-        type="text"
-        name="fullName"
-        value={inputs.fullName}
-        onChange={handleChange}
-        required
-        style={{
-          height: '30px',
-          padding: '5px',
-        }}
-      />
-      <label>Password:</label>
-      <input
-        type="password"
-        name="password"
-        value={inputs.password}
-        onChange={handleChange}
-        required
-        style={{
-          height: '30px',
-          padding: '5px',
-        }}
-      />
-      <label>Confirm Password:</label>
-      <input
-        type="password"
-        name="confirmPassword"
-        value={inputs.confirmPassword}
-        onChange={handleChange}
-        required
-        style={{
-          height: '30px',
-          padding: '5px',
-        }}
-      />
+      >
+        <label>Email:</label>
+        <input
+          type="email"
+          name="email"
+          value={inputs.email}
+          onChange={handleChange}
+          required
+          style={{
+            height: "30px",
+            padding: "5px",
+          }}
+        />
+        <label>Username:</label>
+        <input
+          type="text"
+          name="username"
+          value={inputs.username}
+          onChange={handleChange}
+          required
+          style={{
+            height: "30px",
+            padding: "5px",
+          }}
+        />
+        <label>Full Name:</label>
+        <input
+          type="text"
+          name="fullName"
+          value={inputs.fullName}
+          onChange={handleChange}
+          required
+          style={{
+            height: "30px",
+            padding: "5px",
+          }}
+        />
+        <label>Password:</label>
+        <input
+          type="password"
+          name="password"
+          value={inputs.password}
+          onChange={handleChange}
+          required
+          style={{
+            height: "30px",
+            padding: "5px",
+          }}
+        />
+        <label>Confirm Password:</label>
+        <input
+          type="password"
+          name="confirmPassword"
+          value={inputs.confirmPassword}
+          onChange={handleChange}
+          required
+          style={{
+            height: "30px",
+            padding: "5px",
+          }}
+        />
 
         {error && (
-          <p style={{ color: 'red', marginTop: '10px' }}>
-            {error.message}
-          </p>
+          <p style={{ color: "red", marginTop: "10px" }}>{error.message}</p>
         )}
 
-
-      <Button 
-        variant='contained'
-        sx={{margin: "30px 0px 10px 0px"}}    
-      type="submit" onClick={() => signup(inputs)}>Sign up</Button>
-    </form>
-  </>
-  }
+        <Button
+          variant="contained"
+          sx={{ margin: "30px 0px 10px 0px" }}
+          type="submit"
+          onClick={() => signup(inputs)}
+        >
+          Sign up
+        </Button>
+      </form>
+    </>
+  );
+};
 
 export default Signup;
