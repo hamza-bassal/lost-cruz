@@ -338,13 +338,6 @@ const PostPage = ({ params }) => {
     userID: "",
   });
 
-  // const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
-
-  // if (!authUser1) {
-  //     // Show nothing or a loading spinner while redirecting
-  //     return null;
-  // }
-
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [imageUrl, setImg] = useState("");
@@ -352,21 +345,26 @@ const PostPage = ({ params }) => {
   const [author, setAuthor] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [location, setLocation] = useState("");
 
   useEffect(() => {
     setIsClient(true);
     async function fetchData() {
       const data = await getDocumentById("posts", params.postId);
-      console.log("fetched data: ", data);
       setTitle(data.title);
       setDesc(data.description);
       setImg(data.imageURL);
       setUserID(data.userID);
+      setLocation(data.location || "Location not provided");
+
+      // Call functions to ser correct formatting of the date and time
       const postDate = data.timestamp.toDate();
       setDate(postDate.toLocaleDateString());
       setTime(
         postDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       );
+
+      // Parse the author's username using the userID
       const userId = data.userID;
       if (userId) {
         const userRef = doc(firestore, "users", userId);
@@ -378,18 +376,12 @@ const PostPage = ({ params }) => {
           console.log("Error: User not found in database");
         }
       }
+      console.log("Complete data fetched: ", data);
     }
-
     fetchData();
   }, []);
 
   if (!isClient || !authUser1) return null;
-
-  //   console.log(`title is ${title}`)
-  //   console.log(`desc is ${desc}`)
-  //   console.log(`imageURL is ${imageUrl}`)
-  //   console.log(`userId is ${userID}`)
-
   return (
     <div>
       <Box
@@ -568,9 +560,9 @@ const PostPage = ({ params }) => {
               >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <LocationOnIcon sx={{ color: "#0174BE" }} />
-                  <Link href="#" variant="body2">
-                    location details ...
-                  </Link>
+                  <Typography variant="body2" sx={{ color: "black" }}>
+                    {location || "Location not specified"}
+                  </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <IconButton>
