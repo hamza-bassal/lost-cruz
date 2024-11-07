@@ -13,7 +13,7 @@ import {
   Radio,
   Link,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import AddIcon from "@mui/icons-material/Add";
@@ -53,6 +53,15 @@ const CreatePost = () => {
   const [location, setLocation] = useState("");
 
   const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
+  const [isClient, setIsClient] = useState(false); //check if everything is loaded
+
+  useEffect(() => { //if everything has loaded, set isClient to true
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) { //if not loaded, show nothing
+    return null;
+  }
 
   // called when an image is selected
   const handleFileChange = (event) => {
