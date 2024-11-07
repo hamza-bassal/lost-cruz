@@ -144,15 +144,6 @@ export default function AuthPage() {
                 fontWeight: 'bold',
                 margin: 'auto',
               }}>LOGIN</Button>
-            {/* Continue as guest */}
-            <Link href={`/forum`}>
-              <Box
-                sx={{
-                  paddingTop: '15px',
-                  color: 'white',
-                  fontSize: 'small',
-                }}>Continue as Guest</Box>
-            </Link>
           </Box>
 
         </Box>
