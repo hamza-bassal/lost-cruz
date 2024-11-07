@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore"
+import { collection, getDoc, getDocs, query, where, doc } from "firebase/firestore"
 
 import NavBar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
@@ -27,7 +27,8 @@ const Profile = () => {
 
     /* Get current user id + information */
     const auth = getAuth();
-    const [userId, setUserId] = useState("")
+    const [userId, setUserId] = useState(""); // current user id
+    const [posts, setPosts] = useState([]);   // post list
     onAuthStateChanged(auth, (user) => {
         if (user) {
             updateUserProfile(user);
@@ -39,27 +40,37 @@ const Profile = () => {
         setUserId(id);
         /* fetch current user info */
         const getUser = async () => {
-            const userRef = collection(firestore, "users")
-            const snapshot = query(userRef, where("uid", "==", id));
-            const docs = await getDocs(snapshot)
-            const info = []
-            docs.forEach((doc) => {
-                info.push(doc.data())
-            })
-            const userInfo = info[0];
+            const userRef = doc(firestore, 'users', id);
+            const userSnapshot = await getDoc(userRef);
+            const userInfo = { ...userSnapshot.data() };
 
             /* Display username, id, profile image*/
             const userName = userInfo.username;
             // const userPic = user.photoURL;
             document.getElementById("userName").textContent = userName;
-            document.getElementById("userId").textContent = id;
+            // document.getElementById("userId").textContent = id;  // do we have a user id to display?
             // document.getElementById("userPic").src = userPic;
+
+            /* Fetch posts with post id list 
+               Haven't been tested, may need modification later */
+            /* use this after user post list set up ---------------------
+            const postId = (userInfo.posts);
+            const postList = [];
+            for (const id in postId) {
+                const postRef = doc(firestore, 'posts', postId[id]);
+                const snapshot = await getDoc(postRef);
+                postList.push({ postID: snapshot.id, ...snapshot.data() });
+            }
+            setPosts(postList);
+            -------------------------------------------------------------   */
         }
         getUser();
     }
 
-    /* Fetch posts with the current user id */
-    const [posts, setPosts] = useState([])
+
+    // can be removed after user post list set up ----------------------
+    /* Fetch posts with the current user id
+       Use this for now before post id list set up */
     const postRef = collection(firestore, "posts")
     const getPost = async () => {
         const snapshot = query(postRef, where("userID", "==", userId));
@@ -70,10 +81,11 @@ const Profile = () => {
         })
         setPosts(postsList)
     }
-    
     useEffect(() => {
-        getPost()
-    }, [userId])
+        getPost();
+    }, [userId]);
+    // ------------------------------------------------------------------
+
 
     if (!isClient || !authUser1) {
         return null;
