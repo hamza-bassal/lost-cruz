@@ -33,12 +33,6 @@ import { useRequireAuth } from "../hooks/useRequireAuth";
 
 const CreatePost = () => {
   const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
-
-  if (!authUser1) {
-    // Show nothing or a loading spinner while redirecting
-    return null;
-  }
-
   const router = useRouter(); // Initialize Next.js router
   const authUser = useAuthStore((state) => state.user);
 
@@ -46,31 +40,31 @@ const CreatePost = () => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  //title
-  const [title, setTitle] = useState(""); // New state for title
-  const [description, setDescription] = useState(""); // New state for title
-  const [lostOrFound, setStatus] = useState("LOST"); // Default value is "LOST"
+  // title, description, status, and location states
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [lostOrFound, setStatus] = useState("LOST");
   const [location, setLocation] = useState("");
 
-  const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
-  const [isClient, setIsClient] = useState(false); //check if everything is loaded
+  const [openLocBox, setOpenLocBox] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    //if everything has loaded, set isClient to true
+    // Set isClient to true once the component mounts
     setIsClient(true);
   }, []);
 
-  if (!isClient) {
-    //if not loaded, show nothing
+  if (!authUser1 || !isClient) {
+    // Show nothing or a loading spinner while redirecting or if not loaded
     return null;
   }
 
-  // called when an image is selected
+  // Image selection handler
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
 
-  // called when the user clicks the save location button to ensure that location is in database
+  // Save location handler
   const handleSaveLocation = () => {
     if (location) {
       setOpenLocBox(false);
@@ -102,13 +96,13 @@ const CreatePost = () => {
     // Upload the post data to Firestore
     const postsCollection = collection(firestore, "posts");
     await addDoc(postsCollection, {
-      title: title,
-      description: description,
+      title,
+      description,
       imageURL: url,
-      lostOrFound: lostOrFound,
+      lostOrFound,
       timestamp: new Date(),
       userID: authUser.uid,
-      location: location, // Ensure location is included
+      location, // Ensure location is included
     })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
