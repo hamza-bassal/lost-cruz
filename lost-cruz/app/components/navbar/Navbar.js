@@ -137,27 +137,37 @@ const Navbar = () => {
   };
 
   const Search = () => {
+    const router = useRouter();
+    const [searchTerm, setSearchTerm] = useState("");
+  
+    const handleSearch = (e) => {
+      e.preventDefault();
+      if (searchTerm.trim()) {
+        router.push(`/search?query=${encodeURIComponent(searchTerm)}`);
+      }
+    };
+  
     return (
       <div className={styles.searchWrapper}>
         <form
           className={styles.searchForm}
-          method="get"
-          action="/"
-          id="searchForm"
+          onSubmit={handleSearch}
         >
           <input
             className={styles.searchBar}
             type="text"
             placeholder="Search"
-            id="searchInput"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <IconButton>
+          <IconButton type="submit">
             <SearchIcon sx={{ color: "#0174BE" }} />
           </IconButton>
         </form>
       </div>
     );
   };
+  
 
   return (
     <Box
