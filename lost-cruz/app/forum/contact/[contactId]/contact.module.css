@@ -1,27 +1,27 @@
 .closeSend {
-    width: 100%;
-    padding: 15px 30px 0px 30px;
-    display: flex;
-    justify-content: space-between;
+  width: 100%;
+  padding: 15px 30px 0px 30px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .title {
-    width: 100%;
-    font-size: 30px;
-    align-self: center;
-    padding: 20px;
-    padding-left: 7.5%;
-    padding-right: 7.5%;
-    text-decoration: underline;
-    text-decoration-color: #0174BE;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 10px;
-    font-weight: bold;
-    cursor: default;
+  width: 100%;
+  font-size: 30px;
+  align-self: center;
+  padding: 20px;
+  padding-left: 7.5%;
+  padding-right: 7.5%;
+  text-decoration: underline;
+  text-decoration-color: #0174be;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 10px;
+  font-weight: bold;
+  cursor: default;
 }
 
 .inputBox {
-    padding: 10px 7.5% 0 7.5%;
-    display: flex;
-    align-items: center;
+  padding: 10px 7.5% 0 7.5%;
+  display: flex;
+  align-items: center;
 }

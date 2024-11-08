@@ -1,87 +1,88 @@
 .userInfo {
-    display: flex;
-    gap: 40px;
-    margin: 40px;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  display: flex;
+  gap: 40px;
+  margin: 40px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .username {
-    display: flex;
-    width: inherit;
-    gap: 10px;
-    word-wrap: break-word;
-    overflow: hidden;
-    white-space: nowrap;
+  display: flex;
+  width: inherit;
+  gap: 10px;
+  word-wrap: break-word;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .postList {
-    padding: 20px 40px;
-    width: 100%;
-    height: auto;
+  padding: 20px 40px;
+  width: 100%;
+  height: auto;
 }
 
 .post {
-    width: inherit;
-    height: 100px;
-    margin: 10px auto;
-    background-color: #fff;
-    border-radius: 20px;
-    border: 1px gray solid;
-    box-shadow: 1px 1px 2px lightgray;
-    display: flex;
-    overflow: hidden;
-    &:hover {
-        background-color: #FFF0CE;
-    }
+  width: inherit;
+  height: 100px;
+  margin: 10px auto;
+  background-color: #fff;
+  border-radius: 20px;
+  border: 1px gray solid;
+  box-shadow: 1px 1px 2px lightgray;
+  display: flex;
+  overflow: hidden;
+  &:hover {
+    background-color: #fff0ce;
+  }
 }
 
 .titleTime {
-    width: inherit;
-    max-height: inherit;
-    padding: 20px 50px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  width: inherit;
+  max-height: inherit;
+  padding: 20px 50px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .title {
-    width: inherit;
-    max-height: inherit;
-    font-size: larger;
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    word-wrap: break-word;
+  width: inherit;
+  max-height: inherit;
+  font-size: larger;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: break-word;
 }
 
 .button {
-    display: flex;
-    align-self:flex-end;
-    padding: 10px;
+  display: flex;
+  align-self: flex-end;
+  padding: 10px;
 }
 
 .divider {
-    color: gray;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 50px 0;
-    cursor: default;
+  color: gray;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 50px 0;
+  cursor: default;
 }
 
-.divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px dashed gray;
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px dashed gray;
 }
 
 .divider:not(:empty)::before {
-    margin-right: .5em;
+  margin-right: 0.5em;
 }
 .divider:not(:empty)::after {
-    margin-left: .5em;
+  margin-left: 0.5em;
 }
