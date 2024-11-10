@@ -24,7 +24,7 @@ const Guideline = () => {
                     <ul>
                         <li>
                             <p className={styles.subtitle}>Ask for a Description: </p>
-                            <p> Before meeting, ask the owner to describe the item to confirm they're the rightful owner. This could include specific details like color, brand, or any unique markings.</p>
+                            <p> Before meeting, ask the owner to describe the item to confirm they&#39;re the rightful owner. This could include specific details like color, brand, or any unique markings.</p>
                         </li>
 
                         <li>
@@ -34,7 +34,7 @@ const Guideline = () => {
 
                         <li>
                             <p className={styles.subtitle}>Avoid Sharing Too Many Details:</p>
-                            <p>Don't give out too many details about the item upfront. Let the owner provide a description first to ensure it's theirs.</p>
+                            <p>Don&#39;t give out too many details about the item upfront. Let the owner provide a description first to ensure it&#39;s theirs.</p>
                         </li>
                     </ul>
 
@@ -59,7 +59,7 @@ const Guideline = () => {
                         </li>
                         <li>
                             <p className={styles.subtitle}>Avoid Private or Secluded Locations: </p>
-                            <p>Don't arrange to meet in isolated areas, and avoid offering to deliver the item to someone's residence or dorm room. Avoid dropping off the item at a certain location unless sufficient supervision/security is guaranteed.</p>
+                            <p>Don&#39;t arrange to meet in isolated areas, and avoid offering to deliver the item to someone&#39;s residence or dorm room. Avoid dropping off the item at a certain location unless sufficient supervision/security is guaranteed.</p>
                         </li>
                     </ul>
 
@@ -69,11 +69,11 @@ const Guideline = () => {
                     <ul>
                         <li>
                             <p className={styles.subtitle}>Choose a Convenient Time:</p>
-                            <p>Daytime is best for meetups. If you have to meet in the evening, make sure it's in a well-lit, safe area, such as a campus building or a busy spot on campus, and avoid late hours.</p>
+                            <p>Daytime is best for meetups. If you have to meet in the evening, make sure it&#39;s in a well-lit, safe area, such as a campus building or a busy spot on campus, and avoid late hours.</p>
                         </li>
                         <li>
                             <p className={styles.subtitle}>Stick to the Agreed Location and Time:</p>
-                            <p>Avoid changing the location at the last minute unless it's to an equally safe, public area. If the owner tries to move the meeting to a less public area, consider rescheduling or insisting on the original location.</p>
+                            <p>Avoid changing the location at the last minute unless it&#39;s to an equally safe, public area. If the owner tries to move the meeting to a less public area, consider rescheduling or insisting on the original location.</p>
                         </li>
                     </ul>
 
@@ -91,7 +91,7 @@ const Guideline = () => {
                         </li>
                         <li>
                             <p className={styles.subtitle}>Stay Professional and Polite:</p>
-                            <p> Remember that you're doing a good deed. Be polite and respectful in your communication, and try to be accommodating to the owner's schedule if possible.</p>
+                            <p> Remember that you&#39;re doing a good deed. Be polite and respectful in your communication, and try to be accommodating to the owner&#39;s schedule if possible.</p>
                         </li>
                     </ul>
 
@@ -101,24 +101,24 @@ const Guideline = () => {
                     <ul>
                         <li>
                             <p className={styles.subtitle}>Trust Your Instincts:</p>
-                            <p>If you feel uncomfortable at any point, don't hesitate to reschedule or suggest an alternative, safer location.</p>
+                            <p>If you feel uncomfortable at any point, don&#39;t hesitate to reschedule or suggest an alternative, safer location.</p>
                         </li>
                         <li>
                             <p className={styles.subtitle}>Involve Campus Security If Necessary:</p>
-                            <p>If the item is especially valuable or you're unsure about the interaction, you can arrange to meet at the campus security office. Some campus security departments may even assist in returning lost items.</p>
+                            <p>If the item is especially valuable or you&#39;re unsure about the interaction, you can arrange to meet at the campus security office. Some campus security departments may even assist in returning lost items.</p>
                         </li>
                         <li>
                             <p className={styles.subtitle}>Follow Up:</p>
-                            <p>Once the item has been returned, it can be courteous to let campus security or other relevant parties know that it's been successfully claimed.</p>
+                            <p>Once the item has been returned, it can be courteous to let campus security or other relevant parties know that it&#39;s been successfully claimed.</p>
                         </li>
                     </ul>
                 </ol>
 
                 <p style={{ marginTop: '30px' }}>
-                    Always prioritize your safety and take your time to confirm that the person you're meeting is genuine. If any unexpected situation occurs, please contact us or any school staff member for assistance.
+                    Always prioritize your safety and take your time to confirm that the person you&#39;re meeting is genuine. If any unexpected situation occurs, please contact us or any school staff member for assistance.
                 </p>
                 <p>
-                    Check the box below if you have understood the guidelines and promise to follow them. Your willingness to help is appreciated, and taking these precautions will make the experience positive for both you and the item's owner.
+                    Check the box below if you have understood the guidelines and promise to follow them. Your willingness to help is appreciated, and taking these precautions will make the experience positive for both you and the item&#39;s owner.
                 </p>
             </Box>
         </Box>
