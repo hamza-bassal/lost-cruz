@@ -23,7 +23,7 @@ import { useRouter } from "next/navigation"; // Import Next.js router
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, firestore } from "../../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
 
 import useAuthStore from "../store/authStore";
 
@@ -104,8 +104,14 @@ const CreatePost = () => {
       userID: authUser.uid,
       location, // Ensure location is included
     })
-      .then((docRef) => {
+      .then(async(docRef) => {
         console.log("Document written with ID: ", docRef.id);
+
+        // Update the user's posts array in Firestore
+        const userDocRef = doc(firestore, "users", authUser.uid);
+        await updateDoc(userDocRef, {
+          posts: arrayUnion(docRef.id),
+        })
       })
       .catch((error) => {
         console.error("Error adding document: ", error);
