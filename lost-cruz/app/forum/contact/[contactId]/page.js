@@ -13,33 +13,41 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from "next/navigation"; // Import Next.js router
 import { useState, useEffect } from 'react'
-import { firestore } from '@/firebase'
-import { doc, getDoc,} from 'firebase/firestore'
+
+import useUserEmail from "../../../hooks/useUserEmail";
 
 import styles from "./contact.module.css"
 
-const ContactForm = ( {params} ) => {
+import { useRequireAuth } from '../../../hooks/useRequireAuth';
 
+
+const ContactForm = ( {params} ) => {
+    const [isClient, setIsClient] = useState(false);
+    const authUser1 = useRequireAuth();
+    //const { email, loading, error } = useUserEmail(params.contactId);
     const router = useRouter();
+
+    // Client-side check
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    // const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
+
+    // if (!authUser1) {
+    //     // Show nothing or a loading spinner while redirecting
+    //     return null;
+    // }
+    
+    
+    //console.log(`Email is ${email}`)
+
+    // if (loading) return <p>Loading...</p>;
+    // if (error) return <p>Error: {error.message}</p>;
+
     // const [email, setEmail] = useState("")
     const [status, setStatus] = useState('');
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //       const data = await getDocumentById('posts', params.postId);
-    //       setEmail(data.email);
-    //     }
-    
-    //     fetchData();
-    // }, []);
-
-    // useEffect(() => {
-    //     fetch('/api/hello')
-    //       .then((res) => res.json())
-    //       .then((data) => setData(data.message))
-    //       .catch((err) => console.log('Error fetching data:', err));
-    // }, []);
+    const [formData, setFormData] = useState({ name: '', email: '', message: '', postID: params.contactId});
         
 
     const handleChange = (e) => {

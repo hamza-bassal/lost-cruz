@@ -5,6 +5,7 @@
 import {
   Box,
   IconButton,
+  Button,
   TextField,
   FormControl,
   FormControlLabel,
@@ -12,7 +13,7 @@ import {
   Radio,
   Link,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import AddIcon from "@mui/icons-material/Add";
@@ -21,70 +22,87 @@ import ArticleIcon from "@mui/icons-material/Article";
 import { useRouter } from "next/navigation"; // Import Next.js router
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage, firestore } from "../../firebase"
-import { collection, addDoc } from 'firebase/firestore';
+import { storage, firestore } from "../../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
+import useAuthStore from "../store/authStore";
 
 import styles from "./createPost.module.css";
 
+import { useRequireAuth } from "../hooks/useRequireAuth";
+
 const CreatePost = () => {
+  const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
   const router = useRouter(); // Initialize Next.js router
+  const authUser = useAuthStore((state) => state.user);
 
   // uploading picture
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  //title
-  const [title, setTitle] = useState("");  // New state for title
-  const [description, setDescription] = useState("");  // New state for title
-  const [lostOrFound, setStatus] = useState("LOST");  // Default value is "LOST"
+  // title, description, status, and location states
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [lostOrFound, setStatus] = useState("LOST");
   const [location, setLocation] = useState("");
 
-  const [openLocBox, setOpenLocBox] = useState(false); // pop-up box for input location
+  const [openLocBox, setOpenLocBox] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
-  // called when an image is selected
+  useEffect(() => {
+    // Set isClient to true once the component mounts
+    setIsClient(true);
+  }, []);
+
+  if (!authUser1 || !isClient) {
+    // Show nothing or a loading spinner while redirecting or if not loaded
+    return null;
+  }
+
+  // Image selection handler
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
 
-  // when uploading a post!
+  // Save location handler
+  const handleSaveLocation = () => {
+    if (location) {
+      setOpenLocBox(false);
+    } else {
+      alert("Please enter a location");
+    }
+  };
+
   const handleUpload = async () => {
-
-    (title ? console.log("yaas there is a title") : console.log("nah no title"));
-    (description ? console.log("yes description") : console.log("no description"));
-    (location ? console.log("yes location") : console.log("no Location"));
-    console.log(lostOrFound)
-
-    // Check if required fields are filled
-    if (!title || !description || !file) {
+    if (!title || !description || !file || !location) {
       alert("Please fill out all required fields.");
       return;
     }
 
-    // uploading picture
     setUploading(true);
     const storageRef = ref(storage, `images/${file.name}`);
+    let url = "";
 
-    let url = '';
     try {
       await uploadBytes(storageRef, file);
       url = await getDownloadURL(storageRef);
-      console.log(url);
-      console.log("File Uploaded Successfuly");
+      console.log("File Uploaded Successfully");
     } catch (error) {
-      console.error("Error uploading the files", error)
+      console.error("Error uploading the files", error);
     } finally {
       setUploading(false);
     }
 
-    // adding metadata to firestore
+    // Upload the post data to Firestore
     const postsCollection = collection(firestore, "posts");
     await addDoc(postsCollection, {
-      title: title,
-      description: description,
+      title,
+      description,
       imageURL: url,
-      lostOrFound: lostOrFound,
+      lostOrFound,
       timestamp: new Date(),
+      userID: authUser.uid,
+      location, // Ensure location is included
     })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
@@ -93,18 +111,17 @@ const CreatePost = () => {
         console.error("Error adding document: ", error);
       });
 
-    // Reset form, doesnt reset current form entries
-
+    // Reset form fields after submission
     setFile(null);
-    setTitle("")
+    setTitle("");
     setDescription("");
     setLocation("");
     setStatus("LOST");
     alert("Post uploaded successfully!");
 
-    // Programmatically navigate to the forum page after successful upload
+    // Redirect to the forum page after successful upload
     router.push("/forum");
-  }
+  };
 
   return (
     <Box
@@ -112,7 +129,7 @@ const CreatePost = () => {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        bgcolor: '#FCF7ED'
+        bgcolor: "#FCF7ED",
       }}
     >
       {/* close + send */}
@@ -124,13 +141,18 @@ const CreatePost = () => {
         </Link>
 
         {/*submits form entries */}
-        <Link > {/**href={`/forum`} prevents from entries uploading to firestore*/}
-          <IconButton onClick={handleUpload} disabled={uploading} sx={{ color: "#FFC436" }}>
+        <Link>
+          {" "}
+          {/**href={`/forum`} prevents from entries uploading to firestore*/}
+          <IconButton
+            onClick={handleUpload}
+            disabled={uploading}
+            sx={{ color: "#FFC436" }}
+          >
             <SendIcon fontSize="large" />
           </IconButton>
         </Link>
       </Box>
-
       {/* post content */}
       <FormControl
         component="form"
@@ -141,13 +163,15 @@ const CreatePost = () => {
         }}
       >
         {/* title container */}
-        <Box sx={{
-          width: 'inherit',
-          alignSelf: "center",
-          padding: "20px",
-          paddingLeft: "7.5%",
-          paddingRight: "7.5%",
-        }}>
+        <Box
+          sx={{
+            width: "inherit",
+            alignSelf: "center",
+            padding: "20px",
+            paddingLeft: "7.5%",
+            paddingRight: "7.5%",
+          }}
+        >
           {/* input title */}
           <TextField
             required
@@ -159,24 +183,25 @@ const CreatePost = () => {
             InputProps={{ style: { fontSize: 30 } }}
             InputLabelProps={{ style: { fontSize: 30 } }}
             sx={{
-              bgcolor: 'white',
-              borderRadius: '5px',
-              paddingLeft: '5px',
+              bgcolor: "white",
+              borderRadius: "5px",
+              paddingLeft: "5px",
             }}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </Box>
 
-
         {/* post body container */}
-        <Box sx={{
-          width: 'inherit',
-          alignSelf: "center",
-          padding: "20px",
-          paddingLeft: "7.5%",
-          paddingRight: "7.5%",
-        }}>
+        <Box
+          sx={{
+            width: "inherit",
+            alignSelf: "center",
+            padding: "20px",
+            paddingLeft: "7.5%",
+            paddingRight: "7.5%",
+          }}
+        >
           {/* input description */}
           <TextField
             fullWidth
@@ -186,7 +211,7 @@ const CreatePost = () => {
             placeholder="Description"
             InputProps={{ style: { fontSize: 20 } }}
             sx={{
-              bgcolor: 'white'
+              bgcolor: "white",
             }}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -202,7 +227,7 @@ const CreatePost = () => {
             variant="standard"
             fullWidth
             placeholder="email, redundant?"
-            sx={{ bgcolor: 'white', paddingLeft: '3px', borderRadius: '5px' }}
+            sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px" }}
           ></TextField>
         </Box>
 
@@ -215,7 +240,7 @@ const CreatePost = () => {
             variant="standard"
             fullWidth
             placeholder="tags"
-            sx={{ bgcolor: 'white', paddingLeft: '3px', borderRadius: '5px' }}
+            sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px" }}
           ></TextField>
         </Box>
 
@@ -246,10 +271,8 @@ const CreatePost = () => {
           ></FormControlLabel>
         </RadioGroup>
       </FormControl>
-
       <Box sx={{ height: "60px" }}></Box> {/* what for? */}
       {/* To leave some space at the bottom so the tool bar won't block anything */}
-
       {/* Tools */}
       <Box
         className={styles.toolBox}
@@ -257,7 +280,9 @@ const CreatePost = () => {
       >
         {/* Adding image, maybe have a button saying "Choose file" instead? */}
         <Box className={styles.inputBox}>
-          <label htmlFor="image-upload"> {/**changed to htmlFor from for */}
+          <label htmlFor="image-upload">
+            {" "}
+            {/**changed to htmlFor from for */}
             <AddIcon className={styles.icon} />
           </label>
           <input
@@ -271,32 +296,69 @@ const CreatePost = () => {
 
         {/* Add Location, temporarily typing location instead*/}
         <Box className={styles.inputBox}>
-          <IconButton onClick={() => { setOpenLocBox(true) }}>
+          <IconButton
+            onClick={() => {
+              setOpenLocBox(true);
+            }}
+          >
             <AddLocationIcon className={styles.icon} />
           </IconButton>
         </Box>
-        {openLocBox &&
+        {openLocBox && (
           // A pop-up window asking for location
           <Box className={styles.popup}>
-            {/* close button */}
-            <IconButton sx={{ color: "#0174BE" }} onClick={() => { setOpenLocBox(false) }}>
+            {/* Close button */}
+            <IconButton
+              sx={{ color: "#0174BE" }}
+              onClick={() => {
+                setOpenLocBox(false);
+              }}
+            >
               <CloseIcon />
             </IconButton>
-            {/* input location */}
-            <Box className={styles.inputBox} sx={{ gap: "30px" }}>
-              <label>Location: </label>
+
+            {/* Input for location with button next to it */}
+            <Box
+              className={styles.inputBox}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "15px",
+              }}
+            >
+              {/* Input for Location */}
               <TextField
                 id="location"
                 required
                 variant="standard"
                 fullWidth
-                placeholder="location"
+                placeholder="Enter Location"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                sx={{
+                  flex: 1,
+                }}
               />
+
+              {/* Save Location Button */}
+              <Button
+                sx={{
+                  padding: "5px 10px",
+                  minWidth: "120px",
+                  backgroundColor: "#FFC436",
+                  "&:hover": {
+                    backgroundColor: "#FFB232",
+                  },
+                }}
+                variant="contained"
+                color="primary"
+                onClick={handleSaveLocation}
+              >
+                Save Location
+              </Button>
             </Box>
           </Box>
-        }
+        )}
 
         {/* Save to draft */}
         <Box className={styles.inputBox}>

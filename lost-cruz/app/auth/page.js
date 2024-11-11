@@ -15,8 +15,13 @@ import Signup from "./signup";
 import {signInWithPopup} from 'firebase/auth'
 import {auth, firestore, provider} from '@/firebase'
 import { useRouter } from "next/navigation"; // Import Next.js router
+import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated'; // Adjust the path as needed
+
 
 export default function AuthPage() {
+
+  // This hook redirects to a different page if the user is already authenticated
+  useRedirectIfAuthenticated();
 
   const [showLogin, setShowLogin] = useState(true);
 
@@ -194,15 +199,6 @@ export default function AuthPage() {
                 fontWeight: 'bold',
                 margin: 'auto',
               }}>LOGIN</Button>
-            {/* Continue as guest */}
-            <Link href={`/forum`}>
-              <Box
-                sx={{
-                  paddingTop: '15px',
-                  color: 'white',
-                  fontSize: 'small',
-                }}>Continue as Guest</Box>
-            </Link>
           </Box>
 
         </Box>
