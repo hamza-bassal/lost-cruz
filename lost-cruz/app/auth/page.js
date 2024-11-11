@@ -13,7 +13,7 @@ import Login from "./login";
 import Signup from "./signup";
 
 import {signInWithPopup} from 'firebase/auth'
-import {auth, provider} from '@/firebase'
+import {auth, firestore, provider} from '@/firebase'
 import { useRouter } from "next/navigation"; // Import Next.js router
 
 export default function AuthPage() {
@@ -66,6 +66,7 @@ export default function AuthPage() {
     //Video on cookies
     //https://www.youtube.com/watch?v=Avfa7RrPx_Q
     //User ID
+    //https://firebase.google.com/docs/auth/web/manage-users
     //email
     const [error, setError] = useState(null);
     const [value, setValue] = useState('');
@@ -74,8 +75,10 @@ export default function AuthPage() {
     const handleSignIn = async () => {
       try {
         await signInWithPopup(auth, provider).then((date)=>{
-          //setValue(data.user.email)
-          //localStorage.setItem("email",data.user.email)
+          var uid = user.uid;
+          const q = query(collection(firestore, "user").where("uid","==",));
+          const docs = await getDocs(q);
+          if(firestore)
         });
         // Redirect or update UI after successful sign-in
         router.push("/forum")
