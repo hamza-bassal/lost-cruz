@@ -16,6 +16,7 @@ import {signInWithPopup} from 'firebase/auth'
 import {auth, firestore, provider} from '@/firebase'
 import { useRouter } from "next/navigation"; // Import Next.js router
 import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated'; // Adjust the path as needed
+import useAuthStore from "../store/authStore";
 
 
 export default function AuthPage() {
@@ -76,17 +77,29 @@ export default function AuthPage() {
     const [error, setError] = useState(null);
     const [value, setValue] = useState('');
     const router = useRouter();
+    const loginUser = useAuthStore((state) => state.login);
     
     const handleSignIn = async () => {
       try {
-        await signInWithPopup(auth, provider).then((date)=>{
+        const user = await signInWithPopup(auth, provider).then((date)=>{
+          /*
           var uid = user.uid;
-          const q = query(collection(firestore, "user").where("uid","==",));
-          const docs = await getDocs(q);
-          if(firestore)
+          console.log(uid);
+          const q = getDocs(collection(firestore, "user").where("uid","==",uid));
+          if (q.empty) {
+            
+          }
+          console.log(q);
+          alert(q);
+          */
+          const docRef = doc(firestore,"users",user.uid);
+          const docSnap = getDoc(docRef);
+          localStorage.setItem("user-info",JSON.stringify(docSnap.data()))
+          loginUser(docSnap.data())
+          alert("Logged in successfully!");
+          router.push("/forum")
         });
         // Redirect or update UI after successful sign-in
-        router.push("/forum")
       } catch (err) {
         setError(err.message);
       }
