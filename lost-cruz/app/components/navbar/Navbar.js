@@ -6,6 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import styles from "./navbar.module.css";
 import { useState } from "react";
 import useLogout from "@/app/hooks/useLogout"
+import { tagOptions } from '../../data/tagsData';
 
 const Navbar = () => {
     const [open, setOpen] = useState(false); // filter
@@ -27,7 +28,6 @@ const Navbar = () => {
     
           if (response.ok) {
             setStatus('Email sent successfully!');
-            router.push(`/forum/${params.contactId}`)
           } else {
             setStatus('Failed to send email.');
           }

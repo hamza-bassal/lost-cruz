@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation"; // Import Next.js router
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, firestore } from "../../firebase";
 import { collection, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { tagOptions } from '../data/tagsData';
 
 import useAuthStore from "../store/authStore";
 
@@ -63,9 +64,6 @@ const CreatePost = () => {
     // Show nothing or a loading spinner while redirecting or if not loaded
     return null;
   }
-
-  // Tag options
-  const tagOptions = ["Laptop", "Phone", "Accessory", "Notebook", "Water Bottle", "Electronics", "ID", "Keys"];
 
   // Handle adding selected tags to the TextField
   const handleTagChange = (event) => {

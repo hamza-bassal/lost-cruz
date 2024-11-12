@@ -139,8 +139,7 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
 
 const PostList = () => {
     const [posts, setPosts] = useState([])
-    // const [postName, setPostName] = useState('')
-    // const [searchItem, searchItemName] = useState('')
+    const [searchTerms, setSearch] = useState([])
 
     const updatePosts = async () => {
         const snapshot = query(collection(firestore, 'posts'))
@@ -185,19 +184,6 @@ const PostList = () => {
     - ID retrieval from storage for link generation to its specific page
         - This will then be used for information retrieval
     */
-    // const post_len = 10;
-
-    // // Generate the posts using .map()
-    // const post = Array(post_len).fill(null).map((_, index) => (
-    //     <Post
-    //         key={index}         
-    //         postId={index + 1}   // Unique key for each post
-    //         title={`Title ${index + 1}`} // Unique title for each post
-    //         description={'description'}
-    //         tags={[]}
-    //         imageURL={'...'}
-    //     />
-    // ));
     return (
         <Box sx={{
             display: 'flex', flexDirection: 'column', alignItems: 'center'
