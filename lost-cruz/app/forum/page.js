@@ -110,8 +110,8 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
                     {/* tags */}
                     <Box sx={{ margin: '10px', marginBottom: '5px', width: "100%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
                         <LFTag tag={lostOrFound} />
-                        {tagsSlice.map((tag) => (
-                            <Tag tag={tag} />
+                        {tagsSlice.map((tag, index) => (
+                            <Tag key={tag || index} tag={tag} />
                         ))}
                     </Box>
                 </Box>
