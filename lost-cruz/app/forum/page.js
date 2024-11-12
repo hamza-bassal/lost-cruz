@@ -81,6 +81,7 @@ const Tag = ({ tag }) => {
 }
 
 const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
+    const tagsSlice = tags.slice(0, 5);
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -109,10 +110,9 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
                     {/* tags */}
                     <Box sx={{ margin: '10px', marginBottom: '5px', width: "95%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
                         <LFTag tag={lostOrFound} />
-                        <Tag tag={'tag1'} />
-                        <Tag tag={'tag2'} /> {/* only add availabe tags*/}
-                        <Tag tag={'tag3'} />
-                        <Tag tag={'tag4'} />
+                        {tagsSlice.map((tag) => (
+                            <Tag tag={tag} />
+                        ))}
                     </Box>
                 </Box>
                 {/* image(s) */}
@@ -206,13 +206,13 @@ const PostList = () => {
             <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
                 {/* {post}  Render the array of Post components inside the box */}
                 {/* instead of rendering all the posts at once, only show data on the current page */}
-                {currentData.map(({ postID, title, description, imageURL, lostOrFound }) => (
+                {currentData.map(({ postID, title, description, imageURL, lostOrFound, tags }) => (
                     <Post
                         key={postID}
                         postId={postID}   // Unique key for each post
                         title={title} // Unique title for each post
                         description={description}
-                        tags={[]}
+                        tags={tags}
                         imageURL={imageURL}
                         lostOrFound={lostOrFound}
                     />
