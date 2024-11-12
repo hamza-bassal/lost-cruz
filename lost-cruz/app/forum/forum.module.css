@@ -26,7 +26,7 @@
 }
 
 .postText {
-    max-width: calc(100% - 250px);
+    max-width: calc(100% - 300px);
     height: auto;
     background-color: #fff;
     word-wrap: break-word;

@@ -347,7 +347,7 @@ const PostPage = ({ params }) => {
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
   const [lostOrFound, setStatus] = useState("LOST");
-  const [tags, setTags] = useStatus([]);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -405,11 +405,11 @@ const PostPage = ({ params }) => {
         disableGutters
         sx={{ height: "auto", bgcolor: "#fff0ce", position: "absolute" }}
       >
-        {/* tags */}
+        {/* Retrieves the first 5 tags and displays them accordingly */}
         <Box className={styles.tagGroup}>
-          <LFtag tagName={"LOST"} />
-          {tagsSlice.map((tag) => (
-              <Tag tag={tag} />
+          <LFtag tagName={lostOrFound} />
+          {tagsSlice.map((tag, index) => (
+            <Tag key={tag || index} tagName={tag} />
           ))}
         </Box>
 
