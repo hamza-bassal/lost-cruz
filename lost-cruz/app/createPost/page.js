@@ -35,6 +35,8 @@ import styles from "./createPost.module.css";
 
 import { useRequireAuth } from "../hooks/useRequireAuth";
 
+import { Timestamp } from "firebase/firestore";
+
 const CreatePost = () => {
   const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
   const router = useRouter(); // Initialize Next.js router
@@ -129,7 +131,7 @@ const CreatePost = () => {
       description,
       imageURL: url,
       lostOrFound,
-      timestamp: new Date(),
+      timestamp: Timestamp.now(),
       userID: authUser.uid,
       tags,
       imageName: file.name,

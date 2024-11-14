@@ -34,7 +34,8 @@ import useAuthStore from "../../../store/authStore";
 import styles from "./createPost.module.css";
 
 import { useRequireAuth } from "../../../hooks/useRequireAuth";
-import { getDocumentById } from "../../post_function"
+import { getDocumentById } from "../../post_function";
+import { Timestamp } from "firebase/firestore";
 
 const CreatePost = ({ params }) => {
   const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
@@ -126,10 +127,13 @@ const CreatePost = ({ params }) => {
       return;
     }
 
+    /*
     setUploading(true);
     const storageRef = ref(storage, `images/${file.name}`);
     let url = "";
+    */
 
+    /*
     try {
       await uploadBytes(storageRef, file);
       url = await getDownloadURL(storageRef);
@@ -139,19 +143,21 @@ const CreatePost = ({ params }) => {
     } finally {
       setUploading(false);
     }
+      */
 
     // Upload the post data to Firestore
-    const postsCollection = collection(firestore, "posts");
-    await addDoc(postsCollection, {
-      title,
-      description,
-      imageURL: url,
-      lostOrFound,
-      timestamp: new Date(),
+    doc(firestore, "posts", params.editId)
+    const postsCollection = doc(firestore, "posts", params.editId);
+    await updateDoc(postsCollection, {
+      title: title,
+      description: description,
+      //imageURL: url,
+      lostOrFound: lostOrFound,
+      timestamp: Timestamp.now(),
       userID: authUser.uid,
-      tags,
-      imageName: file.name,
-      location, // Ensure location is included
+      tags: tags,
+      //imageName: file.name,
+      location: location, // Ensure location is included
     })
       .then(async(docRef) => {
         console.log("Document written with ID: ", docRef.id);
@@ -163,7 +169,7 @@ const CreatePost = ({ params }) => {
         })
       })
       .catch((error) => {
-        console.error("Error adding document: ", error);
+        console.error("Error editing document: ", error);
       });
 
     // Reset form fields after submission
@@ -172,10 +178,10 @@ const CreatePost = ({ params }) => {
     setDescription("");
     setLocation("");
     setStatus("LOST");
-    alert("Post uploaded successfully!");
+    alert("Post edit successfully!");
 
     // Redirect to the forum page after successful upload
-    router.push("/forum");
+    router.push("/profile");
   };
 
   return (
