@@ -87,6 +87,7 @@ const ContactForm = ({ params }) => {
 
             if (response.ok && safety.ok) {
                 setStatus('Email sent successfully!');
+                alert("Email sent successfully!");
                 router.push(`/forum/${params.contactId}`)
             } else {
                 setStatus('Failed to send email.');

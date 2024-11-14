@@ -17,6 +17,9 @@ import styles from "./profile.module.css"
 
 import { useRequireAuth } from '../hooks/useRequireAuth';
 
+import { removePost } from './post_function';
+import { post } from "hooks";
+
 
 const Profile = () => {
     const [isClient, setIsClient] = useState(false);
@@ -94,7 +97,8 @@ const Profile = () => {
                     </IconButton>
 
                     {/* delete post */}
-                    <IconButton>
+                    {/*<IconButton onClick={removePost(postId)}>*/}
+                    <IconButton onClick={() => { removePost(postId) }}>
                         <DeleteIcon />
                     </IconButton>
                 </Box>

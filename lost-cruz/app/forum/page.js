@@ -11,6 +11,7 @@ import {
     query,
     deleteDoc,
     getDoc,
+    where,
 } from 'firebase/firestore'
 
 import { orderBy, limit } from "firebase/firestore";
@@ -81,6 +82,7 @@ const Tag = ({ tag }) => {
 }
 
 const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
+    const tagsSlice = tags.slice(0, 5);
     return (
         <Box className={styles.singlePost}>
             <Box className={styles.postContent}>
@@ -107,12 +109,11 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
                         </Box>
                     </Box>
                     {/* tags */}
-                    <Box sx={{ margin: '10px', marginBottom: '5px', width: "95%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
+                    <Box sx={{ margin: '10px', marginBottom: '5px', width: "100%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
                         <LFTag tag={lostOrFound} />
-                        <Tag tag={'tag1'} />
-                        <Tag tag={'tag2'} /> {/* only add availabe tags*/}
-                        <Tag tag={'tag3'} />
-                        <Tag tag={'tag4'} />
+                        {tagsSlice.map((tag, index) => (
+                            <Tag key={tag || index} tag={tag} />
+                        ))}
                     </Box>
                 </Box>
                 {/* image(s) */}
@@ -139,12 +140,23 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
 
 const PostList = () => {
     const [posts, setPosts] = useState([])
-    // const [postName, setPostName] = useState('')
-    // const [searchItem, searchItemName] = useState('')
+    const [searchTerms, setSearch] = useState([])
 
     const updatePosts = async () => {
-        const snapshot = query(collection(firestore, 'posts'))
-        const docs = await getDocs(snapshot)
+        let postsQuery;
+  
+        if (searchTerms.length == 0) {
+            // If searchTerms is empty, return all posts
+            postsQuery = query(collection(firestore, 'posts'));
+        } else {
+            // Otherwise, use array-contains-any with the searchTerms
+            postsQuery = query(
+                collection(firestore, 'posts'),
+                where('tags', 'array-contains-any', searchTerms)
+            );
+        }
+
+        const docs = await getDocs(postsQuery)
         const postsList = []
         docs.forEach((doc) => {
             postsList.push({ postID: doc.id, ...doc.data() })
@@ -185,19 +197,6 @@ const PostList = () => {
     - ID retrieval from storage for link generation to its specific page
         - This will then be used for information retrieval
     */
-    // const post_len = 10;
-
-    // // Generate the posts using .map()
-    // const post = Array(post_len).fill(null).map((_, index) => (
-    //     <Post
-    //         key={index}         
-    //         postId={index + 1}   // Unique key for each post
-    //         title={`Title ${index + 1}`} // Unique title for each post
-    //         description={'description'}
-    //         tags={[]}
-    //         imageURL={'...'}
-    //     />
-    // ));
     return (
         <Box sx={{
             display: 'flex', flexDirection: 'column', alignItems: 'center'
@@ -206,13 +205,13 @@ const PostList = () => {
             <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
                 {/* {post}  Render the array of Post components inside the box */}
                 {/* instead of rendering all the posts at once, only show data on the current page */}
-                {currentData.map(({ postID, title, description, imageURL, lostOrFound }) => (
+                {currentData.map(({ postID, title, description, imageURL, lostOrFound, tags }) => (
                     <Post
                         key={postID}
                         postId={postID}   // Unique key for each post
                         title={title} // Unique title for each post
                         description={description}
-                        tags={[]}
+                        tags={tags}
                         imageURL={imageURL}
                         lostOrFound={lostOrFound}
                     />
@@ -266,8 +265,8 @@ const ForumPage = () => {
 
 //I used this webpage to figure it out
 // https://firebase.google.com/docs/firestore/query-data/order-limit-data#web
-const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
-const docs = await getDocs(q);
+// const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
+// const docs = await getDocs(q);
 
 // docs.forEach((doc) => {
 //     console.log(doc.id, ' => ', doc.data());

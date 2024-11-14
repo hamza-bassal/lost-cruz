@@ -346,6 +346,8 @@ const PostPage = ({ params }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
+  const [lostOrFound, setStatus] = useState("LOST");
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -356,6 +358,8 @@ const PostPage = ({ params }) => {
       setImg(data.imageURL);
       setUserID(data.userID);
       setLocation(data.location || "Location not provided");
+      setStatus(data.lostOrFound)
+      setTags(data.tags)
 
       // Call functions to ser correct formatting of the date and time
       const postDate = data.timestamp.toDate();
@@ -381,6 +385,8 @@ const PostPage = ({ params }) => {
   }, []);
 
   if (!isClient || !authUser1) return null;
+
+  const tagsSlice = tags.slice(0, 5);
   return (
     <div>
       <Box
@@ -399,13 +405,12 @@ const PostPage = ({ params }) => {
         disableGutters
         sx={{ height: "auto", bgcolor: "#fff0ce", position: "absolute" }}
       >
-        {/* tags */}
+        {/* Retrieves the first 5 tags and displays them accordingly */}
         <Box className={styles.tagGroup}>
-          <LFtag tagName={"LOST"} />
-          <Tag tagName={"tag 1"} />
-          <Tag tagName={"tag 2"} />
-          <Tag tagName={"tag 3"} />
-          <Tag tagName={"tagtagtagtagtagtag"} />
+          <LFtag tagName={lostOrFound} />
+          {tagsSlice.map((tag, index) => (
+            <Tag key={tag || index} tagName={tag} />
+          ))}
         </Box>
 
         <Box
