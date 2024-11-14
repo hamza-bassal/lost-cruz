@@ -12,6 +12,9 @@ import {
   RadioGroup,
   Radio,
   Link,
+  Select,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
@@ -24,6 +27,7 @@ import { useRouter } from "next/navigation"; // Import Next.js router
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, firestore } from "../../firebase";
 import { collection, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { tagOptions } from '../data/tagsData';
 
 import useAuthStore from "../store/authStore";
 
@@ -48,6 +52,8 @@ const CreatePost = () => {
 
   const [openLocBox, setOpenLocBox] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [tags, setTags] = useState([])
+  const [inputTags, setInputTags] = useState("");
 
   useEffect(() => {
     // Set isClient to true once the component mounts
@@ -58,6 +64,29 @@ const CreatePost = () => {
     // Show nothing or a loading spinner while redirecting or if not loaded
     return null;
   }
+
+  // Handle adding selected tags to the TextField
+  const handleTagChange = (event) => {
+    const value = event.target.value;
+    // Add tag only if it hasn't been selected already
+    if (!tags.includes(value)) {
+      setTags([...tags, value]);
+      setInputTags([...tags, value].join(", ")); // Update input value to show selected tags
+    }
+  };
+
+  // Handle manual input change in TextField
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setInputTags(value);
+
+    // Split input by commas to get tags
+    const newTags = value.split(",").map(tag => tag.trim()).filter(tag => tag);
+    
+    // Update tags state with unique tags only
+    const uniqueTags = [...new Set([...newTags])];
+    setTags(uniqueTags);
+  };
 
   // Image selection handler
   const handleFileChange = (event) => {
@@ -102,6 +131,7 @@ const CreatePost = () => {
       lostOrFound,
       timestamp: new Date(),
       userID: authUser.uid,
+      tags,
       imageName: file.name,
       location, // Ensure location is included
     })
@@ -225,30 +255,47 @@ const CreatePost = () => {
           />
         </Box>
 
-        {/* Email, redundant? Email should be linked to profile. */}
-        <Box className={styles.inputBox}>
-          <label>Email Address: </label>
-          <TextField
-            id="email"
-            required
-            variant="standard"
-            fullWidth
-            placeholder="email, redundant?"
-            sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px" }}
-          ></TextField>
-        </Box>
-
         {/* Tags, optional, make array of tags */}
         <Box className={styles.inputBox} sx={{ gap: "30px" }}>
-          <label>Tags: </label>
-          <TextField
-            id="tags"
-            required
-            variant="standard"
-            fullWidth
-            placeholder="tags"
-            sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px" }}
-          ></TextField>
+			<label style={{ minWidth: '100px' }}>Tags (Max 5): </label>
+			<TextField
+				id="tags"
+				required
+				variant="standard"
+				fullWidth
+				placeholder="Tags"
+				value={inputTags}
+				onChange={handleInputChange}
+				sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px" }}
+			></TextField>
+			<FormControl variant="standard" sx={{ minWidth: 200, display: 'flex', alignItems: 'center'}}>
+              	<Select
+            		labelId="select-tag-label"
+                  	onChange={handleTagChange}
+                  	fullWidth
+                  	displayEmpty
+                  	defaultValue="" // Placeholder value for Select
+                  	sx={{ bgcolor: "white", borderRadius: "5px" }}
+					MenuProps={{
+						PaperProps: {
+							sx: {
+								maxHeight: 200,  // Max height for scrollable dropdown
+								overflow: 'auto', // Makes the menu scrollable
+							},
+						},
+					}}
+              	>
+					{/* Placeholder option */}
+					<MenuItem value="" disabled>
+						<em>Select a tag</em>
+					</MenuItem>
+					{tagOptions.map((tag) => (
+						<MenuItem key={tag} value={tag}>
+							{tag}
+						</MenuItem>	
+					))}
+              </Select>
+          </FormControl>
         </Box>
 
         {/* Lost or Found */}
@@ -278,6 +325,7 @@ const CreatePost = () => {
           ></FormControlLabel>
         </RadioGroup>
       </FormControl>
+      
       <Box sx={{ height: "60px" }}></Box> {/* what for? */}
       {/* To leave some space at the bottom so the tool bar won't block anything */}
       {/* Tools */}

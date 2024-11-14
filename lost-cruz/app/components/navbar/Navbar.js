@@ -6,6 +6,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import styles from "./navbar.module.css";
 import { useState } from "react";
 import useLogout from "@/app/hooks/useLogout"
+import { tagOptions } from '../../data/tagsData';
+import { Label } from "@mui/icons-material";
 
 const Navbar = () => {
     const [open, setOpen] = useState(false); // filter
@@ -22,12 +24,12 @@ const Navbar = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.CRON_SECRET}`,
             },
           });
     
           if (response.ok) {
             setStatus('Email sent successfully!');
-            router.push(`/forum/${params.contactId}`)
           } else {
             setStatus('Failed to send email.');
           }
@@ -58,16 +60,10 @@ const Navbar = () => {
                         <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Found" />
                     </FormGroup>
                     <hr className={styles.hr} />
-                    <FormGroup row>
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
-                        <FormControlLabel control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label="element" />
+                    <FormGroup column>
+                        {tagOptions.map((tag, index) => (
+                            <FormControlLabel key={tag || index} control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label={tag} />
+                        ))}
                     </FormGroup>
                 </div>}
             </div>
