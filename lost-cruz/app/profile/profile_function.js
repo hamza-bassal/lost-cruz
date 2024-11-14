@@ -39,11 +39,21 @@ export async function changeFullName(userId,newFullName)
     {
         return;
     }
-    console.log(userId)
-    console.log(userRef)
-    console.log(userSnap)
     await updateDoc(userRef,{
         fullName: newFullName
+    });
+}
+
+export async function changeBio(userId,newBio)
+{
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    if(userSnap.exists() == false)
+    {
+        return;
+    }
+    await updateDoc(userRef,{
+        bio: newBio
     });
 }
 
