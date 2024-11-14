@@ -147,11 +147,11 @@ const PostList = () => {
   
         if (searchTerms.length == 0) {
             // If searchTerms is empty, return all posts
-            postsQuery = query(collection(firestore, 'posts'),orderBy("timestamp"));
+            postsQuery = query(collection(firestore, 'posts'),orderBy("timestamp","desc"));
         } else {
             // Otherwise, use array-contains-any with the searchTerms
             postsQuery = query(
-                collection(firestore, 'posts'),orderBy("timestamp"),
+                collection(firestore, 'posts'),orderBy("timestamp","desc"),
                 where('tags', 'array-contains-any', searchTerms)
             );
         }
