@@ -132,6 +132,7 @@ const CreatePost = () => {
       timestamp: new Date(),
       userID: authUser.uid,
       tags,
+      imageName: file.name,
       location, // Ensure location is included
     })
       .then(async(docRef) => {
