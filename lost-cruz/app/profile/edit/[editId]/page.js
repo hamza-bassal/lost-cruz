@@ -37,6 +37,8 @@ import { useRequireAuth } from "../../../hooks/useRequireAuth";
 import { getDocumentById } from "../../post_function";
 import { Timestamp } from "firebase/firestore";
 
+import { deletePostPhoto } from "../../post_function"
+
 const CreatePost = ({ params }) => {
   const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
   const router = useRouter(); // Initialize Next.js router
@@ -127,26 +129,35 @@ const CreatePost = ({ params }) => {
       return;
     }
 
-    /*
-    setUploading(true);
-    const storageRef = ref(storage, `images/${file.name}`);
-    let url = "";
-    */
+    if (file)
+    {
+      deletePostPhoto(params.editId);
 
-    /*
-    try {
-      await uploadBytes(storageRef, file);
-      url = await getDownloadURL(storageRef);
-      console.log("File Uploaded Successfully");
-    } catch (error) {
-      console.error("Error uploading the files", error);
-    } finally {
-      setUploading(false);
+      setUploading(true);
+      const storageRef = ref(storage, `images/${file.name}`);
+      let url = "";
+      
+
+      
+      try {
+        await uploadBytes(storageRef, file);
+        url = await getDownloadURL(storageRef);
+        console.log("File Uploaded Successfully");
+      } catch (error) {
+        console.error("Error uploading the files", error);
+      } finally {
+        setUploading(false);
+      }
+
+      const updatePhoto = doc(firestore, "posts", params.editId);
+      await updateDoc(updatePhoto, {
+      imageURL: url,
+      imageName: file.name,
+    })
     }
-      */
+    
 
     // Upload the post data to Firestore
-    doc(firestore, "posts", params.editId)
     const postsCollection = doc(firestore, "posts", params.editId);
     await updateDoc(postsCollection, {
       title: title,
@@ -358,22 +369,22 @@ const CreatePost = ({ params }) => {
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
         {/* Adding image, maybe have a button saying "Choose file" instead? */}
-        {/*
+
         <Box className={styles.inputBox}>
           <label htmlFor="image-upload">
             {" "}
-            {//**changed to htmlFor from for *./}
+            {/**changed to htmlFor from for */}
             <AddIcon className={styles.icon} />
           </label>
           <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            style={{ display: "none" }} /* removes "Choose file" button *./
+            style={{ display: "none" }} /* removes "Choose file" button */
             id="image-upload"
           />
         </Box>
-        */}
+
 
         {/* Add Location, temporarily typing location instead*/}
         <Box className={styles.inputBox}>

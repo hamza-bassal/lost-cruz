@@ -85,4 +85,36 @@ export async function getDocumentById(collectionName, documentId) {
     }
   }
 
+export async function deletePostPhoto(documentId)
+{
+    const docRef = doc(firestore, 'posts', documentId)
+    const docSnap = await getDoc(docRef)
+
+    if (!docSnap.exists()) {
+        console.error("Post does not exist!");
+        return;
+    }
+
+    //https://stackoverflow.com/questions/49536475/firebase-reffromurl-is-not-a-function
+    //Delete image
+    //await deleteFile(storage.refFromURL(docSnap.data().imageURL));
+
+    //https://firebase.google.com/docs/storage/web/delete-files#web
+    const desertRef = ref(storage, `images/${docSnap.data().imageName}`);
+
+    // Delete the file
+    deleteObject(desertRef).then(() => {
+    // File deleted successfully
+    }).catch((error) => {
+    // Uh-oh, an error occurred!
+    console.error("Can't find image!");
+    return;
+    });
+
+    await updateDoc(docRef,{
+        imageURL: "",
+        imageName: ""
+    })
+}
+
 export default {removePost, getDocumentById};
