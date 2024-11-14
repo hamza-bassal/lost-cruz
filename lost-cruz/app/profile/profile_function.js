@@ -58,7 +58,11 @@ export async function changeProfilePicture(userId,profilePicture)
         return;
     }
 
-    deleteProfilePicture(userId);
+    const delete_success = deleteProfilePicture(userId);
+    if(delete_success == null)
+    {
+        return;
+    }
 
     const storageRef = ref(storage, `profilePicture/${profilePicture.name}`);
     let url = "";
@@ -85,7 +89,7 @@ export async function deleteProfilePicture(userId)
     const userSnap = getUserSnap(userId);
     if(userSnap === null)
     {
-        return;
+        return null;
     }
 
     if(userSnap.data().profilePicture !== "" && userSnap.data().profilePictureFileName !== "")
