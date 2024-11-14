@@ -77,7 +77,15 @@ const ContactForm = ({ params }) => {
                 body: JSON.stringify(formData),
             });
 
-            if (response.ok) {
+            const safety = await fetch('/api/sendGuideline', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ postID: params.contactId }),
+            });
+
+            if (response.ok && safety.ok) {
                 setStatus('Email sent successfully!');
                 router.push(`/forum/${params.contactId}`)
             } else {
