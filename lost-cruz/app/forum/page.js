@@ -147,11 +147,11 @@ const PostList = () => {
   
         if (searchTerms.length == 0) {
             // If searchTerms is empty, return all posts
-            postsQuery = query(collection(firestore, 'posts'));
+            postsQuery = query(collection(firestore, 'posts'),orderBy("timestamp","desc"));
         } else {
             // Otherwise, use array-contains-any with the searchTerms
             postsQuery = query(
-                collection(firestore, 'posts'),
+                collection(firestore, 'posts'),orderBy("timestamp","desc"),
                 where('tags', 'array-contains-any', searchTerms)
             );
         }
@@ -275,6 +275,7 @@ const ForumPage = () => {
 
 //Remove Post
 //For some reason this function remove everything from the database
+/*
 const removePost = async (documentId) => {
     const docRef = doc(firestore, 'posts', documentId)
     const docSnap = await getDoc(docRef)
@@ -285,6 +286,7 @@ const removePost = async (documentId) => {
         console.log("Can't find the post!");
     }
 }
+    */
 
 // removePost()
 
