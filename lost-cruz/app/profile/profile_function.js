@@ -14,46 +14,44 @@ import { getStorage, ref, deleteObject } from "firebase/storage";
 
 import { storage } from "@/firebase";
 
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { uploadBytes, getDownloadURL } from "firebase/storage";
 
-async function getUserSnap(userId) {
+//Tested
+export async function changeUserName(userId,newUserName)
+{
     const userRef = doc(firestore,'users',userId);
     const userSnap = await getDoc(userRef);
     if(userSnap.exists() == false)
     {
-        return null;
-    }
-    return userSnap;
-}
-
-export async function changeUserName(userId,newUserName)
-{
-    const userSnap = getUserSnap(userId);
-    if(userSnap === null)
-    {
         return;
     }
-    await updateDoc(userSnap,{
+    await updateDoc(userRef,{
         username: newUserName
     });
 }
 
+//Tested
 export async function changeFullName(userId,newFullName)
 {
-    const userSnap = getUserSnap(userId);
-    if(userSnap === null)
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    if(userSnap.exists() == false)
     {
         return;
     }
-    await updateDoc(userSnap,{
+    console.log(userId)
+    console.log(userRef)
+    console.log(userSnap)
+    await updateDoc(userRef,{
         fullName: newFullName
     });
 }
 
 export async function changeProfilePicture(userId,profilePicture)
 {
-    const userSnap = getUserSnap(userId);
-    if(userSnap === null)
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    if(userSnap.exists() == false)
     {
         return;
     }
@@ -77,7 +75,7 @@ export async function changeProfilePicture(userId,profilePicture)
       //setUploading(false);
     }
 
-    await updateDoc(userSnap,{
+    await updateDoc(userRef,{
         profilePicture: url,
         profilePictureFileName: profilePicture.name
     });
@@ -86,10 +84,11 @@ export async function changeProfilePicture(userId,profilePicture)
 
 export async function deleteProfilePicture(userId)
 {
-    const userSnap = getUserSnap(userId);
-    if(userSnap === null)
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    if(userSnap.exists() == false)
     {
-        return null;
+        return;
     }
 
     if(userSnap.data().profilePicture !== "" && userSnap.data().profilePictureFileName !== "")
@@ -105,7 +104,7 @@ export async function deleteProfilePicture(userId)
             return;
         });
 
-        await updateDoc(userSnap,{
+        await updateDoc(userRef,{
             profilePicture: "",
             profilePictureFileName: ""
         });
@@ -114,15 +113,17 @@ export async function deleteProfilePicture(userId)
 
 
 export async function addFollowers(userId,followerId) {
-    const userSnap = getUserSnap(userId);
-    if(userSnap === null)
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    if(userSnap.exists() == false)
     {
         return;
     }
 
     //Does follower exist
-    const followerSnap = getUserSnap(followerId);
-    if(followerSnap === null)
+    const followerRef = doc(firestore,'users',followerId);
+    const followerSnap = await getDoc(followerRef);
+    if(followerSnap.exists() == false)
     {
         return;
     }
@@ -130,16 +131,18 @@ export async function addFollowers(userId,followerId) {
     let userFollowerList = (await userSnap).data().followers;
     let followerFollowingList = (await followerSnap).data().following;
 
+    //Add follower to user's follower list
     if(userFollowerList.include(followerId) == false)
     {
-        await updateDoc(userSnap,{
+        await updateDoc(userRef,{
             followers: userFollowerList.push(followerId)
         });
     }
 
+    //Add user to follower's following list
     if(followerFollowingList.include(userId) == false)
     {
-        await updateDoc(followerSnap,{
+        await updateDoc(followerRef,{
             following: userFollowerList.push(userId)
         });
     }
@@ -147,15 +150,17 @@ export async function addFollowers(userId,followerId) {
 
 
 export async function removeFollowers(userId,followerId) {
-    const userSnap = getUserSnap(userId);
-    if(userSnap === null)
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    if(userSnap.exists() == false)
     {
         return;
     }
 
     //Does follower exist
-    const followerSnap = getUserSnap(followerId);
-    if(followerSnap === null)
+    const followerRef = doc(firestore,'users',followerId);
+    const followerSnap = await getDoc(followerRef);
+    if(followerSnap.exists() == false)
     {
         return;
     }
@@ -163,16 +168,18 @@ export async function removeFollowers(userId,followerId) {
     let userFollowerList = (await userSnap).data().followers;
     let followerFollowingList = (await followerSnap).data().following;
 
+    //Delete follower to user's follower list
     if(userFollowerList.include(followerId) == false)
     {
-        await updateDoc(userSnap,{
+        await updateDoc(userRef,{
             followers: userFollowerList.filter((theFollowerId) => theFollowerId != followerId)
         });
     }
 
+    //Delete user to follower's following list
     if(followerFollowingList.include(userId) == false)
     {
-        await updateDoc(followerSnap,{
+        await updateDoc(followerRef,{
             following: userFollowerList.filter((theFollowingId) => theFollowingId != userId)
         });
     }
