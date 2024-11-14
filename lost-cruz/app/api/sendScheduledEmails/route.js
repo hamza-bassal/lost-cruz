@@ -3,14 +3,16 @@
 import nodemailer from 'nodemailer';
 import { firestore } from '@/firebase'
 import { collection, getDocs, query,} from 'firebase/firestore'
-import { NextResponse } from 'next/server';
 
-export async function POST(req) {
+export async function POST(request) {
   try {
+    console.log(request)
 
-    const authHeader = req.headers.get('Authorization');
+    const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return new Response('Unauthorized', {
+        status: 401,
+      });
     }
     
     const snapshot_user = query(collection(firestore, 'users'));
@@ -69,7 +71,7 @@ export async function POST(req) {
     })
 
     // Respond with a success message
-    return NextResponse.json({ ok: true });
+    return Response.json({ success: true });
 
   } catch (error) {
       console.error('Failed to send email:', error);

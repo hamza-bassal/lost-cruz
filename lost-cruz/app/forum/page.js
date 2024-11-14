@@ -11,6 +11,7 @@ import {
     query,
     deleteDoc,
     getDoc,
+    where,
 } from 'firebase/firestore'
 
 import { orderBy, limit } from "firebase/firestore";
@@ -142,8 +143,20 @@ const PostList = () => {
     const [searchTerms, setSearch] = useState([])
 
     const updatePosts = async () => {
-        const snapshot = query(collection(firestore, 'posts'))
-        const docs = await getDocs(snapshot)
+        let postsQuery;
+  
+        if (searchTerms.length == 0) {
+            // If searchTerms is empty, return all posts
+            postsQuery = query(collection(firestore, 'posts'));
+        } else {
+            // Otherwise, use array-contains-any with the searchTerms
+            postsQuery = query(
+                collection(firestore, 'posts'),
+                where('tags', 'array-contains-any', searchTerms)
+            );
+        }
+
+        const docs = await getDocs(postsQuery)
         const postsList = []
         docs.forEach((doc) => {
             postsList.push({ postID: doc.id, ...doc.data() })
@@ -252,8 +265,8 @@ const ForumPage = () => {
 
 //I used this webpage to figure it out
 // https://firebase.google.com/docs/firestore/query-data/order-limit-data#web
-const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
-const docs = await getDocs(q);
+// const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
+// const docs = await getDocs(q);
 
 // docs.forEach((doc) => {
 //     console.log(doc.id, ' => ', doc.data());
