@@ -58,7 +58,7 @@ export async function removePost(documentId){
     if(userSnap.exists())
     {
         let user_post_list = userSnap.data().posts;
-        let new_post_list = user_post_list.filter((postID) => postID != documentId);
+        let new_post_list = user_post_list.filter((postID) => postID !== documentId);
         updateDoc(userRef,{
             posts: new_post_list
         });
