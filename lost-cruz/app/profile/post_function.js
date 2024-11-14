@@ -15,6 +15,12 @@ import { getStorage, ref, deleteObject } from "firebase/storage";
 import { storage } from "@/firebase"
 
 export async function removePost(documentId){
+    //Confirm Box
+    let result = confirm("Are you sure you want to delete the post?");
+    if(result == false)
+    {
+        return;
+    }
     const docRef = doc(firestore, 'posts', documentId)
     const docSnap = await getDoc(docRef)
 
