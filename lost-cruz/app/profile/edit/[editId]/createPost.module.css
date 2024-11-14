@@ -1,0 +1,48 @@
+.closeSend {
+    width: 100%;
+    padding: 15px 30px 0px 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.inputBox {
+    padding: 10px 7.5% 5px 7.5%;
+    display: flex;
+    align-items: center;
+}
+
+.toolBox {
+    background-color: #fff;
+    width: 90%;
+    height: 50px;
+    position: fixed;
+    bottom: 15px;
+    left: 5%;
+    border-radius: 15px;
+    border: 1px solid #0174BE;
+    display: flex;
+    padding: 10px 10px;
+    box-shadow: 2px 2px 2px gray;
+}
+
+.icon {
+    font-size: 30px;
+    color: #0174BE;
+    border: 1px solid #0174BE;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.popup {
+    height: 100px;
+    width: 500px;
+    background-color: white;
+    border: 1px #0174BE solid;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* half of the height & width */
+    margin-top: -50px;
+    margin-left: -250px;
+}

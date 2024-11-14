@@ -70,4 +70,19 @@ export async function removePost(documentId){
     }
 }
 
-export default removePost;
+export async function getDocumentById(collectionName, documentId) {
+    const docRef = doc(firestore, collectionName, documentId);
+  
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data();
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
+  }
+
+export default {removePost, getDocumentById};
