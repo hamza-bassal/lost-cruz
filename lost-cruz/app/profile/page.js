@@ -94,9 +94,11 @@ const Profile = () => {
                 {/* edit + delete btns */}
                 <Box className={styles.button}>
                     {/* edit post */}
-                    <IconButton>
-                        <EditIcon sx={{ color: '#0174BE' }} />
-                    </IconButton>
+                    <Link href={`/profile/edit/${postId}`}>
+                        <IconButton>
+                            <EditIcon sx={{ color: '#0174BE' }} />
+                        </IconButton>
+                    </Link>
 
                     {/* delete post */}
                     {/*<IconButton onClick={removePost(postId)}>*/}
