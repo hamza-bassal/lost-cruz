@@ -102,6 +102,7 @@ const CreatePost = () => {
       lostOrFound,
       timestamp: new Date(),
       userID: authUser.uid,
+      imageName: file.name,
       location, // Ensure location is included
     })
       .then(async(docRef) => {
