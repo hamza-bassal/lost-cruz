@@ -60,7 +60,9 @@ const Profile = () => {
             for (const id in postId) {
                 const postRef = doc(firestore, 'posts', postId[id]);
                 const snapshot = await getDoc(postRef);
-                postList.push({ postID: snapshot.id, ...snapshot.data() });
+                if (snapshot.exists()){  // check if the post exists
+                    postList.push({ postID: snapshot.id, ...snapshot.data() });                    
+                }
             }
             setPosts(postList);
         }
