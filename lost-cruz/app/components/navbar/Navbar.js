@@ -10,16 +10,28 @@ import { tagOptions } from '../../data/tagsData';
 import { Label } from "@mui/icons-material";
 
 // Accepts udpate search method as parameter
-const Navbar = ({ setSearch }) => {
+const Navbar = ({ setSearch, setLostStatus }) => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
-    const [status, setStatus] = useState('');
     const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
 
     const { handleLogout, isLoggingOut, error } = useLogout();
 
+    const handleLostCheckboxChange = (event, status) => {
+        const isChecked = event.target.checked;
+    
+        setSelecLost((statuses) => {
+            if (isChecked) {
+                return [...statuses, status];  // Add the tag to the selectedTags array
+            } else {
+                return statuses.filter((exisitngStatus) => exisitngStatus != status);  // Remove the tag
+            }
+        });
+    };
 
-    const handleCheckboxChange = (event, tag) => {
+
+    const handleTagCheckboxChange = (event, tag) => {
         const isChecked = event.target.checked;
     
         setSelectedTags((prevTags) => {
@@ -34,6 +46,12 @@ const Navbar = ({ setSearch }) => {
       // Trigger filter when user clicks the "Filter" button
     const handleFilterClick = () => {
         setSearch(selectedTags);  // Update the searchTerms in the parent component
+        if (selectedLostStatus.length == 0) {
+            setSelecLost(["LOST", "FOUND"])
+            setLostStatus(["LOST", "FOUND"]);
+        } else {
+            setLostStatus(selectedLostStatus);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -76,8 +94,18 @@ const Navbar = ({ setSearch }) => {
 
                 {open && <div className={styles.dropdownBox}>
                     <FormGroup row>
-                        <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Lost" />
-                        <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Found" />
+                        <FormControlLabel 
+                        control={<Checkbox 
+                            checked={selectedLostStatus.includes("LOST")} 
+                            onChange={(event) => handleLostCheckboxChange(event, "LOST")}
+                            size="small" />} 
+                            label="Lost" />
+                        <FormControlLabel 
+                        control={<Checkbox 
+                            checked={selectedLostStatus.includes("FOUND")} 
+                            onChange={(event) => handleLostCheckboxChange(event, "FOUND")}
+                            size="small" />} 
+                            label="Found" />
                     </FormGroup>
                     <hr className={styles.hr} />
                     <FormGroup column>
@@ -86,7 +114,7 @@ const Navbar = ({ setSearch }) => {
                             control={<Checkbox 
                                 sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} 
                                 checked={selectedTags.includes(tag)} 
-                                onChange={(event) => handleCheckboxChange(event, tag)}
+                                onChange={(event) => handleTagCheckboxChange(event, tag)}
                                 />} 
                             label={tag} />
                         ))}
