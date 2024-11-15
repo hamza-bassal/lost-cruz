@@ -167,6 +167,8 @@ const CreatePost = () => {
         display: "flex",
         flexDirection: "column",
         bgcolor: "#FCF7ED",
+        width: "100vw",
+        position: "absolute",
       }}
     >
       {/* close + send */}
