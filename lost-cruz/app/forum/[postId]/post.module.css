@@ -76,12 +76,10 @@
     display: inline-block;
     background: #0174BE;
     text-overflow: clip;
-    cursor: pointer;
     display: flex;
     box-shadow: 0 1px 2px gray;
     color: white;
     border-radius: 10px 0 0 10px;
-    opacity: 75%;
 }
 
 .tag {
@@ -91,10 +89,8 @@
     display: inline-block;
     background: #ffc436;
     text-overflow: clip;
-    cursor: pointer;
     display: flex;
     box-shadow: 0 1px 2px gray;
-    opacity: 75%;
 }
 
 .tagText {
