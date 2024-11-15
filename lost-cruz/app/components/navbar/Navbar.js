@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link, Button } from "@mui/material";
+import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link, Button, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import styles from "./navbar.module.css";
@@ -9,12 +9,32 @@ import useLogout from "@/app/hooks/useLogout"
 import { tagOptions } from '../../data/tagsData';
 import { Label } from "@mui/icons-material";
 
-const Navbar = () => {
+// Accepts udpate search method as parameter
+const Navbar = ({ setSearch }) => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
     const [status, setStatus] = useState('');
+    const [selectedTags, setSelectedTags] = useState([]);
 
     const { handleLogout, isLoggingOut, error } = useLogout();
+
+
+    const handleCheckboxChange = (event, tag) => {
+        const isChecked = event.target.checked;
+    
+        setSelectedTags((prevTags) => {
+            if (isChecked) {
+                return [...prevTags, tag];  // Add the tag to the selectedTags array
+            } else {
+                return prevTags.filter((existingTag) => existingTag != tag);  // Remove the tag
+            }
+        });
+    };
+    
+      // Trigger filter when user clicks the "Filter" button
+    const handleFilterClick = () => {
+        setSearch(selectedTags);  // Update the searchTerms in the parent component
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -62,9 +82,39 @@ const Navbar = () => {
                     <hr className={styles.hr} />
                     <FormGroup column>
                         {tagOptions.map((tag, index) => (
-                            <FormControlLabel key={tag || index} control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label={tag} />
+                            <FormControlLabel key={tag || index} 
+                            control={<Checkbox 
+                                sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} 
+                                checked={selectedTags.includes(tag)} 
+                                onChange={(event) => handleCheckboxChange(event, tag)}
+                                />} 
+                            label={tag} />
                         ))}
                     </FormGroup>
+                    <Box sx={{
+                        width: '200px',
+                        height: '50px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }} onClick={handleFilterClick} >
+                        <Box
+                            sx={{
+                                width: '100%',
+                                height: '80%',
+                                bgcolor: '#FFC436',
+                                borderRadius: '10px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <Typography sx={{color: 'black', fontWeight: 'bold', fontSize: '20px',}}>
+                                Filter
+                            </Typography>
+                        </Box>
+                    </Box>
                 </div>}
             </div>
         )
