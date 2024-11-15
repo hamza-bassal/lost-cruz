@@ -39,7 +39,6 @@ const LFTag = ({ tag }) => {
                 borderRadius: '10px',
                 display: 'flex',
                 alignItems: 'center',
-                cursor: 'pointer',
             }}>
             <Box
                 sx={{
@@ -147,30 +146,18 @@ const ForumPage = () => {
 
         const updatePosts = async () => {
             let postsQuery;
-
-            console.log(lostOrFound)
-            console.log(searchTerms)
     
             if (searchTerms.length == 0 && lostOrFound.length == 2) {
                 // If both searchTerms and lostOrFound are empty, return all posts
                 postsQuery = query(collection(firestore, 'posts'), orderBy("timestamp", "desc"));
             } else if (searchTerms.length > 0 && lostOrFound.length < 2) {
                 // If both searchTerms and lostOrFound have values, filter by both
-                if (lostOrFound[0] == "LOST") {
-                    postsQuery = query(
-                        collection(firestore, 'posts'),
-                        orderBy("timestamp", "desc"),
-                        where('tags', 'array-contains-any', searchTerms),
-                        where('lostOrFound', '==', "LOST")
-                    );
-                } else {
-                    postsQuery = query(
-                        collection(firestore, 'posts'),
-                        orderBy("timestamp", "desc"),
-                        where('tags', 'array-contains-any', searchTerms),
-                        where('lostOrFound', '==', "FOUND")
-                    );
-                }
+                postsQuery = query(
+                    collection(firestore, 'posts'),
+                    orderBy("timestamp", "desc"),
+                    where('tags', 'array-contains-any', searchTerms),
+                    where('lostOrFound', '==', lostOrFound[0])
+                );
             } else if (searchTerms.length > 0) {
                 // If only searchTerms have values, filter by tags
                 postsQuery = query(
@@ -180,7 +167,6 @@ const ForumPage = () => {
                 );
             } else if (lostOrFound.length != 0) {
                 // If only lostOrFound has a value, filter by lostOrFound
-                console.log(lostOrFound)
                 postsQuery = query(
                     collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),

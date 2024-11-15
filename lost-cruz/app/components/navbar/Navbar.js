@@ -52,6 +52,7 @@ const Navbar = ({ setSearch, setLostStatus }) => {
         } else {
             setLostStatus(selectedLostStatus);
         }
+        setOpen(false);
     };
 
     const handleSubmit = async (e) => {
