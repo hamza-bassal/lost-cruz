@@ -137,97 +137,100 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
 }
 
 
-
-const PostList = () => {
-    const [posts, setPosts] = useState([])
+const ForumPage = () => {
     const [searchTerms, setSearch] = useState([])
 
-    const updatePosts = async () => {
-        let postsQuery;
-  
-        if (searchTerms.length == 0) {
-            // If searchTerms is empty, return all posts
-            postsQuery = query(collection(firestore, 'posts'),orderBy("timestamp","desc"));
-        } else {
-            // Otherwise, use array-contains-any with the searchTerms
-            postsQuery = query(
-                collection(firestore, 'posts'),orderBy("timestamp","desc"),
-                where('tags', 'array-contains-any', searchTerms)
-            );
+    // brought posts list into forum page to keep setSearch within scope of site rendering.
+    const PostList = () => {
+        const [posts, setPosts] = useState([])
+
+        const updatePosts = async () => {
+            let postsQuery;
+    
+            if (searchTerms.length == 0) {
+                // If searchTerms is empty, return all posts
+                postsQuery = query(collection(firestore, 'posts'),orderBy("timestamp","desc"));
+            } else {
+                // Otherwise, use array-contains-any with the searchTerms
+                console.log(searchTerms)
+                postsQuery = query(
+                    collection(firestore, 'posts'),
+                    orderBy("timestamp","desc"),
+                    where('tags', 'array-contains-any', searchTerms)
+                );
+            }
+
+            const docs = await getDocs(postsQuery)
+            const postsList = []
+            docs.forEach((doc) => {
+                postsList.push({ postID: doc.id, ...doc.data() })
+            })
+            setPosts(postsList)
         }
 
-        const docs = await getDocs(postsQuery)
-        const postsList = []
-        docs.forEach((doc) => {
-            postsList.push({ postID: doc.id, ...doc.data() })
-        })
-        setPosts(postsList)
-    }
+        useEffect(() => {
+            updatePosts();
+        }, [searchTerms]);
 
-    useEffect(() => {
-        updatePosts()
-    }, [])
+        /* Pagination */
+        const pageSize = 10; // Num of posts show on a single page
+        const numPage = Math.ceil(posts.length / pageSize);
+        const [pagi, setPagi] = useState({
+            count: 0,
+            from: 0,
+            to: pageSize,
+        });
+        useEffect(() => {
+            setPagi({ ...pagi, count: numPage });
+        }, [])
+        const currentData = posts.slice(pagi.from, pagi.to);
+        const handlePageChange = (e, page) => {
+            const from = (page - 1) * pageSize;
+            const to = (page - 1) * pageSize + pageSize;
+            setPagi({ ...pagi, from: from, to: to })
+            window.scroll(0, 0);
+        }
 
-    /* Pagination */
-    const pageSize = 10; // Num of posts show on a single page
-    const numPage = Math.ceil(posts.length / pageSize);
-    const [pagi, setPagi] = useState({
-        count: 0,
-        from: 0,
-        to: pageSize,
-    });
-    useEffect(() => {
-        setPagi({ ...pagi, count: numPage });
-    }, [])
-    const currentData = posts.slice(pagi.from, pagi.to);
-    const handlePageChange = (e, page) => {
-        const from = (page - 1) * pageSize;
-        const to = (page - 1) * pageSize + pageSize;
-        setPagi({ ...pagi, from: from, to: to })
-        window.scroll(0, 0);
-    }
+        /*
+        This is where information retrieval to create new posts will be done. 
+        We can limit the amount of posts with a modulo function.
+        Current set-up for sprint 1 should just be that it displays the most
+        recents posts within in the database.
 
-    /*
-    This is where information retrieval to create new posts will be done. 
-    We can limit the amount of posts with a modulo function.
-    Current set-up for sprint 1 should just be that it displays the most
-    recents posts within in the database.
-
-    Things needed:
-    - ID retrieval from storage for link generation to its specific page
-        - This will then be used for information retrieval
-    */
-    return (
-        <Box sx={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center'
-        }}>
-            {/* // Box or wrapper around the posts */}
-            <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
-                {/* {post}  Render the array of Post components inside the box */}
-                {/* instead of rendering all the posts at once, only show data on the current page */}
-                {currentData.map(({ postID, title, description, imageURL, lostOrFound, tags }) => (
-                    <Post
-                        key={postID}
-                        postId={postID}   // Unique key for each post
-                        title={title} // Unique title for each post
-                        description={description}
-                        tags={tags}
-                        imageURL={imageURL}
-                        lostOrFound={lostOrFound}
-                    />
-                ))}
+        Things needed:
+        - ID retrieval from storage for link generation to its specific page
+            - This will then be used for information retrieval
+        */
+        return (
+            <Box sx={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center'
+            }}>
+                {/* // Box or wrapper around the posts */}
+                <Box className={styles.postListContainer}>  {/* You can apply a class for styling */}
+                    {/* {post}  Render the array of Post components inside the box */}
+                    {/* instead of rendering all the posts at once, only show data on the current page */}
+                    {currentData.map(({ postID, title, description, imageURL, lostOrFound, tags }) => (
+                        <Post
+                            key={postID}
+                            postId={postID}   // Unique key for each post
+                            title={title} // Unique title for each post
+                            description={description}
+                            tags={tags}
+                            imageURL={imageURL}
+                            lostOrFound={lostOrFound}
+                        />
+                    ))}
+                </Box>
+                <Pagination
+                    count={numPage}
+                    color="primary"
+                    onChange={handlePageChange}
+                    sx={{ margin: "20px 0px" }}
+                />
             </Box>
-            <Pagination
-                count={numPage}
-                color="primary"
-                onChange={handlePageChange}
-                sx={{ margin: "20px 0px" }}
-            />
-        </Box>
-    );
-};
+        );
+    };
 
-const ForumPage = () => {
     const [isClient, setIsClient] = useState(false);
     const authUser1 = useRequireAuth();
 
@@ -242,7 +245,9 @@ const ForumPage = () => {
     return (
         <Box sx={{ bgcolor: '#0174BE' }}>
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
-            <Navbar></Navbar>
+
+            {/* sends setSearch to navbar to update search terms in filters */}
+            <Navbar setSearch={setSearch}></Navbar>
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce', position: 'absolute'}}>
                 <Box sx={{ width: 0.75, height: '100%', bgcolor: '#fcf7ed', margin: 'auto', borderStyle: 'solid', borderWidth: '1px', borderColor: 'lightgray' }}>
@@ -262,32 +267,5 @@ const ForumPage = () => {
         </Box>
     )
 }
-
-//I used this webpage to figure it out
-// https://firebase.google.com/docs/firestore/query-data/order-limit-data#web
-// const q = query(collection(firestore, "posts"), orderBy("timestamp", "desc"), limit(3));
-// const docs = await getDocs(q);
-
-// docs.forEach((doc) => {
-//     console.log(doc.id, ' => ', doc.data());
-// });
-
-
-//Remove Post
-//For some reason this function remove everything from the database
-/*
-const removePost = async (documentId) => {
-    const docRef = doc(firestore, 'posts', documentId)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-        await deleteDoc(docRef)
-    }
-    else {
-        console.log("Can't find the post!");
-    }
-}
-    */
-
-// removePost()
 
 export default ForumPage

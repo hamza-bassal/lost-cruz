@@ -31,7 +31,7 @@ import { tagOptions } from '../../../data/tagsData';
 
 import useAuthStore from "../../../store/authStore";
 
-import styles from "./createPost.module.css";
+import styles from "./editPost.module.css";
 
 import { useRequireAuth } from "../../../hooks/useRequireAuth";
 import { getDocumentById } from "../../post_function";
