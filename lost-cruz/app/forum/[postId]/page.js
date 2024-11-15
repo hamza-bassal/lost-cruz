@@ -489,6 +489,7 @@ const PostPage = ({ params }) => {
                     width: "300px",
                     height: "auto",
                     marginLeft: "5px",
+                    alignSelf: 'start',
                   }}
                 >
                   {imageUrl ? (
