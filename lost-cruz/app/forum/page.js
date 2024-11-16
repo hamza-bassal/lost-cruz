@@ -65,7 +65,6 @@ const Tag = ({ tag }) => {
                 borderRadius: '15px',
                 display: 'flex',
                 alignItems: 'center',
-                cursor: 'pointer',
                 maxWidth: '100px',
             }}>
             <Box
