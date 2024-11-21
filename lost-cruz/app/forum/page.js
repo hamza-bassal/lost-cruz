@@ -139,7 +139,7 @@ const ForumPage = () => {
     const [searchTerms, setSearch] = useState([])
     const [lostOrFound, setStatus] = useState(["LOST", "FOUND"])
 
-    // brought posts list into forum page to keep setSearch within scope of site rendering.
+    // brought posts list into forum page to keep setSearch within scope of site rendering, this is for both searching and filtering using tags
     const PostList = () => {
         const [posts, setPosts] = useState([])
 
