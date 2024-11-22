@@ -2,8 +2,9 @@
 
 'use client'
 
-import { Box, Container, IconButton, Link } from "@mui/material"
+import { Box, Container, IconButton, Link, Typography, FormGroup, FormControlLabel, Checkbox} from "@mui/material"
 import EditIcon from '@mui/icons-material/Edit';
+import MenuIcon from '@mui/icons-material/Menu';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
@@ -18,12 +19,17 @@ import styles from "./profile.module.css"
 import { useRequireAuth } from '../hooks/useRequireAuth';
 
 import { removePost } from './post_function';
-import { post } from "hooks";
+import { tagOptions } from '../data/tagsData';
 
 
 const Profile = () => {
     const [isClient, setIsClient] = useState(false);
+    const [open, setOpen] = useState(false); // watchlist filter
     const authUser1 = useRequireAuth();
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
+
+
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -32,11 +38,42 @@ const Profile = () => {
     const auth = getAuth();
     const [userId, setUserId] = useState(""); // current user id
     const [posts, setPosts] = useState([]);   // post list
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             updateUserProfile(user);
         }
     });
+
+    const printOpen = () => {
+        console.log(open)
+    };
+
+    const handleLostCheckboxChange = (event, status) => {
+        const isChecked = event.target.checked;
+    
+        setSelecLost((statuses) => {
+            if (isChecked) {
+                return [...statuses, status];  // Add the tag to the selectedTags array
+            } else {
+                return statuses.filter((exisitngStatus) => exisitngStatus != status);  // Remove the tag
+            }
+        });
+    };
+
+
+    const handleTagCheckboxChange = (event, tag) => {
+        const isChecked = event.target.checked;
+    
+        setSelectedTags((prevTags) => {
+            if (isChecked) {
+                return [...prevTags, tag];  // Add the tag to the selectedTags array
+            } else {
+                return prevTags.filter((existingTag) => existingTag != tag);  // Remove the tag
+            }
+        });
+    };
+
     function updateUserProfile(user) {
         /* get current user id */
         const id = user.uid;
@@ -110,6 +147,104 @@ const Profile = () => {
         )
     }
 
+    const MenuBtn = () => {
+        return (
+            <div className={styles.dropdown}>
+                <Box sx={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    }} 
+                    // onClick={handleFilterClick} 
+                >
+                    <Box
+                        sx={{
+                            width: '100%',
+                            height: '80%',
+                            bgcolor: '#0174BE',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                            setOpen(prev => !prev);
+                            printOpen();
+                        }}
+                    >
+                        <Typography sx={{color: 'white', fontSize: '20px',}}>
+                            Posts Preferences
+                        </Typography>
+                    </Box>
+                </Box>
+
+                <div className={styles.dropdownBox}>
+                    <FormGroup row>
+                        <FormControlLabel 
+                        control={<Checkbox 
+                            id="lost-checkbox" // Unique ID
+                            name="lostStatus" // Name for form submission
+                            checked={selectedLostStatus.includes("LOST")} 
+                            onChange={(event) => handleLostCheckboxChange(event, "LOST")}
+                            size="small" />} 
+                            label="Lost" />
+                        <FormControlLabel 
+                        control={<Checkbox 
+                            id="found-checkbox" // Unique ID
+                            name="foundStatus" // Name for form submission
+                            checked={selectedLostStatus.includes("FOUND")} 
+                            onChange={(event) => handleLostCheckboxChange(event, "FOUND")}
+                            size="small" />} 
+                            label="Found" />
+                    </FormGroup>
+                    <hr className={styles.hr} />
+                    <FormGroup column>
+                        {tagOptions.map((tag, index) => (
+                            <FormControlLabel key={tag || index} 
+                            control={<Checkbox 
+                                sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} 
+                                id={`tag-checkbox-${index}`} // Unique ID for each tag
+                                name={`tag-${tag}`} // Descriptive name for each tag
+                                checked={selectedTags.includes(tag)} 
+                                onChange={(event) => handleTagCheckboxChange(event, tag)}
+                                />} 
+                            label={tag} />
+                        ))}
+                    </FormGroup>
+                    <Box sx={{
+                        width: '200px',
+                        height: '50px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        }} 
+                        // onClick={handleFilterClick} 
+                    >
+                        <Box
+                            sx={{
+                                width: '100%',
+                                height: '80%',
+                                bgcolor: '#FFC436',
+                                borderRadius: '10px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <Typography sx={{color: 'black', fontWeight: 'bold', fontSize: '20px',}}>
+                                Filter
+                            </Typography>
+                        </Box>
+                    </Box>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <Box>
             <NavBar />
@@ -158,7 +293,19 @@ const Profile = () => {
                                 overflow: 'hidden',
                                 wordWrap: 'break-word',
                                 textOverflow: 'ellipsis',
-                            }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span></Box>
+                            }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span>
+                            </Box>
+                            <Box sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1em',
+                                position: 'relative',
+                                padding: '0px',
+                            }}>
+                                {/* Filter Button */}
+                                <MenuBtn />
+                            
+                            </Box>
                         </Box>
                     </Box>
 
