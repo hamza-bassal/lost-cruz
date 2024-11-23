@@ -86,9 +86,9 @@ export default function AuthPage() {
         <Box sx={{ wordWrap: 'break-word', marginBottom: '20px' }}>
           <p style={{ marginBottom: '20px', fontSize: 'large', fontWeight: 'bold', textAlign: 'center' }}>-- HOW TO -- </p>
           <p style={{ marginBottom: '10px', fontWeight: 'bold' }}>Report Lost Items:</p>
-          <p style={{ marginBottom: '10px', paddingLeft: '30px' }}>Easily submit a post describing items you've misplaced on campus.</p>
+          <p style={{ marginBottom: '10px', paddingLeft: '30px' }}>Easily submit a post describing items you&#39;ve misplaced on campus.</p>
           <p style={{ marginBottom: '10px', fontWeight: 'bold' }}>Report Found Items:</p>
-          <p style={{ marginBottom: '20px', paddingLeft: '30px' }}> If you've found something, you can post details and help reconnect it with its owner.</p>
+          <p style={{ marginBottom: '20px', paddingLeft: '30px' }}> If you&#39;ve found something, you can post details and help reconnect it with its owner.</p>
           <p style={{ marginBottom: '20px', fontSize: 'large', fontWeight: 'bold', textAlign: 'center' }}>-- WHY USE LOST@CRUZ -- </p>
           <p style={{ marginBottom: '10px', fontWeight: 'bold' }}>Convenient:</p>
           <p style={{ marginBottom: '10px', paddingLeft: '30px' }}>Accessible from any device, making it easy to report or search for items on the go.</p>
@@ -130,7 +130,7 @@ export default function AuthPage() {
             paddingLeft: '40px',
           }}>
             <p style={{ marginBottom: '20px', fontSize: 'large', lineHeight: '1.3' }}>A platform for reporting and recovering lost and found items at UCSC.</p>
-            <p style={{ marginBottom: '20px', fontSize: 'large', lineHeight: '1.3' }}> Whether you're a student, faculty, or staff, this service is designed to make the process of finding and returning lost belongings as seamless as possible.</p>
+            <p style={{ marginBottom: '20px', fontSize: 'large', lineHeight: '1.3' }}> Whether you&#39;re a student, faculty, or staff, this service is designed to make the process of finding and returning lost belongings as seamless as possible.</p>
           </Box>
 
           {/* Log-in Button */}
