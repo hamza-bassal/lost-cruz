@@ -14,7 +14,6 @@ import Signup from "./signup";
 
 import { useRedirectIfAuthenticated } from '../hooks/useRedirectIfAuthenticated'; // Adjust the path as needed
 
-
 export default function AuthPage() {
 
   // This hook redirects to a different page if the user is already authenticated
@@ -35,13 +34,13 @@ export default function AuthPage() {
           </IconButton>
           <Box
             sx={{
-              fontSize: '30px',
+              fontSize: '2rem',
               fontWeight: 'bolder',
               color: '#0C356A',
               textAlign: 'center',
               textDecoration: 'underline',
               cursor: 'default',
-              marginBottom: '20px',
+              marginBottom: '3%',
             }}
           >{showLogin ? "LOGIN" : "SIGN UP"}</Box>
         </Box>
@@ -104,12 +103,8 @@ export default function AuthPage() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        {/* logo */}
-        <Box sx={{ width: 0.4, height: 1, bgcolor: '#FFC436' }}>
-          {/* ----- Img here ------ */}
-        </Box>
-
-        <Box maxWidth={0.5} alignSelf={'center'}>
+        <Box className={styles.cover} />
+        <Box className={styles.textContainer}>
           {/* Title */}
           <h1 style={{
             color: '#FFC436',

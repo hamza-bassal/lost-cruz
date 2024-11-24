@@ -88,7 +88,7 @@ const Profile = () => {
                     </Box>
 
                     {/* Time */}
-                    <Box sx={{ fontSize: '10px', color: 'gray' }}>{time}</Box>
+                    <Box sx={{ fontSize: '10px', color: 'gray', overflow: 'hidden' }}>{time}</Box>
                 </Box>
 
                 {/* edit + delete btns */}
@@ -115,7 +115,7 @@ const Profile = () => {
             <NavBar />
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ minHeight: '100vh', height: 'auto', bgcolor: '#fff0ce' }}>
-                <Box sx={{ width: 0.75, minHeight: '100vh', height: '100%', bgcolor: '#fcf7ed', margin: 'auto', borderStyle: 'solid', borderWidth: '1px', borderColor: 'lightgray' }}>
+                <Box className={styles.background}>
                     {/* Leave space for the navbar on the top */}
                     <Box sx={{ height: '50px' }} />
 
@@ -132,7 +132,10 @@ const Profile = () => {
                             {/* ----- profile img here ----- */}
                         </Box>
 
-                        <Box sx={{ marginTop: '20px', maxWidth: '50%' }}>
+                        <Box sx={{ marginTop: '20px', maxWidth: '50%', 
+                            '@media screen and (max-width: 640px)': {
+                            maxWidth: '100%'
+                        } }}>
                             {/* username + edit btn */}
                             <Box className={styles.username}>
                                 <Box sx={{

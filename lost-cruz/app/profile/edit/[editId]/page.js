@@ -310,7 +310,7 @@ const CreatePost = ({ params }) => {
                   	fullWidth
                   	displayEmpty
                   	defaultValue="" // Placeholder value for Select
-                  	sx={{ bgcolor: "white", borderRadius: "5px" }}
+                  	sx={{ bgcolor: "white", borderRadius: "5px", margin: '5px' }}
 					MenuProps={{
 						PaperProps: {
 							sx: {

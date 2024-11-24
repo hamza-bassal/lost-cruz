@@ -14,6 +14,25 @@
   gap: 5%;
 }
 
+.cover {
+  width: 40%;
+  height: 1;
+  background-color: #FFC436;
+
+  @media screen and (max-width: 640px) {
+    display: none;
+  }
+}
+
+.textContainer {
+  max-width: 50%;
+  align-self: center;
+  @media screen and (max-width: 640px) {
+    max-width: 100%;
+    padding: 0 5%;
+  }
+}
+
 .loginBox {
   position: fixed;
   width: 650px;
@@ -31,6 +50,12 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 10px 40px 20px 40px;
+
+  @media screen and (max-width: 640px){
+    width: 80%;
+    margin-left: -40%;
+    padding: 2% 5% 2% 5%;
+  }
 }
 
 .helpBox {
@@ -49,4 +74,12 @@
   display: flex;
   flex-direction: column;
   padding: 10px 40px 20px 40px;
+
+  @media screen and (max-width: 640px){
+    height: 80%;
+    width: 80%;
+    overflow: scroll;
+    margin-left: -40%;
+    padding: 2% 5% 2% 5%;
+  }
 }
