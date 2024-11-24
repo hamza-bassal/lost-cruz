@@ -67,7 +67,7 @@ export async function createCommentFromComment(localParentId,userId,localContent
 export async function getCommentQueryFromParent(parentId,the_collection)
 {
     // query(collection(firestore, the_collection),orderBy("timestamp","desc"))
-    return await query(collection(firestore, the_collection),where("parentId","==",parentId),orderBy("timestamp"));
+    return await query(collection(firestore, the_collection),where("parentId","==",parentId));
 }
 
 
@@ -89,8 +89,8 @@ export async function getCommentQueryFromParentComment(parentId)
 export async function getCommentFromParent(parentId)
 {
     let commentList = [];
-    const q = await getCommentQueryFromParentPost(parentId);
-    const docs = await getDoc(q);
+    const q = await getCommentQueryFromParentComment(parentId);
+    const docs = await getDocs(q);
     docs.forEach((doc) => {
         commentList.push({commentID: doc.id, ...doc.data() });
     })
@@ -103,7 +103,7 @@ export async function getCommentFromComment(parentId)
 {
     let commentList = [];
     const q = await getCommentQueryFromParentComment(parentId);
-    const docs = await getDoc(q);
+    const docs = await getDocs(q);
     docs.forEach((doc) => {
         commentList.push({commentID: doc.id, ...doc.data() });
     })
@@ -216,4 +216,4 @@ export async function isUserOwnerOfComment(userId,commentId)
     }
 }
 
-export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteCommentWithCheck, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment};
+export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteCommentWithCheck, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment, getCommentFromComment, getCommentFromParent};
