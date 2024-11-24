@@ -12,6 +12,9 @@
     font-size: 20px;
     color: #FCF7ED;
     cursor: pointer;
+    @media screen and (max-width: 640px) {
+        font-size: 0.8em;
+    }
 }
 
 .searchWrapper {

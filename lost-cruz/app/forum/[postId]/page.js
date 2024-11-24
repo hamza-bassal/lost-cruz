@@ -502,12 +502,11 @@ const PostPage = ({ params }) => {
           {/* Post Body */}
           <Box sx={{ bgcolor: "white", borderRadius: "20px" }}>
             {/* go back */}
-            { (screen.width > 640) &&
             <Link href={`/forum`}>
               <IconButton>
                 <ArrowBackIosNewIcon sx={{ color: "gray", margin: "3px" }} />
               </IconButton>
-            </Link>}
+            </Link>
             {/* post body */}
             <Box
               sx={{
