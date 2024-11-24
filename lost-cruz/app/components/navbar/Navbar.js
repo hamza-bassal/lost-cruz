@@ -149,18 +149,54 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
         )
     }
 
-    const Search = () => {
+    const Search = ({ }) => {
+        const [tempSearchInput, setTempSearchInput] = useState("");  // Temporary value for input
+        const [searchInput, setSearchInput] = useState("");  // Final value to store search term
+    
+        // Handle input change, but don't update searchInput yet
+        const handleSearchChange = (event) => {
+            setTempSearchInput(event.target.value);  // Update the temporary search input
+        };
+    
+        // Handle the search button click
+        const handleSearchClick = () => {
+            if (tempSearchInput.trim()) {
+                setSearch(tempSearchInput.trim());  // Update the search term in the parent
+                setSearchInput(tempSearchInput.trim());  // Update the final search input
+                console.log("Search term is:", tempSearchInput.trim());
+            } else {
+                setSearch("");  // Clear the search in parent if input is empty
+                setSearchInput("");  // Clear the input
+                console.log("Search term is cleared");
+            }
+        };
+    
         return (
             <div className={styles.searchWrapper}>
-                <form className={styles.searchForm} method="get" action="/" id="searchForm">
-                    <input className={styles.searchBar} type="text" placeholder="Search" id="searchInput"/>
-                    <IconButton>
+                <form
+                    className={styles.searchForm}
+                    method="get"
+                    action="/"
+                    id="searchForm"
+                    onSubmit={(e) => e.preventDefault()}  // Prevent form submission
+                >
+                    <input
+                        className={styles.searchBar}
+                        type="text"
+                        placeholder="Search"
+                        id="searchInput"
+                        value={tempSearchInput}  // Bind the input value to the temporary state
+                        onChange={handleSearchChange}  // Capture input changes
+                    />
+                    <IconButton onClick={handleSearchClick}> {/* Trigger search when icon is clicked */}
                         <SearchIcon sx={{ color: '#0174BE' }} />
                     </IconButton>
                 </form>
             </div>
-        )
-    }
+        );
+    };
+    
+
 
     return (
         <Box className={styles.navBar}
