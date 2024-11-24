@@ -85,22 +85,8 @@ export async function getCommentQueryFromParentComment(parentId)
 }
 
 
-//This function will delete the comment
-//This only works when the user delete it's own comment
-export async function deleteComment(ParentId,userId,commentId,the_collection) {
-    //Check is the user the creator of comment
-    let correct_user = await isUserOwnerOfComment(userId,commentId);
-    if(!correct_user)
-    {
-        alert("You are not the owner of the comment!");
-        return;
-    }
-    //Confirm Box
-    let result = confirm("Are you sure you want to delete the comment?");
-    if(result == false)
-    {
-        return;
-    }
+//This is the internal comment delete
+async function deleteComment(ParentId,commentId,the_collection) {
     const docRef = doc(firestore, comment_collection_name, commentId)
     const docSnap = await getDoc(docRef)
 
@@ -118,6 +104,14 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
         return;
     }
 
+    //If there is child comment recersively delete the child comment
+    for(let i = 0; i < docSnap.data().childComment.length; i++)
+    {
+        //The collection is always comment because post can only be parent.
+        //The only thing that can be a child is comment
+        await deleteComment(commentId,docSnap.data().childComment[i],comment_collection_name);
+    }
+
     //Delete commentId form Parent
     if(parentSnap.exists())
     {
@@ -131,8 +125,8 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
     //Delete comment
     if (docSnap.exists()) {
         await deleteDoc(docRef)
-        // location.reload();
-        // alert("Comment Successfully Deleted!");
+        location.reload();
+        alert("Comment Successfully Deleted!");
     }
     else {
         console.error("Can't find the comment!");
@@ -141,15 +135,36 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
 }
 
 
+//This function will delete the comment
+//This only works when the user delete it's own comment
+export async function deleteCommentWithCheck(ParentId,userId,commentId,the_collection) {
+    //Check is the user the creator of comment
+    let correct_user = await isUserOwnerOfComment(userId,commentId);
+    if(!correct_user)
+    {
+        alert("You are not the owner of the comment!");
+        return;
+    }
+    //Confirm Box
+    let result = confirm("Are you sure you want to delete the comment?");
+    if(result == false)
+    {
+        return;
+    }
+
+    deleteComment(ParentId,commentId,the_collection);
+}
+
+
 //This function will delete the comment from post
 export async function deleteCommentFromPost(parentId,userId,commentId){
-    deleteComment(parentId,userId,commentId,post_collection_name);
+    deleteCommentWithCheck(parentId,userId,commentId,post_collection_name);
 }
 
 
 //This function will delete the comment from commnet
 export async function deleteCommentFromComment(parentId,userId,commentId){
-    deleteComment(parentId,userId,commentId,comment_collection_name);
+    deleteCommentWithCheck(parentId,userId,commentId,comment_collection_name);
 }
 
 
@@ -174,4 +189,4 @@ export async function isUserOwnerOfComment(userId,commentId)
     }
 }
 
-export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteComment, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment};
+export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteCommentWithCheck, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment};
