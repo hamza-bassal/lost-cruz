@@ -45,7 +45,7 @@ export default function Home() {
                     </Button>
             </div>
             <div style={{ marginTop: "5vh" }}>
-                <Button variant="contained" onClick={() => { deleteCommentFromPost("UCXelmbhWRNHnl2RhliN","Lk3Vskz3ZuZQGV1wewJxEPUn3c13","72bclUqrJWxMhkL4mJZK") }}>
+                <Button variant="contained" onClick={() => { deleteCommentFromPost("UCXelmbhWRNHnl2RhliN","Lk3Vskz3ZuZQGV1wewJxEPUn3c13","y9DKI7kpm0WSPxgLXLXC") }}>
                     Delete Comment
                     </Button>
             </div>
