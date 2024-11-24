@@ -25,7 +25,7 @@ import { useRequireAuth } from '../../hooks/useRequireAuth';
 import React from 'react';
 import Button from '@mui/material/Button';
 
-import {createComment, createCommentFromComment, createCommentFromPost, getCommentFromParent, getCommentFromParentComment, getCommentFromParentPost, deleteComment, deleteCommentFromComment, deleteCommentFromPost} from "../../comment_function"
+import {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteComment, deleteCommentFromComment, deleteCommentFromPost} from "../../comment_function"
 
 export default function Home() {
     return (<div>Testing
@@ -36,12 +36,12 @@ export default function Home() {
                     </Button>
             </div>
             <div style={{ marginTop: "5vh" }}>
-                <Button variant="contained" onClick={() => { console.log(getCommentFromParentPost("UCXelmbhWRNHnl2RhliN")) }}>
+                <Button variant="contained" onClick={() => { console.log(getCommentQueryFromParentPost("UCXelmbhWRNHnl2RhliN")) }}>
                     Print Comment
                     </Button>
             </div>
             <div style={{ marginTop: "5vh" }}>
-                <Button variant="contained" onClick={() => { deleteCommentFromPost("UCXelmbhWRNHnl2RhliN",) }}>
+                <Button variant="contained" onClick={() => { deleteCommentFromPost("UCXelmbhWRNHnl2RhliN","Lk3Vskz3ZuZQGV1wewJxEPUn3c13","72bclUqrJWxMhkL4mJZK") }}>
                     Delete Comment
                     </Button>
             </div>

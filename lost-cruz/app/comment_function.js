@@ -9,6 +9,8 @@ import {
     getDoc,
     Timestamp,
     addDoc,
+    where,
+    arrayUnion,
 } from 'firebase/firestore';
 
 import { orderBy, limit } from "firebase/firestore";
@@ -39,7 +41,7 @@ export async function createComment(localParentId,userId,localContent,the_collec
     // Adding the commentId back to the parentDoc
     const parentRef = doc(firestore,the_collection,localParentId);
     updateDoc(parentRef,{
-        childComment: commentId
+        childComment: arrayUnion(commentId)
     });   
 }
 
@@ -60,8 +62,9 @@ export async function createCommentFromComment(localParentId,userId,localContent
 }
 
 
-// This function will return comment from the parentId
-export async function getCommentFromParent(parentId,the_collection)
+// This function will return comment Query from the parentId
+// You will need to use getDocs to get the comments 
+export async function getCommentQueryFromParent(parentId,the_collection)
 {
     // query(collection(firestore, the_collection),orderBy("timestamp","desc"))
     query(collection(firestore, the_collection),where("parentId","==",parentId),orderBy("timestamp"));
@@ -69,28 +72,34 @@ export async function getCommentFromParent(parentId,the_collection)
 
 
 //This function will return comment from posts collection with parentId
-export async function getCommentFromParentPost(parentId)
+export async function getCommentQueryFromParentPost(parentId)
 {
-    getCommentFromParent(parentId,post_collection_name);
+    getCommentQueryFromParent(parentId,post_collection_name);
 }
 
 
 //This function will return comment from comment collection with parentId
-export async function getCommentFromParentComment(parentId)
+export async function getCommentQueryFromParentComment(parentId)
 {
-    getCommentFromParent(parentId,comment_collection_name);
+    getCommentQueryFromParent(parentId,comment_collection_name);
 }
 
 
 //This function will delete the comment
 export async function deleteComment(ParentId,userId,commentId,the_collection) {
+    //Check is the user the creator of comment
+    if(isUserOwnerOfComment(userId,commentId) == false)
+    {
+        alert("You are not the owner of the comment!");
+        return;
+    }
     //Confirm Box
     let result = confirm("Are you sure you want to delete the post?");
     if(result == false)
     {
         return;
     }
-    const docRef = doc(firestore, 'comment', commentId)
+    const docRef = doc(firestore, comment_collection_name, commentId)
     const docSnap = await getDoc(docRef)
 
     if (!docSnap.exists()) {
@@ -101,7 +110,7 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
     const parentRef = doc(firestore,the_collection,ParentId)
     const parentSnap = await getDoc(parentRef)
 
-    if (!(docSnap.exists() && userSnap.exists()))
+    if (!(docSnap.exists() && parentSnap.exists()))
     {
         console.error("Can't find comment or post");
         return;
@@ -131,29 +140,29 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
 
 
 //This function will delete the comment from post
-export async function deleteCommentFromPost(parentId,commentId){
-    deleteComment(parentId,commentId,post_collection_name);
+export async function deleteCommentFromPost(parentId,userId,commentId){
+    deleteComment(parentId,userId,commentId,post_collection_name);
 }
 
 
 //This function will delete the comment from commnet
-export async function deleteCommentFromComment(parentId,commentId){
-    deleteComment(parentId,commentId,comment_collection_name);
+export async function deleteCommentFromComment(parentId,userId,commentId){
+    deleteComment(parentId,userId,commentId,comment_collection_name);
 }
 
 
 //This function will return true if the user is the owner of comment
 export async function isUserOwnerOfComment(userId,commentId)
 {
-    const docRef = doc(firestore, 'comment', commentId);
+    const docRef = doc(firestore, comment_collection_name, commentId);
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
         console.error("Comment does not exist!");
-        return;
+        return false;
     }
 
-    if(docRef.userId === userId)
+    if(docRef.creatorId === userId)
     {
         return true;
     }
@@ -163,4 +172,4 @@ export async function isUserOwnerOfComment(userId,commentId)
     }
 }
 
-export default {createComment, createCommentFromComment, createCommentFromPost, getCommentFromParent, getCommentFromParentComment, getCommentFromParentPost, deleteComment, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment};
+export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteComment, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment};
