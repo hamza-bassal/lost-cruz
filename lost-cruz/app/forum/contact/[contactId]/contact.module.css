@@ -29,6 +29,9 @@
 .docBox {
     padding: 10px 30px;
     height: 85%;
+    @media screen and (max-width: 640px) {
+        padding: 0;
+    }
 }
 
 .doc {

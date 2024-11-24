@@ -1,8 +1,33 @@
+.background {
+    width: 75%;
+    height: 100%;
+    min-height: 100vh;
+    background-color: #fcf7ed;
+    margin: auto;
+    border: 1px solid lightgray;
+    @media screen and (max-width: 640px) {
+        width: 100%;
+    }
+}
+
+.titleBox {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+    margin-bottom: 10px;
+    @media screen and (max-width: 640px) {
+        display: block;
+    }
+}
+
 .title {
     color: #0C356A;
     font-size: 40px;
-    /* cursor: pointer; */
     word-wrap: break-word;
+    @media screen and (max-width: 640px) {
+        font-size: 1.5em;
+        margin-bottom: 5%;
+    }
 }
 
 .commentBoxContainer {
@@ -40,7 +65,7 @@
     padding: 5% 10% 0 5%;
     gap: 20px;
     width: 100%;
-    overflow:hidden;
+    overflow: hidden;
     justify-content: center;
 }
 
@@ -53,9 +78,11 @@
     border: 1px solid lightgray;
     border-radius: 5px;
     min-height: 150px;
-    max-width: 80%;
-    width: auto;
+    width: 80%;
     height: auto;
+    @media screen and (max-width: 640px) {
+        width: 100%;
+    }
 }
 
 .tagGroup {
@@ -124,4 +151,61 @@
 
 .lfTag:hover {
     opacity: 100%;
+}
+
+.mobileLFtag {
+    background-color: #0147BE;
+    height: 30px;
+    width: auto;
+    padding: 10px;
+    color: white;
+    font-size: small;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.mobiletag {
+    background-color: #FFC436;
+    height: 30px;
+    width: auto;
+    padding: 10px;
+    color: white;
+    font-size: small;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    max-width: 100px;
+}
+
+
+.postImg {
+    max-width: 50%;
+    max-height: 50%;
+    width: 300px;
+    height: auto;
+    margin-left: 5px;
+    align-self: start;
+    @media screen and (max-width: 640px) {
+        max-width: 100%;
+    }
+}
+
+.postContainer {
+    display: flex;
+    justify-content: space-between;
+    min-height: 200px;
+    @media screen and (max-width: 640px) {
+        display: block;
+    }
+}
+
+.postDesc {
+    max-width: 50%;
+    overflow: auto;
+    word-wrap: break-word;
+    @media screen and (max-width: 640px) {
+        max-width: 100%;
+        margin-bottom: 5%;
+    }
 }

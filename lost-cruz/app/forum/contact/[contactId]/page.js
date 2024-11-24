@@ -170,7 +170,7 @@ const ContactForm = ({ params }) => {
                     <Box className={styles.title}>Contact Form</Box>
 
                     {/* Name */}
-                    <Box className={styles.inputBox} sx={{ gap: '50px' }}>
+                    <Box className={styles.inputBox} sx={{ gap: '5%' }}>
                         <label>Name: </label>
                         <TextField id="name" required variant="standard" fullWidth placeholder="name"
                             sx={{ bgcolor: 'white', paddingLeft: '2px', borderRadius: '5px' }}
