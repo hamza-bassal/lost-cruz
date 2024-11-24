@@ -25,19 +25,21 @@ import ArticleIcon from "@mui/icons-material/Article";
 import { useRouter } from "next/navigation"; // Import Next.js router
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage, firestore } from "../../firebase";
+import { storage, firestore, auth } from "../../../../firebase";
 import { collection, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
-import { tagOptions } from '../data/tagsData';
+import { tagOptions } from '../../../data/tagsData';
 
-import useAuthStore from "../store/authStore";
+import useAuthStore from "../../../store/authStore";
 
-import styles from "./createPost.module.css";
+import styles from "./editPost.module.css";
 
-import { useRequireAuth } from "../hooks/useRequireAuth";
-
+import { useRequireAuth } from "../../../hooks/useRequireAuth";
+import { getDocumentById } from "../../post_function";
 import { Timestamp } from "firebase/firestore";
 
-const CreatePost = () => {
+import { deletePostPhoto } from "../../post_function"
+
+const CreatePost = ({ params }) => {
   const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
   const router = useRouter(); // Initialize Next.js router
   const authUser = useAuthStore((state) => state.user);
@@ -60,6 +62,23 @@ const CreatePost = () => {
   useEffect(() => {
     // Set isClient to true once the component mounts
     setIsClient(true);
+    async function fetchData() {
+      const data = await getDocumentById("posts", params.editId);
+      if(auth.currentUser.uid != data.userID)
+      {
+        router.push("/profile");
+        //return;
+        return;
+      }
+      setTitle(data.title);
+      setDescription(data.description);
+      setLocation(data.location || "Location not provided");
+      setStatus(data.lostOrFound)
+      setTags(data.tags)
+      setInputTags([...tags, data.tags].join(", "));
+
+    }
+    fetchData()
   }, []);
 
   if (!authUser1 || !isClient) {
@@ -105,37 +124,51 @@ const CreatePost = () => {
   };
 
   const handleUpload = async () => {
-    if (!title || !description || !file || !location) {
+    if (!title || !description || !location) {
       alert("Please fill out all required fields.");
       return;
     }
 
-    setUploading(true);
-    const storageRef = ref(storage, `images/${file.name}`);
-    let url = "";
+    if (file)
+    {
+      deletePostPhoto(params.editId);
 
-    try {
-      await uploadBytes(storageRef, file);
-      url = await getDownloadURL(storageRef);
-      console.log("File Uploaded Successfully");
-    } catch (error) {
-      console.error("Error uploading the files", error);
-    } finally {
-      setUploading(false);
+      setUploading(true);
+      const storageRef = ref(storage, `images/${file.name}`);
+      let url = "";
+      
+
+      
+      try {
+        await uploadBytes(storageRef, file);
+        url = await getDownloadURL(storageRef);
+        console.log("File Uploaded Successfully");
+      } catch (error) {
+        console.error("Error uploading the files", error);
+      } finally {
+        setUploading(false);
+      }
+
+      const updatePhoto = doc(firestore, "posts", params.editId);
+      await updateDoc(updatePhoto, {
+      imageURL: url,
+      imageName: file.name,
+    })
     }
+    
 
     // Upload the post data to Firestore
-    const postsCollection = collection(firestore, "posts");
-    await addDoc(postsCollection, {
-      title,
-      description,
-      imageURL: url,
-      lostOrFound,
+    const postsCollection = doc(firestore, "posts", params.editId);
+    await updateDoc(postsCollection, {
+      title: title,
+      description: description,
+      //imageURL: url,
+      lostOrFound: lostOrFound,
       timestamp: Timestamp.now(),
       userID: authUser.uid,
-      tags,
-      imageName: file.name,
-      location, // Ensure location is included
+      tags: tags,
+      //imageName: file.name,
+      location: location, // Ensure location is included
     })
       .then(async(docRef) => {
         console.log("Document written with ID: ", docRef.id);
@@ -147,7 +180,7 @@ const CreatePost = () => {
         })
       })
       .catch((error) => {
-        console.error("Error adding document: ", error);
+        console.error("Error editing document: ", error);
       });
 
     // Reset form fields after submission
@@ -156,10 +189,10 @@ const CreatePost = () => {
     setDescription("");
     setLocation("");
     setStatus("LOST");
-    alert("Post uploaded successfully!");
+    alert("Post edit successfully!");
 
     // Redirect to the forum page after successful upload
-    router.push("/forum");
+    router.push("/profile");
   };
 
   return (
@@ -169,8 +202,6 @@ const CreatePost = () => {
         display: "flex",
         flexDirection: "column",
         bgcolor: "#FCF7ED",
-        width: "100vw",
-        position: "absolute",
       }}
     >
       {/* close + send */}
@@ -338,6 +369,7 @@ const CreatePost = () => {
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
         {/* Adding image, maybe have a button saying "Choose file" instead? */}
+
         <Box className={styles.inputBox}>
           <label htmlFor="image-upload">
             {" "}
@@ -352,6 +384,7 @@ const CreatePost = () => {
             id="image-upload"
           />
         </Box>
+
 
         {/* Add Location, temporarily typing location instead*/}
         <Box className={styles.inputBox}>

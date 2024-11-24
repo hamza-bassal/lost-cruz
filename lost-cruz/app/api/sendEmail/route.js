@@ -13,7 +13,6 @@ export async function POST(request) {
 
   // Check if the document exists and extract its data
   const post = { postID: postSnapshot.id, ...postSnapshot.data() };
-  console.log(post); // Access your specific post data here
 
   const userRef = doc(firestore, 'users', post.userID)
 
@@ -22,11 +21,12 @@ export async function POST(request) {
 
   // Check if the document exists and extract its data
   const user = { userID: userSnapshot.id, ...userSnapshot.data() };
-  console.log(user); // Access your specific post data here
 
   // Configure Nodemailer transporter
   const transporter = nodemailer.createTransport({
     service: 'gmail',
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.MAIL_PASSWORD,

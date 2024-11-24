@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link, Button } from "@mui/material";
+import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link, Button, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import styles from "./navbar.module.css";
@@ -9,12 +9,51 @@ import useLogout from "@/app/hooks/useLogout"
 import { tagOptions } from '../../data/tagsData';
 import { Label } from "@mui/icons-material";
 
-const Navbar = () => {
+// Accepts udpate search method as parameter
+const Navbar = ({ setSearch, setLostStatus }) => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
-    const [status, setStatus] = useState('');
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
 
     const { handleLogout, isLoggingOut, error } = useLogout();
+
+    const handleLostCheckboxChange = (event, status) => {
+        const isChecked = event.target.checked;
+    
+        setSelecLost((statuses) => {
+            if (isChecked) {
+                return [...statuses, status];  // Add the tag to the selectedTags array
+            } else {
+                return statuses.filter((exisitngStatus) => exisitngStatus != status);  // Remove the tag
+            }
+        });
+    };
+
+
+    const handleTagCheckboxChange = (event, tag) => {
+        const isChecked = event.target.checked;
+    
+        setSelectedTags((prevTags) => {
+            if (isChecked) {
+                return [...prevTags, tag];  // Add the tag to the selectedTags array
+            } else {
+                return prevTags.filter((existingTag) => existingTag != tag);  // Remove the tag
+            }
+        });
+    };
+    
+      // Trigger filter when user clicks the "Filter" button
+    const handleFilterClick = () => {
+        setSearch(selectedTags);  // Update the searchTerms in the parent component
+        if (selectedLostStatus.length == 0) {
+            setSelecLost(["LOST", "FOUND"])
+            setLostStatus(["LOST", "FOUND"]);
+        } else {
+            setLostStatus(selectedLostStatus);
+        }
+        setOpen(false);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,32 +95,108 @@ const Navbar = () => {
 
                 {open && <div className={styles.dropdownBox}>
                     <FormGroup row>
-                        <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Lost" />
-                        <FormControlLabel control={<Checkbox defaultChecked size="small" />} label="Found" />
+                        <FormControlLabel 
+                        control={<Checkbox 
+                            checked={selectedLostStatus.includes("LOST")} 
+                            onChange={(event) => handleLostCheckboxChange(event, "LOST")}
+                            size="small" />} 
+                            label="Lost" />
+                        <FormControlLabel 
+                        control={<Checkbox 
+                            checked={selectedLostStatus.includes("FOUND")} 
+                            onChange={(event) => handleLostCheckboxChange(event, "FOUND")}
+                            size="small" />} 
+                            label="Found" />
                     </FormGroup>
                     <hr className={styles.hr} />
                     <FormGroup column>
                         {tagOptions.map((tag, index) => (
-                            <FormControlLabel key={tag || index} control={<Checkbox sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} />} label={tag} />
+                            <FormControlLabel key={tag || index} 
+                            control={<Checkbox 
+                                sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} 
+                                checked={selectedTags.includes(tag)} 
+                                onChange={(event) => handleTagCheckboxChange(event, tag)}
+                                />} 
+                            label={tag} />
                         ))}
                     </FormGroup>
+                    <Box sx={{
+                        width: '200px',
+                        height: '50px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }} onClick={handleFilterClick} >
+                        <Box
+                            sx={{
+                                width: '100%',
+                                height: '80%',
+                                bgcolor: '#FFC436',
+                                borderRadius: '10px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <Typography sx={{color: 'black', fontWeight: 'bold', fontSize: '20px',}}>
+                                Filter
+                            </Typography>
+                        </Box>
+                    </Box>
                 </div>}
             </div>
         )
     }
 
-    const Search = () => {
+    const Search = ({ }) => {
+        const [tempSearchInput, setTempSearchInput] = useState("");  // Temporary value for input
+        const [searchInput, setSearchInput] = useState("");  // Final value to store search term
+    
+        // Handle input change, but don't update searchInput yet
+        const handleSearchChange = (event) => {
+            setTempSearchInput(event.target.value);  // Update the temporary search input
+        };
+    
+        // Handle the search button click
+        const handleSearchClick = () => {
+            if (tempSearchInput.trim()) {
+                setSearch(tempSearchInput.trim());  // Update the search term in the parent
+                setSearchInput(tempSearchInput.trim());  // Update the final search input
+                console.log("Search term is:", tempSearchInput.trim());
+            } else {
+                setSearch("");  // Clear the search in parent if input is empty
+                setSearchInput("");  // Clear the input
+                console.log("Search term is cleared");
+            }
+        };
+    
         return (
             <div className={styles.searchWrapper}>
-                <form className={styles.searchForm} method="get" action="/" id="searchForm">
-                    <input className={styles.searchBar} type="text" placeholder="Search" id="searchInput"/>
-                    <IconButton>
+                <form
+                    className={styles.searchForm}
+                    method="get"
+                    action="/"
+                    id="searchForm"
+                    onSubmit={(e) => e.preventDefault()}  // Prevent form submission
+                >
+                    <input
+                        className={styles.searchBar}
+                        type="text"
+                        placeholder="Search"
+                        id="searchInput"
+                        value={tempSearchInput}  // Bind the input value to the temporary state
+                        onChange={handleSearchChange}  // Capture input changes
+                    />
+                    <IconButton onClick={handleSearchClick}> {/* Trigger search when icon is clicked */}
                         <SearchIcon sx={{ color: '#0174BE' }} />
                     </IconButton>
                 </form>
             </div>
-        )
-    }
+        );
+    };
+    
+
 
     return (
         <Box className={styles.navBar}

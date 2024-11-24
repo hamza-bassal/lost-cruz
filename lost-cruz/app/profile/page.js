@@ -54,46 +54,24 @@ const Profile = () => {
             // document.getElementById("userId").textContent = id;  // do we have a user id to display?
             // document.getElementById("userPic").src = userPic;
 
-            /* Fetch posts with post id list 
-               Haven't been tested, may need modification later */
-            /* use this after user post list set up ---------------------
+            /* Fetch posts with post id list */
             const postId = (userInfo.posts);
             const postList = [];
             for (const id in postId) {
                 const postRef = doc(firestore, 'posts', postId[id]);
                 const snapshot = await getDoc(postRef);
-                postList.push({ postID: snapshot.id, ...snapshot.data() });
+                if (snapshot.exists()){  // check if the post exists
+                    postList.push({ postID: snapshot.id, ...snapshot.data() });                    
+                }
             }
             setPosts(postList);
-            -------------------------------------------------------------   */
         }
         getUser();
     }
 
-
-    // can be removed after user post list set up ----------------------
-    /* Fetch posts with the current user id
-       Use this for now before post id list set up */
-    const postRef = collection(firestore, "posts")
-    const getPost = async () => {
-        const snapshot = query(postRef, where("userID", "==", userId));
-        const docs = await getDocs(snapshot)
-        const postsList = []
-        docs.forEach((doc) => {
-            postsList.push({ postID: doc.id, ...doc.data() })
-        })
-        setPosts(postsList)
-    }
-    useEffect(() => {
-        getPost();
-    }, [userId]);
-    // ------------------------------------------------------------------
-
-
     if (!isClient || !authUser1) {
         return null;
     }
-
 
     /* single post block */
     const Post = ({ postId, title, time }) => {
@@ -116,9 +94,11 @@ const Profile = () => {
                 {/* edit + delete btns */}
                 <Box className={styles.button}>
                     {/* edit post */}
-                    <IconButton>
-                        <EditIcon sx={{ color: '#0174BE' }} />
-                    </IconButton>
+                    <Link href={`/profile/edit/${postId}`}>
+                        <IconButton>
+                            <EditIcon sx={{ color: '#0174BE' }} />
+                        </IconButton>
+                    </Link>
 
                     {/* delete post */}
                     {/*<IconButton onClick={removePost(postId)}>*/}

@@ -58,7 +58,7 @@ export async function removePost(documentId){
     if(userSnap.exists())
     {
         let user_post_list = userSnap.data().posts;
-        let new_post_list = user_post_list.filter((postID) => postID != documentId);
+        let new_post_list = user_post_list.filter((postID) => postID !== documentId);
         updateDoc(userRef,{
             posts: new_post_list
         });
@@ -76,4 +76,51 @@ export async function removePost(documentId){
     }
 }
 
-export default removePost;
+export async function getDocumentById(collectionName, documentId) {
+    const docRef = doc(firestore, collectionName, documentId);
+  
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data();
+      } else {
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
+  }
+
+export async function deletePostPhoto(documentId)
+{
+    const docRef = doc(firestore, 'posts', documentId)
+    const docSnap = await getDoc(docRef)
+
+    if (!docSnap.exists()) {
+        console.error("Post does not exist!");
+        return;
+    }
+
+    //https://stackoverflow.com/questions/49536475/firebase-reffromurl-is-not-a-function
+    //Delete image
+    //await deleteFile(storage.refFromURL(docSnap.data().imageURL));
+
+    //https://firebase.google.com/docs/storage/web/delete-files#web
+    const desertRef = ref(storage, `images/${docSnap.data().imageName}`);
+
+    // Delete the file
+    deleteObject(desertRef).then(() => {
+    // File deleted successfully
+    }).catch((error) => {
+    // Uh-oh, an error occurred!
+    console.error("Can't find image!");
+    return;
+    });
+
+    await updateDoc(docRef,{
+        imageURL: "",
+        imageName: ""
+    })
+}
+
+export default {removePost, getDocumentById};
