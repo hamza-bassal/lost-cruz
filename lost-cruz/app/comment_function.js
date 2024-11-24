@@ -135,6 +135,7 @@ async function deleteComment(ParentId,commentId,the_collection) {
 }
 
 
+//This function need testing//////////////////////////////////////////////////////////////
 //This function will delete the comment
 //This only works when the user delete it's own comment
 export async function deleteCommentWithCheck(ParentId,userId,commentId,the_collection) {
