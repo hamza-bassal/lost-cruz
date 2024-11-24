@@ -19,8 +19,63 @@ import { uploadBytes, getDownloadURL } from "firebase/storage";
 //If immage name is a problem:
 //https://stackoverflow.com/questions/37444685/store-files-with-unique-random-names
 
+//Get methods
 
+
+//This function will return the user name from user id
+export async function getUserName(userId)
+{
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    return userSnap.data().username;
+}
+
+
+//This function will return the Full Name from the user id
+export async function getFullName(userId)
+{
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    return userSnap.data().fullName;
+}
+
+
+//This function will return the bio of the user id
+export async function getBio(userId)
+{
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    return userSnap.data().bio;
+}
+
+
+//This function will return a url to the profile picture
+export async function getProfilePicture(userId) {
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    return userSnap.data().profilePicture;
+}
+
+
+//This function will return a list of follower user id
+export async function getFollowers(userId) {
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    return userSnap.data().followers;
+}
+
+
+//This function will return a list of following user id
+export async function getFollowing(userId){
+    const userRef = doc(firestore,'users',userId);
+    const userSnap = await getDoc(userRef);
+    return userSnap.data().following;
+}
+
+
+//Other method
 //Tested
+//This function will change the user name
 export async function changeUserName(userId,newUserName)
 {
     const userRef = doc(firestore,'users',userId);
@@ -35,6 +90,7 @@ export async function changeUserName(userId,newUserName)
 }
 
 //Tested
+//This function will change the full name
 export async function changeFullName(userId,newFullName)
 {
     const userRef = doc(firestore,'users',userId);
@@ -48,6 +104,7 @@ export async function changeFullName(userId,newFullName)
     });
 }
 
+//This function will change the bio
 export async function changeBio(userId,newBio)
 {
     const userRef = doc(firestore,'users',userId);
@@ -61,6 +118,7 @@ export async function changeBio(userId,newBio)
     });
 }
 
+//This function will change the pprofile picture
 export async function changeProfilePicture(userId,profilePicture)
 {
     const userRef = doc(firestore,'users',userId);
@@ -96,6 +154,7 @@ export async function changeProfilePicture(userId,profilePicture)
 }
 
 
+//This function will delete the profile picture
 export async function deleteProfilePicture(userId)
 {
     const userRef = doc(firestore,'users',userId);
@@ -125,7 +184,7 @@ export async function deleteProfilePicture(userId)
     }
 }
 
-
+//This function will add a follower to the user and following to the follower
 export async function addFollowers(userId,followerId) {
     const userRef = doc(firestore,'users',userId);
     const userSnap = await getDoc(userRef);
@@ -149,7 +208,7 @@ export async function addFollowers(userId,followerId) {
     if(userFollowerList.include(followerId) == false)
     {
         await updateDoc(userRef,{
-            followers: userFollowerList.push(followerId)
+            followers: arrayUnion(followerId)
         });
     }
 
@@ -157,12 +216,13 @@ export async function addFollowers(userId,followerId) {
     if(followerFollowingList.include(userId) == false)
     {
         await updateDoc(followerRef,{
-            following: userFollowerList.push(userId)
+            following: arrayUnion(userId)
         });
     }
 }
 
 
+//This function will remove a follower to the user and following to the follower
 export async function removeFollowers(userId,followerId) {
     const userRef = doc(firestore,'users',userId);
     const userSnap = await getDoc(userRef);
@@ -199,4 +259,4 @@ export async function removeFollowers(userId,followerId) {
     }
 }
 
-export default {changeUserName,changeFullName,changeProfilePicture,removeFollowers,deleteProfilePicture,addFollowers,changeBio};
+export default {changeUserName,changeFullName,changeProfilePicture,removeFollowers,deleteProfilePicture,addFollowers,changeBio,getBio,getFollowers,getFollowing,getFullName,getProfilePicture,getUserName};
