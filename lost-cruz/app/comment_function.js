@@ -135,7 +135,7 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
         // alert("Comment Successfully Deleted!");
     }
     else {
-        console.log("Can't find the comment!");
+        console.error("Can't find the comment!");
         return;
     }
 }
@@ -164,9 +164,6 @@ export async function isUserOwnerOfComment(userId,commentId)
         return false;
     }
 
-    console.log(docSnap.data().creatorId);
-    console.log(userId);
-    console.log(docSnap.data().creatorId === userId);
     if(docSnap.data().creatorId === userId)
     {
         return true;
