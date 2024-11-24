@@ -86,15 +86,17 @@ export async function getCommentQueryFromParentComment(parentId)
 
 
 //This function will delete the comment
+//This only works when the user delete it's own comment
 export async function deleteComment(ParentId,userId,commentId,the_collection) {
     //Check is the user the creator of comment
-    if(isUserOwnerOfComment(userId,commentId) == false)
+    let correct_user = await isUserOwnerOfComment(userId,commentId);
+    if(!correct_user)
     {
         alert("You are not the owner of the comment!");
         return;
     }
     //Confirm Box
-    let result = confirm("Are you sure you want to delete the post?");
+    let result = confirm("Are you sure you want to delete the comment?");
     if(result == false)
     {
         return;
@@ -129,8 +131,8 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
     //Delete comment
     if (docSnap.exists()) {
         await deleteDoc(docRef)
-        location.reload();
-        alert("Comment Successfully Deleted!");
+        // location.reload();
+        // alert("Comment Successfully Deleted!");
     }
     else {
         console.log("Can't find the comment!");
@@ -162,7 +164,10 @@ export async function isUserOwnerOfComment(userId,commentId)
         return false;
     }
 
-    if(docRef.creatorId === userId)
+    console.log(docSnap.data().creatorId);
+    console.log(userId);
+    console.log(docSnap.data().creatorId === userId);
+    if(docSnap.data().creatorId === userId)
     {
         return true;
     }
