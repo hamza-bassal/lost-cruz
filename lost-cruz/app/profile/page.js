@@ -4,12 +4,11 @@
 
 import { Box, Container, IconButton, Link, Typography, FormGroup, FormControlLabel, Checkbox} from "@mui/material"
 import EditIcon from '@mui/icons-material/Edit';
-import MenuIcon from '@mui/icons-material/Menu';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, getDoc, getDocs, query, where, doc } from "firebase/firestore"
+import { collection, getDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore"
 
 import NavBar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
@@ -27,7 +26,7 @@ const Profile = () => {
     const [open, setOpen] = useState(false); // watchlist filter
     const authUser1 = useRequireAuth();
     const [selectedTags, setSelectedTags] = useState([]);
-    const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
+    const [selectedLostStatus, setSelecLost] = useState([]);
 
 
     useEffect(() => {
@@ -45,10 +44,6 @@ const Profile = () => {
         }
     });
 
-    const printOpen = () => {
-        console.log(open)
-    };
-
     const handleLostCheckboxChange = (event, status) => {
         const isChecked = event.target.checked;
     
@@ -61,6 +56,14 @@ const Profile = () => {
         });
     };
 
+    const updateDigestTags = async() => {
+        const userDocRef = doc(firestore, "users", userId);
+        await updateDoc(userDocRef, {
+          digestTags: selectedTags,
+          digestStatus: selectedLostStatus,
+        })
+    }
+
 
     const handleTagCheckboxChange = (event, tag) => {
         const isChecked = event.target.checked;
@@ -72,6 +75,12 @@ const Profile = () => {
                 return prevTags.filter((existingTag) => existingTag != tag);  // Remove the tag
             }
         });
+    };
+
+    // Trigger filter when user clicks the "Filter" button
+    const handleFilterClick = () => {
+        updateDigestTags();
+        setOpen(false);
     };
 
     function updateUserProfile(user) {
@@ -149,15 +158,14 @@ const Profile = () => {
 
     const MenuBtn = () => {
         return (
-            <div className={styles.dropdown}>
+            <Box className={styles.dropdown}>
                 <Box sx={{
                     width: '200px',
                     height: '50px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    }} 
-                    // onClick={handleFilterClick} 
+                    }}
                 >
                     <Box
                         sx={{
@@ -172,7 +180,6 @@ const Profile = () => {
                         }}
                         onClick={() => {
                             setOpen(prev => !prev);
-                            printOpen();
                         }}
                     >
                         <Typography sx={{color: 'white', fontSize: '20px',}}>
@@ -181,7 +188,7 @@ const Profile = () => {
                     </Box>
                 </Box>
 
-                <div className={styles.dropdownBox}>
+                {open && <Box className={styles.dropdownBox}>
                     <FormGroup row>
                         <FormControlLabel 
                         control={<Checkbox 
@@ -221,7 +228,7 @@ const Profile = () => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         }} 
-                        // onClick={handleFilterClick} 
+                        onClick={handleFilterClick} 
                     >
                         <Box
                             sx={{
@@ -236,12 +243,12 @@ const Profile = () => {
                             }}
                         >
                             <Typography sx={{color: 'black', fontWeight: 'bold', fontSize: '20px',}}>
-                                Filter
+                                Apply
                             </Typography>
                         </Box>
                     </Box>
-                </div>
-            </div>
+                </Box>}
+            </Box>
         )
     }
 
@@ -250,7 +257,17 @@ const Profile = () => {
             <NavBar />
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ minHeight: '100vh', height: 'auto', bgcolor: '#fff0ce' }}>
-                <Box sx={{ width: 0.75, minHeight: '100vh', height: '100%', bgcolor: '#fcf7ed', margin: 'auto', borderStyle: 'solid', borderWidth: '1px', borderColor: 'lightgray' }}>
+                <Box 
+                    sx={{
+                        width: 0.75, 
+                        minHeight: '100vh', 
+                        height: '100%', 
+                        bgcolor: '#fcf7ed', 
+                        margin: 'auto', 
+                        borderStyle: 'solid', 
+                        borderWidth: '1px', 
+                        borderColor: 'lightgray',
+                        alignItems: 'center' }}>
                     {/* Leave space for the navbar on the top */}
                     <Box sx={{ height: '50px' }} />
 
@@ -295,18 +312,32 @@ const Profile = () => {
                                 textOverflow: 'ellipsis',
                             }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span>
                             </Box>
-                            <Box sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '1em',
-                                position: 'relative',
-                                padding: '0px',
-                            }}>
-                                {/* Filter Button */}
-                                <MenuBtn />
-                            
-                            </Box>
                         </Box>
+                    </Box>
+
+                    <Box sx={{
+                        width: '100%',
+                        paddingLeft: '45px',
+                        paddingRight: '45px',
+                        paddingTop: '50px',
+                        textAlign: 'center',
+                        color: 'gray',
+                        fontWeight: 'bold',
+                        cursor: 'default'
+                    }}>Select preferred tags to be notified of (5 posts in addition to regular digest posts):</Box>
+
+                    <Box sx={{
+                        display: 'flex',
+                        width: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '1em',
+                        position: 'relative',
+                        padding: '15px',
+                    }}>
+                        {/* Filter Button */}
+                        <MenuBtn />
+                    
                     </Box>
 
                     <Box sx={{
