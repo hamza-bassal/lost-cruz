@@ -3,11 +3,11 @@
 import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link, Button, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
 import styles from "./navbar.module.css";
 import { useState } from "react";
 import useLogout from "@/app/hooks/useLogout"
 import { tagOptions } from '../../data/tagsData';
-import { Label } from "@mui/icons-material";
 
 // Accepts udpate search method as parameter
 const Navbar = ({ setSearch, setLostStatus }) => {
@@ -211,13 +211,17 @@ const Navbar = ({ setSearch, setLostStatus }) => {
                 justifyContent: 'space-around',
             }}>
             {/* Logo */}
+            {(screen.width > 640) ? 
             <Link href={`/forum`}>
-                <Box
-                    className={styles.logo}
-                >
-                    Lost@Cruz
-                </Box>
+                <Box className={styles.logo}>Lost@Cruz</Box>
             </Link>
+            :
+            <Link href={`/forum`}>
+              <IconButton>
+                <HomeIcon sx={{ color: "white", margin: "3px" }} />
+              </IconButton>
+            </Link>
+            }
 
             {/* Search Bar */}
             <Search />
