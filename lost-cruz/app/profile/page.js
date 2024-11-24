@@ -38,11 +38,16 @@ const Profile = () => {
     const [userId, setUserId] = useState(""); // current user id
     const [posts, setPosts] = useState([]);   // post list
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            updateUserProfile(user);
-        }
-    });
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is authenticated");
+                updateUserProfile(user);
+            }
+        });
+    
+        return () => unsubscribe(); // Cleanup listener on unmount
+    }, []); // Empty dependency array ensures this runs only once
 
     const handleLostCheckboxChange = (event, status) => {
         const isChecked = event.target.checked;
@@ -99,6 +104,9 @@ const Profile = () => {
             document.getElementById("userName").textContent = userName;
             // document.getElementById("userId").textContent = id;  // do we have a user id to display?
             // document.getElementById("userPic").src = userPic;
+
+            setSelectedTags(userInfo.digestTags);
+            setSelecLost(userInfo.digestStatus);
 
             /* Fetch posts with post id list */
             const postId = (userInfo.posts);

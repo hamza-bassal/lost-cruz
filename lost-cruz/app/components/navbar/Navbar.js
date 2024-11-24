@@ -15,6 +15,7 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
     const [prof, setProf] = useState(false); // profile
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
+    const [status, setStatus] = useState("")
 
     const { handleLogout, isLoggingOut, error } = useLogout();
 
