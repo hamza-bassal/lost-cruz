@@ -16,6 +16,10 @@ import { storage } from "@/firebase";
 
 import { uploadBytes, getDownloadURL } from "firebase/storage";
 
+//If immage name is a problem:
+//https://stackoverflow.com/questions/37444685/store-files-with-unique-random-names
+
+
 //Tested
 export async function changeUserName(userId,newUserName)
 {
@@ -66,7 +70,7 @@ export async function changeProfilePicture(userId,profilePicture)
         return;
     }
 
-    const delete_success = deleteProfilePicture(userId);
+    const delete_success = await deleteProfilePicture(userId);
     if(delete_success == null)
     {
         return;
@@ -195,4 +199,4 @@ export async function removeFollowers(userId,followerId) {
     }
 }
 
-export default {changeUserName,changeFullName,changeProfilePicture,removeFollowers,deleteProfilePicture,addFollowers};
+export default {changeUserName,changeFullName,changeProfilePicture,removeFollowers,deleteProfilePicture,addFollowers,changeBio};
