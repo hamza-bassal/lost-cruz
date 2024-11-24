@@ -141,7 +141,6 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
 }
 
 
-//This function need testing//////////////////////////////////////////
 //This function will delete the comment from post
 export async function deleteCommentFromPost(parentId,userId,commentId){
     deleteComment(parentId,userId,commentId,post_collection_name);
