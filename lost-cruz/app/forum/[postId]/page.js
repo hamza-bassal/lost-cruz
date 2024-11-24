@@ -25,6 +25,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import useAuthStore from "@/app/store/authStore";
 
 import styles from "./post.module.css";
 
@@ -35,50 +36,76 @@ import { useRequireAuth } from "../../hooks/useRequireAuth";
 
 const SingleComment = () => {
   return (
-    <Box className={styles.commentContainer}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "5px",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
-            height: "75px",
-            width: "75px",
-            bgcolor: "#FFC436",
-            borderRadius: "10px",
-            cursor: "pointer",
-          }}
-        >
-          {/* User Profile img here */}
-        </Box>
-        <Link href="#" sx={{ textDecoration: "none", color: "black" }}>
-          username
-        </Link>
-      </Box>
+    <Box>
+      <Box className={styles.commentContainer}>
+        {(screen.width > 640) &&
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "5px",
+              alignItems: "center",
+            }}
+          >
+            <Box
+              sx={{
+                height: "75px",
+                width: "75px",
+                bgcolor: "#FFC436",
+                borderRadius: "10px",
+                cursor: "pointer",
+              }}
+            >
+              {/* User Profile img here */}
+            </Box>
 
-      <Box className={styles.commentText}>
-        <Box
-          sx={{
-            overflow: "auto",
-            wordWrap: "break-word",
-            marginBottom: "20px",
-          }}
-        >
-          <p>
-            paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...
-          </p>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box sx={{ alignSelf: "center", fontSize: "small", color: "gray" }}>
-            hh:mm a/pm - MM/DD/YYYY
+            <Link href="#" sx={{ textDecoration: "none", color: "black" }}>
+              username
+            </Link>
           </Box>
-          <IconButton>
-            <CommentIcon sx={{ fontSize: "20px" }} />
-          </IconButton>
+        }
+
+        <Box className={styles.commentText}>
+          <Box
+            sx={{
+              overflow: "auto",
+              wordWrap: "break-word",
+              marginBottom: "20px",
+            }}
+          >
+            <p>
+              paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...
+            </p>
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: '3%' }}>
+            <Box
+              sx={{
+                height: "30px",
+                width: "30px",
+                bgcolor: "#FFC436",
+                borderRadius: "10px",
+              }}
+            >
+              {/* profile img here */}
+            </Box>
+            <Link
+              sx={{
+                alignSelf: "flex-end",
+                textDecoration: "none",
+                color: "black",
+              }}
+            >Username</Link>
+
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box sx={{ alignSelf: "center", fontSize: "small", color: "gray" }}>
+              hh:mm a/pm - MM/DD/YYYY
+            </Box>
+            <IconButton>
+              <CommentIcon sx={{ fontSize: "20px" }} />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -109,6 +136,7 @@ const CommentList = () => {
         <SingleComment />
         <SingleComment />
         <SingleComment />
+
         <hr
           style={{
             marginTop: "50px",
@@ -140,6 +168,26 @@ const Tag = ({ tagName }) => {
     </Box>
   );
 };
+
+const MobileLFtag = ({ tagName }) => {
+  return (
+    <Box className={styles.mobileLFtag}>
+      <Box>{tagName}</Box>
+    </Box>
+  );
+}
+
+const MobileTag = ({ tagName }) => {
+  return (
+    <Box className={styles.mobiletag}>
+      <Box sx={{
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+      }}>{tagName}</Box>
+    </Box>
+  );
+}
 
 const ShareButton = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -330,6 +378,7 @@ const ShareButton = () => {
 
 const PostPage = ({ params }) => {
   const [isClient, setIsClient] = useState(false);
+  const authUser = useAuthStore((state) => state.user);
   const authUser1 = useRequireAuth();
   const [post, setPost] = useState({
     title: "",
@@ -348,6 +397,8 @@ const PostPage = ({ params }) => {
   const [location, setLocation] = useState("");
   const [lostOrFound, setStatus] = useState("LOST");
   const [tags, setTags] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     setIsClient(true);
@@ -384,6 +435,36 @@ const PostPage = ({ params }) => {
     fetchData();
   }, []);
 
+  const handleUpload = async () => {
+    if (!comment) {
+      alert("please fill out all required fields.")
+      return;
+    }
+
+    setUploading(true)
+
+    // adjust later after database got setup
+    const commentCollection = collection(firestore, "comments");
+    await addDoc(commentCollection, {
+      // comment content
+      timestamp: Timestamp.now(),
+      userId: authUser.uid,
+      postId: params.postId,
+    }).then(async (docRef) => {
+      const postRef = doc(firestore, "posts", params.postId);
+      await updateDoc(postRef, {
+        comments: arrayUnion(docRef.id) // adjust later
+      })
+    }).catch((error) => {
+      console.error("Error adding document: ", error);
+    })
+
+    // Reset form fields after submission
+    setComment("");
+
+    alert("Comment sent successfully!")
+  }
+
   if (!isClient || !authUser1) return null;
 
   const tagsSlice = tags.slice(0, 5);
@@ -406,23 +487,17 @@ const PostPage = ({ params }) => {
         sx={{ height: "auto", bgcolor: "#fff0ce", position: "absolute" }}
       >
         {/* Retrieves the first 5 tags and displays them accordingly */}
-        <Box className={styles.tagGroup}>
-          <LFtag tagName={lostOrFound} />
-          {tagsSlice.map((tag, index) => (
-            <Tag key={tag || index} tagName={tag} />
-          ))}
-        </Box>
+        {(screen.width > 640) &&
+          <Box className={styles.tagGroup}>
+            <LFtag tagName={lostOrFound} />
+            {tagsSlice.map((tag, index) => (
+              <Tag key={tag || index} tagName={tag} />
+            ))}
+          </Box>
+        }
 
         <Box
-          sx={{
-            width: 0.75,
-            height: "100%",
-            bgcolor: "#fcf7ed",
-            margin: "auto",
-            borderStyle: "solid",
-            borderWidth: "1px",
-            borderColor: "lightgray",
-          }}
+          className={styles.background}
         >
           {/* Post Body */}
           <Box sx={{ bgcolor: "white", borderRadius: "20px" }}>
@@ -440,15 +515,7 @@ const PostPage = ({ params }) => {
               }}
             >
               {/* title + contact */}
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  paddingTop: "20px",
-                  paddingBottom: "20px",
-                  marginBottom: "10px",
-                }}
-              >
+              <Box className={styles.titleBox}>
                 <Box sx={{ maxWidth: "80%" }}>
                   <h1 className={styles.title}>{title}</h1>
                 </Box>
@@ -458,7 +525,12 @@ const PostPage = ({ params }) => {
                 >
                   <Button
                     variant="contained"
-                    sx={{ bgcolor: "#0174BE", height: "50px" }}
+                    sx={{
+                      bgcolor: "#0174BE", height: "50px",
+                      '@media screen and (max-width: 640px)': {
+                        height: '5%'
+                      },
+                    }}
                   >
                     Contact
                   </Button>
@@ -466,32 +538,11 @@ const PostPage = ({ params }) => {
               </Box>
 
               {/* paragraph + img */}
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  minHeight: "200px",
-                }}
-              >
-                <Box
-                  sx={{
-                    maxWidth: 0.5,
-                    overflow: "auto",
-                    wordWrap: "break-word",
-                  }}
-                >
+              <Box className={styles.postContainer}>
+                <Box className={styles.postDesc}>
                   <p>{desc}</p>
                 </Box>
-                <Box
-                  sx={{
-                    maxWidth: 0.5,
-                    maxHeight: 0.5,
-                    width: "300px",
-                    height: "auto",
-                    marginLeft: "5px",
-                    alignSelf: 'start',
-                  }}
-                >
+                <Box className={styles.postImg}>
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -507,6 +558,23 @@ const PostPage = ({ params }) => {
                   )}
                 </Box>
               </Box>
+
+              {/* Tags for mobile */}
+              {(screen.width <= 640) &&
+                <Box sx={{
+                  display: 'flex',
+                  marginTop: '5%',
+                  gap: '2%',
+                  width: '100%',
+                  overflowX: 'scroll',
+                  scrollbarWidth: 'none'
+                }}>
+                  <MobileLFtag tagName={lostOrFound} />
+                  {tagsSlice.map((tag, index) => (
+                    <MobileTag key={tag || index} tagName={tag} />
+                  ))}
+                </Box>
+              }
 
               {/* author + time */}
               <Box
@@ -595,13 +663,17 @@ const PostPage = ({ params }) => {
                 className={styles.commentBox}
                 type="text"
                 placeholder="Comment"
+                onChange={(e) => setComment(e.target.value)}
               />
-              <IconButton>
+              <IconButton
+                onClick={handleUpload}
+                disabled={uploading}
+              >
                 <SendIcon sx={{ color: "#0174BE" }} />
               </IconButton>
             </form>
           </Box>
-          <TopBtn />
+          {(screen.width > 640) && <TopBtn />}
         </Box>
       </Container>
     </div>

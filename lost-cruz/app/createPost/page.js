@@ -84,7 +84,7 @@ const CreatePost = () => {
 
     // Split input by commas to get tags
     const newTags = value.split(",").map(tag => tag.trim()).filter(tag => tag);
-    
+
     // Update tags state with unique tags only
     const uniqueTags = [...new Set([...newTags])];
     setTags(uniqueTags);
@@ -137,7 +137,7 @@ const CreatePost = () => {
       imageName: file.name,
       location, // Ensure location is included
     })
-      .then(async(docRef) => {
+      .then(async (docRef) => {
         console.log("Document written with ID: ", docRef.id);
 
         // Update the user's posts array in Firestore
@@ -261,44 +261,44 @@ const CreatePost = () => {
 
         {/* Tags, optional, make array of tags */}
         <Box className={styles.inputBox} sx={{ gap: "30px" }}>
-			<label style={{ minWidth: '100px' }}>Tags (Max 5): </label>
-			<TextField
-				id="tags"
-				required
-				variant="standard"
-				fullWidth
-				placeholder="Tags"
-				value={inputTags}
-				onChange={handleInputChange}
-				sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px" }}
-			></TextField>
-			<FormControl variant="standard" sx={{ minWidth: 200, display: 'flex', alignItems: 'center'}}>
-              	<Select
-            		labelId="select-tag-label"
-                  	onChange={handleTagChange}
-                  	fullWidth
-                  	displayEmpty
-                  	defaultValue="" // Placeholder value for Select
-                  	sx={{ bgcolor: "white", borderRadius: "5px" }}
-					MenuProps={{
-						PaperProps: {
-							sx: {
-								maxHeight: 200,  // Max height for scrollable dropdown
-								overflow: 'auto', // Makes the menu scrollable
-							},
-						},
-					}}
-              	>
-					{/* Placeholder option */}
-					<MenuItem value="" disabled>
-						<em>Select a tag</em>
-					</MenuItem>
-					{tagOptions.map((tag) => (
-						<MenuItem key={tag} value={tag}>
-							{tag}
-						</MenuItem>	
-					))}
-              </Select>
+          <label style={{ minWidth: '100px'}}>Tags (Max 5): </label>
+          <TextField
+            id="tags"
+            required
+            variant="standard"
+            fullWidth
+            placeholder="Tags"
+            value={inputTags}
+            onChange={handleInputChange}
+            sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px", margin: '5px' }}
+          ></TextField>
+          <FormControl variant="standard" sx={{ minWidth: 200, display: 'flex', alignItems: 'center' }}>
+            <Select
+              labelId="select-tag-label"
+              onChange={handleTagChange}
+              fullWidth
+              displayEmpty
+              defaultValue="" // Placeholder value for Select
+              sx={{ bgcolor: "white", borderRadius: "5px", margin: '5px' }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    maxHeight: 200,  // Max height for scrollable dropdown
+                    overflow: 'auto', // Makes the menu scrollable
+                  },
+                },
+              }}
+            >
+              {/* Placeholder option */}
+              <MenuItem value="" disabled>
+                <em>Select a tag</em>
+              </MenuItem>
+              {tagOptions.map((tag) => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
+            </Select>
           </FormControl>
         </Box>
 
@@ -329,7 +329,7 @@ const CreatePost = () => {
           ></FormControlLabel>
         </RadioGroup>
       </FormControl>
-      
+
       <Box sx={{ height: "60px" }}></Box> {/* what for? */}
       {/* To leave some space at the bottom so the tool bar won't block anything */}
       {/* Tools */}

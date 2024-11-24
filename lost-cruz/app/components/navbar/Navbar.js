@@ -212,17 +212,7 @@ const Navbar = ({ setSearch, setLostStatus }) => {
             }}>
             {/* Logo */}
             <Link href={`/forum`}>
-                <Box
-                    sx={{
-                        padding: '10px',
-                        fontWeight: 'bolder',
-                        fontSize: '20px',
-                        color: '#FCF7ED',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Lost@Cruz
-                </Box>
+                <Box className={styles.logo}>Lost@Cruz</Box>
             </Link>
 
             {/* Search Bar */}
