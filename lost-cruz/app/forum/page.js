@@ -249,7 +249,7 @@ const ForumPage = () => {
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
 
             {/* sends setSearch to navbar to update search terms in filters */}
-            <Navbar setSearch={setSearch} setLostStatus={setStatus}></Navbar>
+            <Navbar setSearch={setSearch} setLostStatus={setStatus} isForum={true}></Navbar>
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce', position: 'absolute'}}>
                 <Box className={styles.background}>

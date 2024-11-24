@@ -10,11 +10,12 @@ import { tagOptions } from '../../data/tagsData';
 import { Label } from "@mui/icons-material";
 
 // Accepts udpate search method as parameter
-const Navbar = ({ setSearch, setLostStatus }) => {
+const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
+    const [status, setStatus] = useState("")
 
     const { handleLogout, isLoggingOut, error } = useLogout();
 
@@ -80,7 +81,7 @@ const Navbar = ({ setSearch, setLostStatus }) => {
     const MenuBtn = () => {
         return (
             <div className={styles.dropdown}>
-                <IconButton>
+                {isForum && <IconButton>
                     <MenuIcon
                         fontSize="large"
                         onClick={() => {
@@ -91,7 +92,7 @@ const Navbar = ({ setSearch, setLostStatus }) => {
                             color: '#FCF7ED',
                             padding: '0px',
                         }} />
-                </IconButton>
+                </IconButton>}
 
                 {open && <div className={styles.dropdownBox}>
                     <FormGroup row>
