@@ -67,21 +67,47 @@ export async function createCommentFromComment(localParentId,userId,localContent
 export async function getCommentQueryFromParent(parentId,the_collection)
 {
     // query(collection(firestore, the_collection),orderBy("timestamp","desc"))
-    query(collection(firestore, the_collection),where("parentId","==",parentId),orderBy("timestamp"));
+    return await query(collection(firestore, the_collection),where("parentId","==",parentId),orderBy("timestamp"));
+}
+
+
+//This function will return query for comment from posts collection with parentId
+export async function getCommentQueryFromParentPost(parentId)
+{
+    return await getCommentQueryFromParent(parentId,post_collection_name);
+}
+
+
+//This function will return query for comment from comment collection with parentId
+export async function getCommentQueryFromParentComment(parentId)
+{
+    return await getCommentQueryFromParent(parentId,comment_collection_name);
 }
 
 
 //This function will return comment from posts collection with parentId
-export async function getCommentQueryFromParentPost(parentId)
+export async function getCommentFromParent(parentId)
 {
-    getCommentQueryFromParent(parentId,post_collection_name);
+    let commentList = [];
+    const q = await getCommentQueryFromParentPost(parentId);
+    const docs = await getDoc(q);
+    docs.forEach((doc) => {
+        commentList.push({commentID: doc.id, ...doc.data() });
+    })
+    return commentList;
 }
 
 
 //This function will return comment from comment collection with parentId
-export async function getCommentQueryFromParentComment(parentId)
+export async function getCommentFromComment(parentId)
 {
-    getCommentQueryFromParent(parentId,comment_collection_name);
+    let commentList = [];
+    const q = await getCommentQueryFromParentComment(parentId);
+    const docs = await getDoc(q);
+    docs.forEach((doc) => {
+        commentList.push({commentID: doc.id, ...doc.data() });
+    })
+    return commentList;
 }
 
 
