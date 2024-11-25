@@ -164,7 +164,7 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
         const handleSearchSubmit = async (event) => {
             event.preventDefault();
             if (tempSearchInput.trim()) {
-                const searchTerm = tempSearchInput.trim().toLowerCase();
+                const searchTerm = tempSearchInput.trim();
                 setSearch(searchTerm);
 
             } else {
