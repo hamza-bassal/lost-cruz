@@ -333,27 +333,35 @@ const Profile = () => {
                             }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span>
                             </Box>
 
+
                             {/* reset password */}
-                            <Box
-                                sx={{
-                                    margin: '10px',
-                                    color: 'Black',
-                                    overflow: 'hidden',
-                                    wordWrap: 'break-word',
-                                    textOverflow: 'ellipsis',
+                            <Box sx={{
+                                width: '200px',
+                                height: '50px',
+                                display: 'flex',
+                                justifyContent: 'left',
+                                alignItems: 'center',
                                 }}
                             >
-                                <span style={{ display: 'inline-flex' }}>
-                                    <a
-                                        href="#"
-                                        id="resetPassword"
-                                        style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }}
-                                        onClick={handleResetPassword}
-                                    >
+                                <Box
+                                    sx={{
+                                        width: '80%',
+                                        height: '80%',
+                                        bgcolor: '#0174BE',
+                                        borderRadius: '10px',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={handleResetPassword}
+                                >
+                                    <Typography sx={{color: 'white', fontSize: '15px',}}>
                                         Reset Password
-                                    </a>
-                                </span>
+                                    </Typography>
+                                </Box>
                             </Box>
+
                         </Box>
                     </Box>
 
