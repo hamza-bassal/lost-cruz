@@ -53,6 +53,28 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
         setOpen(false);
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+          const response = await fetch('/api/sendScheduledEmails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.CRON_SECRET}`,
+            },
+          });
+
+          if (response.ok) {
+            setStatus('Email sent successfully!');
+          } else {
+            setStatus('Failed to send email.');
+          }
+        } catch (error) {
+          setStatus('Error: ' + error.message);
+        }
+    };
+
     const MenuBtn = () => (
         <div className={styles.dropdown}>
             {isForum && (
