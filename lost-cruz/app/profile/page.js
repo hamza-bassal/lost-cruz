@@ -165,6 +165,52 @@ const Profile = () => {
         )
     }
 
+    const EditBox = () => {
+        return (
+            <Box className={styles.dropdown}>
+                <Box className={styles.dropdownBox}>
+                    <Box className={styles.userInfo}>
+                        {/* profile image */}
+                        <Box
+                            sx={{
+                                width: '150px',
+                                height: '150px',
+                                bgcolor: '#FFC436',
+                                borderRadius: '15px',
+                            }}>
+                            {/* ----- profile img here ----- */}
+                        </Box>
+
+                        <Box sx={{ marginTop: '20px', maxWidth: '50%' }}>
+                            {/* username + edit btn */}
+                            <Box className={styles.username}>
+                                <Box sx={{
+                                    margin: '10px',
+                                    fontSize: '20px',
+                                    width: 'inherit',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                }}><p id="fullName">fullName</p></Box>
+                            </Box>
+
+                            <hr style={{ borderTopColor: '#0174BE' }} />
+
+                            {/* user id */}
+                            <Box sx={{
+                                margin: '10px',
+                                color: 'gray',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word',
+                                textOverflow: 'ellipsis',
+                            }}><span style={{ display: "inline-flex" }}><p id="userName">userName</p></span>
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+        )
+    }
+
     const MenuBtn = () => {
         return (
             <Box className={styles.dropdown}>
@@ -335,64 +381,18 @@ const Profile = () => {
                     </Box>
 
                     {/* user info edit*/}
-                    <Box className={styles.userInfo}>
-                        {/* profile image */}
-                        <Box
-                            sx={{
-                                width: '150px',
-                                height: '150px',
-                                bgcolor: '#FFC436',
-                                borderRadius: '15px',
-                            }}>
-                            {/* ----- profile img here ----- */}
-                        </Box>
-
-                        <Box sx={{ marginTop: '20px', maxWidth: '50%' }}>
-                            {/* username + edit btn */}
-                            <Box className={styles.username}>
-                                <Box sx={{
-                                    margin: '10px',
-                                    fontSize: '20px',
-                                    width: 'inherit',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                }}><p id="fullName">fullName</p></Box>
-                            </Box>
-
-                            <hr style={{ borderTopColor: '#0174BE' }} />
-
-                            {/* user id */}
-                            <Box sx={{
-                                margin: '10px',
-                                color: 'gray',
-                                overflow: 'hidden',
-                                wordWrap: 'break-word',
-                                textOverflow: 'ellipsis',
-                            }}><span style={{ display: "inline-flex" }}><p id="userName">userName</p></span>
-                            </Box>
-
-                            {/* reset password */}
-                            <Box
-                                sx={{
-                                    margin: '10px',
-                                    color: 'Black',
-                                    overflow: 'hidden',
-                                    wordWrap: 'break-word',
-                                    textOverflow: 'ellipsis',
-                                }}
-                            >
-                                <span style={{ display: 'inline-flex' }}>
-                                    <a
-                                        href="#"
-                                        id="resetPassword"
-                                        style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }}
-                                        onClick={handleResetPassword}
-                                    >
-                                        Reset Password
-                                    </a>
-                                </span>
-                            </Box>
-                        </Box>
+                    <Box sx={{
+                        display: 'flex',
+                        width: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '1em',
+                        position: 'relative',
+                        padding: '15px',
+                    }}>
+                        {/* Filter Button */}
+                        <EditBox />
+                    
                     </Box>
 
                     <Box sx={{
@@ -406,7 +406,7 @@ const Profile = () => {
                         cursor: 'default'
                     }}>Select preferred tags to be notified of (5 posts in addition to regular digest posts):</Box>
 
-                    <Box sx={{
+                    {/* <Box sx={{
                         display: 'flex',
                         width: '100%',
                         alignItems: 'center',
@@ -415,10 +415,10 @@ const Profile = () => {
                         position: 'relative',
                         padding: '15px',
                     }}>
-                        {/* Filter Button */}
+                        
                         <MenuBtn />
                     
-                    </Box>
+                    </Box> */}
 
                     <Box sx={{
                         width: '100%',
