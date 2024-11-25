@@ -150,25 +150,58 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
         )
     }
 
-    const Search = ({ }) => {
-        const [tempSearchInput, setTempSearchInput] = useState("");  // Temporary value for input
-        const [searchInput, setSearchInput] = useState("");  // Final value to store search term
+    const Search = ({ setSearchResults }) => {
+        const [tempSearchInput, setTempSearchInput] = useState(""); 
+        const [searchInput, setSearchInput] = useState("");
     
-        // Handle input change, but don't update searchInput yet
         const handleSearchChange = (event) => {
-            setTempSearchInput(event.target.value);  // Update the temporary search input
+            setTempSearchInput(event.target.value); 
+        };
+
+        const performSearch = async (searchTerm) => {
+            try {
+                const postsRef = collection(db, "posts");
+    
+                const titleQuery = query(
+                    postsRef,
+                    where("title", ">=", searchTerm),
+                    where("title", "<=", searchTerm + "\uf8ff")
+                );
+    
+                const descriptionQuery = query(
+                    postsRef,
+                    where("description", ">=", searchTerm),
+                    where("description", "<=", searchTerm + "\uf8ff")
+                );
+    
+                const [titleSnapshot, descriptionSnapshot] = await Promise.all([
+                    getDocs(titleQuery),
+                    getDocs(descriptionQuery),
+                ]);
+    
+                const results = [
+                    ...titleSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+                    ...descriptionSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+                ];
+    
+                const uniqueResults = Array.from(new Map(results.map((item) => [item.id, item])).values());
+    
+                setSearchResults(uniqueResults);
+            } catch (error) {
+                console.error("Error performing search:", error);
+            }
         };
     
-        // Handle the search button click
-        const handleSearchClick = () => {
+        const handleSearchSubmit = async (event) => {
+            event.preventDefault();
             if (tempSearchInput.trim()) {
-                setSearch(tempSearchInput.trim());  // Update the search term in the parent
-                setSearchInput(tempSearchInput.trim());  // Update the final search input
-                console.log("Search term is:", tempSearchInput.trim());
+                const searchTerm = tempSearchInput.trim().toLowerCase();
+                setSearchInput(searchTerm); 
+                console.log("Searching for:", searchTerm);
+                await performSearch(searchTerm); 
             } else {
-                setSearch("");  // Clear the search in parent if input is empty
-                setSearchInput("");  // Clear the input
-                console.log("Search term is cleared");
+                console.log("Search input is empty. Clearing results.");
+                setSearchResults([]);
             }
         };
     
@@ -179,25 +212,23 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
                     method="get"
                     action="/"
                     id="searchForm"
-                    onSubmit={(e) => e.preventDefault()}  // Prevent form submission
+                    onSubmit={handleSearchSubmit} 
                 >
                     <input
                         className={styles.searchBar}
                         type="text"
                         placeholder="Search"
                         id="searchInput"
-                        value={tempSearchInput}  // Bind the input value to the temporary state
-                        onChange={handleSearchChange}  // Capture input changes
+                        value={tempSearchInput} 
+                        onChange={handleSearchChange} 
                     />
-                    <IconButton onClick={handleSearchClick}> {/* Trigger search when icon is clicked */}
+                    <IconButton onClick={handleSearchSubmit}>
                         <SearchIcon sx={{ color: '#0174BE' }} />
                     </IconButton>
                 </form>
             </div>
         );
     };
-    
-
 
     return (
         <Box className={styles.navBar}
