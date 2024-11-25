@@ -3,9 +3,11 @@
 'use client'
 
 import { useState } from 'react';
-import { Box, Button, IconButton, Link } from '@mui/material'
+import { Box, Button, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import CloseIcon from '@mui/icons-material/Close';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+
 
 import styles from "./page.module.css";
 
@@ -23,6 +25,22 @@ export default function AuthPage() {
 
   const [login, setLogin] = useState(false)
   const [help, setHelp] = useState(false)
+
+  const [forgotPassword, setForgotPassword] = useState(false); // State for the Forgot Password modal
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleForgotPasswordSubmit = () => {
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setMessage('Password reset email sent! Check your inbox.');
+      })
+      .catch((error) => {
+        console.error('Error sending password reset email:', error);
+        setMessage('Failed to send password reset email. Please try again.');
+      });
+  };
 
   const LoginBox = () => {
     return (
@@ -50,6 +68,22 @@ export default function AuthPage() {
           <Button onClick={() => setShowLogin(!showLogin)}>
             {showLogin ? "Need an account? Sign up" : "Already have an account? Log in"}
           </Button>
+          
+          {/* Forgot Password Button */}
+          <Button
+            onClick={() => setForgotPassword(true)} // Open modal
+            style={{
+              marginTop: '10px',
+              background: 'none',
+              color: 'blue',
+              textDecoration: 'underline',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Forgot Password?
+          </Button>
+
           {/* same as above but with no box */}
           {/* <Box mx={2} fontSize={14}>
 						{showLogin ? "Don't have an account?" : "Already have an account?"}
@@ -149,6 +183,26 @@ export default function AuthPage() {
 
         </Box>
         {login && <LoginBox />}
+
+        {/* Forgot Password Modal */}
+        <Dialog open={forgotPassword} onClose={() => setForgotPassword(false)}>
+          <DialogTitle>Forgot Password</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            {message && <p style={{ marginTop: '10px' }}>{message}</p>}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setForgotPassword(false)}>Cancel</Button>
+            <Button onClick={handleForgotPasswordSubmit}>Send Reset Email</Button>
+          </DialogActions>
+        </Dialog>
 
         {/* Footer */}
         <Box sx={{
