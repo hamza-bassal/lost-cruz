@@ -6,7 +6,7 @@ export async function GET(request) {
   try {
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return new Response('Unauthorized', { status: 401 });
+      	return new Response('Unauthorized', { status: 401 });
     }
 
     // Fetch users
@@ -15,21 +15,21 @@ export async function GET(request) {
 
     // Fetch latest posts
     const postQuery = query(
-      collection(firestore, 'posts'),
-      orderBy('timestamp', 'desc')
+		collection(firestore, 'posts'),
+		orderBy('timestamp', 'desc')
     );
     const postSnapshot = await getDocs(postQuery);
     const posts = postSnapshot.docs.map(doc => ({ postID: doc.id, ...doc.data() }));
 
     // Email transporter setup
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.MAIL_PASSWORD,
-      },
+		service: 'gmail',
+		port: 465,
+		secure: true,
+		auth: {
+			user: process.env.EMAIL_USER,
+			pass: process.env.MAIL_PASSWORD,
+		},
     });
 
     // Email sending logic
@@ -62,17 +62,33 @@ export async function GET(request) {
       // Additional posts for preferences
       let preferredPostsHtml = '';
       if (digestTags?.length || digestStatus?.length) {
-        const preferredQuery = query(
-          collection(firestore, 'posts'),
-          orderBy('timestamp', 'desc'),
-          ...(digestTags?.length ? [where('tags', 'array-contains-any', digestTags)] : []),
-          ...(digestStatus?.length
-            ? [where('lostOrFound', digestStatus.length === 1 ? '==' : 'in', digestStatus)]
-            : [])
-        );
+        let preferredQuery;
+
+		if (digestTags?.length > 0 && (digestStatus?.length == 0 || digestStatus?.length == 2)) {
+			preferredQuery = query(
+				collection(firestore, 'posts'),
+				orderBy('timestamp', 'desc'), // Order by the 'timestamp' field in descending order
+				where('tags', 'array-contains-any', digestTags),
+			);
+		} else if (digestTags?.length > 0 && digestStatus?.length == 1) {
+			preferredQuery = query(
+				collection(firestore, 'posts'),
+				orderBy('timestamp', 'desc'), // Order by the 'timestamp' field in descending order
+				where('tags', 'array-contains-any', digestTags),
+				where('lostOrFound', '==', digestStatus[0]),
+			);
+		} else if (digestTags?.length == 0) {
+			preferredQuery = query(
+				collection(firestore, 'posts'),
+				orderBy('timestamp', 'desc'), // Order by the 'timestamp' field in descending order
+				where('lostOrFound', 'in', digestStatus),
+			);
+		}
 
         const preferredSnapshot = await getDocs(preferredQuery);
         const preferredPosts = preferredSnapshot.docs.map(doc => ({ postID: doc.id, ...doc.data() }));
+
+		console.log(preferredPosts);
 
         preferredPostsHtml = preferredPosts
           .slice(0, 5)
