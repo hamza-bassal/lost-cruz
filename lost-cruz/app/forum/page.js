@@ -127,6 +127,7 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
 const ForumPage = () => {
     const [searchTerms, setSearch] = useState([])
     const [lostOrFound, setStatus] = useState(["LOST", "FOUND"])
+    const validSearchTerms = Array.isArray(searchTerms) ? searchTerms : [searchTerms]; // convert serachTerms to array to pass in query
 
     // brought posts list into forum page to keep setSearch within scope of site rendering, this is for both searching and filtering using tags
     const PostList = () => {
@@ -140,10 +141,11 @@ const ForumPage = () => {
                 postsQuery = query(collection(firestore, 'posts'), orderBy("timestamp", "desc"));
             } else if (searchTerms.length > 0 && lostOrFound.length < 2) {
                 // If both searchTerms and lostOrFound have values, filter by both
+                console.log("searchTerms and lostOrFound have values")
                 postsQuery = query(
                     collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),
-                    where('tags', 'array-contains-any', searchTerms),
+                    where('tags', 'array-contains-any', validSearchTerms),
                     where('lostOrFound', '==', lostOrFound[0])
                 );
             } else if (searchTerms.length > 0) {
@@ -151,7 +153,7 @@ const ForumPage = () => {
                 postsQuery = query(
                     collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),
-                    where('tags', 'array-contains-any', searchTerms)
+                    where('tags', 'array-contains-any', validSearchTerms)
                 );
             } else if (lostOrFound.length != 0) {
                 // If only lostOrFound has a value, filter by lostOrFound
@@ -168,6 +170,7 @@ const ForumPage = () => {
                 postsList.push({ postID: doc.id, ...doc.data() })
             })
             setPosts(postsList)
+            console.log("updated posts")
         }
 
         useEffect(() => {
