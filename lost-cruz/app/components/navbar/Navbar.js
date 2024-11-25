@@ -10,45 +10,42 @@ import { tagOptions } from '../../data/tagsData';
 import { Label } from "@mui/icons-material";
 
 // Accepts udpate search method as parameter
-const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
+const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
-    const [status, setStatus] = useState("")
 
     const { handleLogout, isLoggingOut, error } = useLogout();
 
     const handleLostCheckboxChange = (event, status) => {
         const isChecked = event.target.checked;
-    
+
         setSelecLost((statuses) => {
             if (isChecked) {
-                return [...statuses, status];  // Add the tag to the selectedTags array
+                return [...statuses, status]; // Add the tag to the selectedTags array
             } else {
-                return statuses.filter((exisitngStatus) => exisitngStatus != status);  // Remove the tag
+                return statuses.filter((existingStatus) => existingStatus != status); // Remove the tag
             }
         });
     };
-
 
     const handleTagCheckboxChange = (event, tag) => {
         const isChecked = event.target.checked;
-    
+
         setSelectedTags((prevTags) => {
             if (isChecked) {
-                return [...prevTags, tag];  // Add the tag to the selectedTags array
+                return [...prevTags, tag]; // Add the tag to the selectedTags array
             } else {
-                return prevTags.filter((existingTag) => existingTag != tag);  // Remove the tag
+                return prevTags.filter((existingTag) => existingTag != tag); // Remove the tag
             }
         });
     };
-    
-      // Trigger filter when user clicks the "Filter" button
+
     const handleFilterClick = () => {
-        setSearch(selectedTags);  // Update the searchTerms in the parent component
+        setSearch(selectedTags); // Update the searchTerms in the parent component
         if (selectedLostStatus.length == 0) {
-            setSelecLost(["LOST", "FOUND"])
+            setSelecLost(["LOST", "FOUND"]);
             setLostStatus(["LOST", "FOUND"]);
         } else {
             setLostStatus(selectedLostStatus);
@@ -56,155 +53,125 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
         setOpen(false);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        try {
-          const response = await fetch('/api/sendScheduledEmails', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.CRON_SECRET}`,
-            },
-          });
-    
-          if (response.ok) {
-            setStatus('Email sent successfully!');
-          } else {
-            setStatus('Failed to send email.');
-          }
-        } catch (error) {
-          setStatus('Error: ' + error.message);
-        }
-    };
-
-    const MenuBtn = () => {
-        return (
-            <div className={styles.dropdown}>
-                {isForum && <IconButton>
+    const MenuBtn = () => (
+        <div className={styles.dropdown}>
+            {isForum && (
+                <IconButton>
                     <MenuIcon
                         fontSize="large"
                         onClick={() => {
-                            setOpen(prev => !prev);
+                            setOpen((prev) => !prev);
                             setProf(false);
                         }}
                         sx={{
-                            color: '#FCF7ED',
-                            padding: '0px',
-                        }} />
-                </IconButton>}
-
-                {open && <div className={styles.dropdownBox}>
+                            color: "#FCF7ED",
+                            padding: "0px",
+                        }}
+                    />
+                </IconButton>
+            )}
+            {open && (
+                <div className={styles.dropdownBox}>
                     <FormGroup row>
-                        <FormControlLabel 
-                        control={<Checkbox 
-                            checked={selectedLostStatus.includes("LOST")} 
-                            onChange={(event) => handleLostCheckboxChange(event, "LOST")}
-                            size="small" />} 
-                            label="Lost" />
-                        <FormControlLabel 
-                        control={<Checkbox 
-                            checked={selectedLostStatus.includes("FOUND")} 
-                            onChange={(event) => handleLostCheckboxChange(event, "FOUND")}
-                            size="small" />} 
-                            label="Found" />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={selectedLostStatus.includes("LOST")}
+                                    onChange={(event) =>
+                                        handleLostCheckboxChange(event, "LOST")
+                                    }
+                                    size="small"
+                                />
+                            }
+                            label="Lost"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={selectedLostStatus.includes("FOUND")}
+                                    onChange={(event) =>
+                                        handleLostCheckboxChange(event, "FOUND")
+                                    }
+                                    size="small"
+                                />
+                            }
+                            label="Found"
+                        />
                     </FormGroup>
                     <hr className={styles.hr} />
                     <FormGroup column>
                         {tagOptions.map((tag, index) => (
-                            <FormControlLabel key={tag || index} 
-                            control={<Checkbox 
-                                sx={{ '& .MuiSvgIcon-root': { fontSize: 15 } }} 
-                                checked={selectedTags.includes(tag)} 
-                                onChange={(event) => handleTagCheckboxChange(event, tag)}
-                                />} 
-                            label={tag} />
+                            <FormControlLabel
+                                key={tag || index}
+                                control={
+                                    <Checkbox
+                                        sx={{ "& .MuiSvgIcon-root": { fontSize: 15 } }}
+                                        checked={selectedTags.includes(tag)}
+                                        onChange={(event) =>
+                                            handleTagCheckboxChange(event, tag)
+                                        }
+                                    />
+                                }
+                                label={tag}
+                            />
                         ))}
                     </FormGroup>
-                    <Box sx={{
-                        width: '200px',
-                        height: '50px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }} onClick={handleFilterClick} >
+                    <Box
+                        sx={{
+                            width: "200px",
+                            height: "50px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                        onClick={handleFilterClick}
+                    >
                         <Box
                             sx={{
-                                width: '100%',
-                                height: '80%',
-                                bgcolor: '#FFC436',
-                                borderRadius: '10px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                cursor: 'pointer',
+                                width: "100%",
+                                height: "80%",
+                                bgcolor: "#FFC436",
+                                borderRadius: "10px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                cursor: "pointer",
                             }}
                         >
-                            <Typography sx={{color: 'black', fontWeight: 'bold', fontSize: '20px',}}>
+                            <Typography
+                                sx={{
+                                    color: "black",
+                                    fontWeight: "bold",
+                                    fontSize: "20px",
+                                }}
+                            >
                                 Filter
                             </Typography>
                         </Box>
                     </Box>
-                </div>}
-            </div>
-        )
-    }
+                </div>
+            )}
+        </div>
+    );
 
-    const Search = ({ setSearchResults }) => {
-        const [tempSearchInput, setTempSearchInput] = useState(""); 
-        const [searchInput, setSearchInput] = useState("");
-    
+    const Search = () => {
+        const [tempSearchInput, setTempSearchInput] = useState("");
+
         const handleSearchChange = (event) => {
-            setTempSearchInput(event.target.value); 
+            setTempSearchInput(event.target.value);
         };
 
-        const performSearch = async (searchTerm) => {
-            try {
-                const postsRef = collection(db, "posts");
-    
-                const titleQuery = query(
-                    postsRef,
-                    where("title", ">=", searchTerm),
-                    where("title", "<=", searchTerm + "\uf8ff")
-                );
-    
-                const descriptionQuery = query(
-                    postsRef,
-                    where("description", ">=", searchTerm),
-                    where("description", "<=", searchTerm + "\uf8ff")
-                );
-    
-                const [titleSnapshot, descriptionSnapshot] = await Promise.all([
-                    getDocs(titleQuery),
-                    getDocs(descriptionQuery),
-                ]);
-    
-                const results = [
-                    ...titleSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-                    ...descriptionSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
-                ];
-    
-                const uniqueResults = Array.from(new Map(results.map((item) => [item.id, item])).values());
-    
-                setSearchResults(uniqueResults);
-            } catch (error) {
-                console.error("Error performing search:", error);
-            }
-        };
-    
         const handleSearchSubmit = async (event) => {
             event.preventDefault();
             if (tempSearchInput.trim()) {
                 const searchTerm = tempSearchInput.trim().toLowerCase();
-                setSearchInput(searchTerm); 
-                console.log("Searching for:", searchTerm);
-                await performSearch(searchTerm); 
+                setSearch(searchTerm);
+
             } else {
                 console.log("Search input is empty. Clearing results.");
-                setSearchResults([]);
             }
         };
-    
+
         return (
             <div className={styles.searchWrapper}>
                 <form
@@ -212,18 +179,18 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
                     method="get"
                     action="/"
                     id="searchForm"
-                    onSubmit={handleSearchSubmit} 
+                    onSubmit={handleSearchSubmit}
                 >
                     <input
                         className={styles.searchBar}
                         type="text"
                         placeholder="Search"
                         id="searchInput"
-                        value={tempSearchInput} 
-                        onChange={handleSearchChange} 
+                        value={tempSearchInput}
+                        onChange={handleSearchChange}
                     />
                     <IconButton onClick={handleSearchSubmit}>
-                        <SearchIcon sx={{ color: '#0174BE' }} />
+                        <SearchIcon sx={{ color: "#0174BE" }} />
                     </IconButton>
                 </form>
             </div>
