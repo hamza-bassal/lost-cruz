@@ -99,10 +99,11 @@ const Profile = () => {
             const userInfo = { ...userSnapshot.data() };
 
             /* Display username, id, profile image*/
+            const fullName = userInfo.fullName;
             const userName = userInfo.username;
             // const userPic = user.photoURL;
-            document.getElementById("userName").textContent = userName;
-            // document.getElementById("userId").textContent = id;  // do we have a user id to display?
+            document.getElementById("fullName").textContent = fullName;
+            document.getElementById("userName").textContent = userName;  // do we have a user id to display?
             // document.getElementById("userPic").src = userPic;
 
             setSelectedTags(userInfo.digestTags);
@@ -159,6 +160,52 @@ const Profile = () => {
                     <IconButton onClick={() => { removePost(postId) }}>
                         <DeleteIcon />
                     </IconButton>
+                </Box>
+            </Box>
+        )
+    }
+
+    const EditBox = () => {
+        return (
+            <Box className={styles.dropdown}>
+                <Box className={styles.dropdownBox}>
+                    <Box className={styles.userInfo}>
+                        {/* profile image */}
+                        <Box
+                            sx={{
+                                width: '150px',
+                                height: '150px',
+                                bgcolor: '#FFC436',
+                                borderRadius: '15px',
+                            }}>
+                            {/* ----- profile img here ----- */}
+                        </Box>
+
+                        <Box sx={{ marginTop: '20px', maxWidth: '50%' }}>
+                            {/* username + edit btn */}
+                            <Box className={styles.username}>
+                                <Box sx={{
+                                    margin: '10px',
+                                    fontSize: '20px',
+                                    width: 'inherit',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                }}><p id="fullName">fullName</p></Box>
+                            </Box>
+
+                            <hr style={{ borderTopColor: '#0174BE' }} />
+
+                            {/* user id */}
+                            <Box sx={{
+                                margin: '10px',
+                                color: 'gray',
+                                overflow: 'hidden',
+                                wordWrap: 'break-word',
+                                textOverflow: 'ellipsis',
+                            }}><span style={{ display: "inline-flex" }}><p id="userName">userName</p></span>
+                            </Box>
+                        </Box>
+                    </Box>
                 </Box>
             </Box>
         )
@@ -313,12 +360,7 @@ const Profile = () => {
                                     width: 'inherit',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
-                                }}><p id="userName">USERNAME</p></Box>
-
-                                <IconButton>
-                                    {/* edit button: change the username */}
-                                    <EditIcon sx={{ color: '#0174BE' }} />
-                                </IconButton>
+                                }}><p id="fullName">fullName</p></Box>
                             </Box>
 
                             <hr style={{ borderTopColor: '#0174BE' }} />
@@ -330,32 +372,27 @@ const Profile = () => {
                                 overflow: 'hidden',
                                 wordWrap: 'break-word',
                                 textOverflow: 'ellipsis',
-                            }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span>
-                            </Box>
-
-                            {/* reset password */}
-                            <Box
-                                sx={{
-                                    margin: '10px',
-                                    color: 'Black',
-                                    overflow: 'hidden',
-                                    wordWrap: 'break-word',
-                                    textOverflow: 'ellipsis',
-                                }}
-                            >
-                                <span style={{ display: 'inline-flex' }}>
-                                    <a
-                                        href="#"
-                                        id="resetPassword"
-                                        style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }}
-                                        onClick={handleResetPassword}
-                                    >
-                                        Reset Password
-                                    </a>
-                                </span>
-                            </Box>
+                            }}><span style={{ display: "inline-flex" }}><p id="userName">userName.</p></span></Box>
                         </Box>
+                        <IconButton>
+                            {/* edit button: change the username */}
+                            <EditIcon sx={{ color: '#0174BE' }} />
+                        </IconButton>
                     </Box>
+
+                    {/* user info edit*/}
+                    {/* <Box sx={{
+                        display: 'flex',
+                        width: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '1em',
+                        position: 'relative',
+                        padding: '15px',
+                    }}>
+                        <EditBox />
+                    
+                    </Box> */}
 
                     <Box sx={{
                         width: '100%',
@@ -377,7 +414,7 @@ const Profile = () => {
                         position: 'relative',
                         padding: '15px',
                     }}>
-                        {/* Filter Button */}
+                        
                         <MenuBtn />
                     
                     </Box>
