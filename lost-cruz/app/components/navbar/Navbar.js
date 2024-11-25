@@ -58,10 +58,11 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(process.env.CRON_SECRET);
     
         try {
           const response = await fetch('/api/sendScheduledEmails', {
-            method: 'POST',
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${process.env.CRON_SECRET}`,
