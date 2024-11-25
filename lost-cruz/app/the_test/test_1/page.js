@@ -25,9 +25,13 @@ import { useRequireAuth } from '../../hooks/useRequireAuth';
 import React from 'react';
 import Button from '@mui/material/Button';
 
-import {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteComment, deleteCommentFromComment, deleteCommentFromPost} from "../../comment_function"
+import {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteCommentWithCheck, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment, getCommentFromComment, getCommentFromParent} from "../../comment_function"
 
 export default function Home() {
+    const clickHandler = async () => {
+        let content = await getCommentFromParent("UCXelmbhWRNHnl2RhliN");
+        console.log(content) 
+      };
     return (<div>Testing
         <div>
             <div style={{ marginTop: "5vh" }}>
@@ -36,12 +40,12 @@ export default function Home() {
                     </Button>
             </div>
             <div style={{ marginTop: "5vh" }}>
-                <Button variant="contained" onClick={() => { console.log(getCommentQueryFromParentPost("UCXelmbhWRNHnl2RhliN")) }}>
+                <Button variant="contained" onClick={() => { clickHandler() }}>
                     Print Comment
                     </Button>
             </div>
             <div style={{ marginTop: "5vh" }}>
-                <Button variant="contained" onClick={() => { deleteCommentFromPost("UCXelmbhWRNHnl2RhliN","Lk3Vskz3ZuZQGV1wewJxEPUn3c13","72bclUqrJWxMhkL4mJZK") }}>
+                <Button variant="contained" onClick={() => { deleteCommentFromPost("UCXelmbhWRNHnl2RhliN","Lk3Vskz3ZuZQGV1wewJxEPUn3c13","y9DKI7kpm0WSPxgLXLXC") }}>
                     Delete Comment
                     </Button>
             </div>

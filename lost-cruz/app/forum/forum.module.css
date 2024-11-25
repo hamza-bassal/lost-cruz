@@ -1,3 +1,15 @@
+.background {
+    width: 75%;
+    height: 100%;
+    min-height: 100vh;
+    background-color: #fcf7ed;
+    margin: auto;
+    border: 1px solid lightgray;
+    @media screen and (max-width: 640px) {
+        width: 100%;
+    }
+}
+
 .postListContainer {
     min-height: 1000px;
     height: auto;
@@ -12,6 +24,10 @@
     height: auto;
     background-color: #FCF7ED;
     display: flex;
+
+    @media screen and (max-width: 640px) {
+        min-height: 50%;
+    }
 }
 
 .postContent {
@@ -35,6 +51,10 @@
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
+
+    @media screen and (max-width: 640px) {
+        max-width: 70%;
+    }
 }
 
 .titleBox {
@@ -48,6 +68,10 @@
     height: auto;
     margin: 20px 10px;
     overflow: hidden;
+
+    @media screen and (max-width: 640px) {
+        max-width: 20%;
+    }
 }
 
 .description {
@@ -58,12 +82,39 @@
     overflow: hidden;
     margin-bottom: 10px;
 
-    @supports (-webkit-line-clamp: 5) {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: initial;
-        display: -webkit-box;
-        -webkit-line-clamp: 5;
-        -webkit-box-orient: vertical;
+    @media screen and (min-width: 640px) {
+        @supports (-webkit-line-clamp: 5) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: initial;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+        }
     }
+}
+
+.LFTag {
+    background-color: #0147BE;
+    height: 30px;
+    width: auto;
+    padding: 10px;
+    color: white;
+    font-size: small;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.tag {
+    background-color: #FFC436;
+    height: 30px;
+    width: auto;
+    padding: 10px;
+    color: white;
+    font-size: small;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    max-width: 100px;
 }

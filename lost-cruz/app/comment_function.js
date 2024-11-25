@@ -24,6 +24,15 @@ const comment_collection_name = 'comments';
 const post_collection_name = 'posts';
 const user_collection_name = 'users';
 
+//Warning
+//Warning
+//Warning
+//Warning
+//Warning
+//Warning
+//Warning:
+//All the delete method is not tested for comment of comment deletion. 
+
 export async function createComment(localParentId,userId,localContent,the_collection)
 {
     // Creating the documemnt for storing the comment
@@ -64,49 +73,41 @@ export async function createCommentFromComment(localParentId,userId,localContent
 
 // This function will return comment Query from the parentId
 // You will need to use getDocs to get the comments 
-export async function getCommentQueryFromParent(parentId,the_collection)
+export async function getCommentQueryFromParentCuston(parentId,the_collection)
 {
     // query(collection(firestore, the_collection),orderBy("timestamp","desc"))
-    query(collection(firestore, the_collection),where("parentId","==",parentId),orderBy("timestamp"));
+    return await query(collection(firestore, the_collection),where("parentId","==",parentId));
+}
+
+
+//This function will return query for comment from comment collection with parentId
+export async function getCommentQueryFromParent(parentId)
+{
+    return await getCommentQueryFromParentCuston(parentId,comment_collection_name);
 }
 
 
 //This function will return comment from posts collection with parentId
-export async function getCommentQueryFromParentPost(parentId)
+export async function getCommentFromParent(parentId)
 {
-    getCommentQueryFromParent(parentId,post_collection_name);
+    let commentList = [];
+    const q = await getCommentQueryFromParent(parentId);
+    const docs = await getDocs(q);
+    docs.forEach((doc) => {
+        commentList.push({commentID: doc.id, ...doc.data() });
+    })
+    return commentList;
 }
 
 
-//This function will return comment from comment collection with parentId
-export async function getCommentQueryFromParentComment(parentId)
-{
-    getCommentQueryFromParent(parentId,comment_collection_name);
-}
-
-
-//This function will delete the comment
-//This only works when the user delete it's own comment
-export async function deleteComment(ParentId,userId,commentId,the_collection) {
-    //Check is the user the creator of comment
-    let correct_user = await isUserOwnerOfComment(userId,commentId);
-    if(!correct_user)
-    {
-        alert("You are not the owner of the comment!");
-        return;
-    }
-    //Confirm Box
-    let result = confirm("Are you sure you want to delete the comment?");
-    if(result == false)
-    {
-        return;
-    }
+//This is the internal comment delete
+async function deleteComment(ParentId,commentId,the_collection) {
     const docRef = doc(firestore, comment_collection_name, commentId)
     const docSnap = await getDoc(docRef)
 
     if (!docSnap.exists()) {
         console.error("Comment does not exist!");
-        return;
+        return false;
     }
 
     const parentRef = doc(firestore,the_collection,ParentId)
@@ -115,7 +116,16 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
     if (!(docSnap.exists() && parentSnap.exists()))
     {
         console.error("Can't find comment or post");
-        return;
+        return false;
+    }
+
+    //If there is child comment recersively delete the child comment
+    for(let i = 0; i < docSnap.data().childComment.length; i++)
+    {
+        console.log("Call again");
+        //The collection is always comment because post can only be parent.
+        //The only thing that can be a child is comment
+        await deleteComment(commentId,docSnap.data().childComment[i],comment_collection_name);
     }
 
     //Delete commentId form Parent
@@ -131,25 +141,55 @@ export async function deleteComment(ParentId,userId,commentId,the_collection) {
     //Delete comment
     if (docSnap.exists()) {
         await deleteDoc(docRef)
-        // location.reload();
-        // alert("Comment Successfully Deleted!");
+        return true;
+        //location.reload();
+        //alert("Comment Successfully Deleted!");
     }
     else {
         console.error("Can't find the comment!");
+        return false;
+    }
+}
+
+
+//This function need testing//////////////////////////////////////////////////////////////
+//This function will delete the comment
+//This only works when the user delete it's own comment
+export async function deleteCommentWithCheck(ParentId,userId,commentId,the_collection) {
+    //Check is the user the creator of comment
+    let correct_user = await isUserOwnerOfComment(userId,commentId);
+    if(!correct_user)
+    {
+        alert("You are not the owner of the comment!");
         return;
     }
+    //Confirm Box
+    let result = confirm("Are you sure you want to delete the comment?");
+    if(result == false)
+    {
+        return;
+    }
+
+    let result2 = await deleteComment(ParentId,commentId,the_collection);
+    if(result2 == false)
+    {
+        return;
+    }
+
+    location.reload();
+    alert("Comment Successfully Deleted!");
 }
 
 
 //This function will delete the comment from post
 export async function deleteCommentFromPost(parentId,userId,commentId){
-    deleteComment(parentId,userId,commentId,post_collection_name);
+    deleteCommentWithCheck(parentId,userId,commentId,post_collection_name);
 }
 
 
 //This function will delete the comment from commnet
 export async function deleteCommentFromComment(parentId,userId,commentId){
-    deleteComment(parentId,userId,commentId,comment_collection_name);
+    deleteCommentWithCheck(parentId,userId,commentId,comment_collection_name);
 }
 
 
@@ -174,4 +214,4 @@ export async function isUserOwnerOfComment(userId,commentId)
     }
 }
 
-export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, getCommentQueryFromParentComment, getCommentQueryFromParentPost, deleteComment, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment};
+export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, deleteCommentWithCheck, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment, getCommentFromParent, getCommentQueryFromParent, getCommentQueryFromParentCuston};

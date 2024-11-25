@@ -28,18 +28,7 @@ import { useRequireAuth } from '../hooks/useRequireAuth';
 const LFTag = ({ tag }) => {
     // Lost / Found
     return (
-        <Box
-            sx={{
-                bgcolor: '#0147BE',
-                height: '30px',
-                width: 'auto',
-                padding: '10px',
-                color: 'white',
-                fontSize: 'small',
-                borderRadius: '10px',
-                display: 'flex',
-                alignItems: 'center',
-            }}>
+        <Box className={styles.LFTag}>
             <Box
                 sx={{
                     overflow: 'hidden',
@@ -54,19 +43,7 @@ const LFTag = ({ tag }) => {
 
 const Tag = ({ tag }) => {
     return (
-        <Box
-            sx={{
-                bgcolor: '#FFC436',
-                height: '30px',
-                width: 'auto',
-                padding: '10px',
-                color: 'white',
-                fontSize: 'small',
-                borderRadius: '15px',
-                display: 'flex',
-                alignItems: 'center',
-                maxWidth: '100px',
-            }}>
+        <Box className={styles.tag}>
             <Box
                 sx={{
                     overflow: 'hidden',
@@ -89,14 +66,26 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
                     <Box>
                         <Box className={styles.titleBox}>
                             <Link href={`/forum/${postId}`}
-                                sx={{
-                                    width: 'inherit',
-                                    textDecoration: 'none',
-                                    fontSize: '1.8em',
-                                    fontWeight: 'bold',
-                                    color: '#0C356A',
-                                    whiteSpace: 'nowrap',
-                                }}>{title}
+                            sx={{
+                                width: 'inherit', 
+                                textDecoration: 'none', 
+                                fontSize: '1.8em', 
+                                fontWeight: 'bold',
+                                color: '#0C356A',
+                                whiteSpace: 'nowrap',
+                                '@media screen and (max-width: 640px)' : {
+                                    fontSize: '1.3em',
+                                    '@supports (-webkit-line-clamp: 2)' : {
+                                        overflow: 'hidden', 
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'initial', 
+                                        display: '-webkit-box',
+                                        '-webkit-line-clamp': '2', 
+                                        '-webkit-box-orient' : 'vertical',
+                                    }
+                                }
+                            }}
+                                id="title">{title}
                             </Link>
                         </Box>
                         <Box className={styles.description}
@@ -107,7 +96,7 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
                         </Box>
                     </Box>
                     {/* tags */}
-                    <Box sx={{ margin: '10px', marginBottom: '5px', width: "100%", overflow: 'hidden', display: 'flex', gap: '10px' }}>
+                    <Box sx={{ margin: '10px', marginBottom: '5px', width: "100%", overflowX: 'scroll', scrollbarWidth: 'none', display: 'flex', gap: '10px' }}>
                         <LFTag tag={lostOrFound} />
                         {tagsSlice.map((tag, index) => (
                             <Tag key={tag || index} tag={tag} />
@@ -138,6 +127,7 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
 const ForumPage = () => {
     const [searchTerms, setSearch] = useState([])
     const [lostOrFound, setStatus] = useState(["LOST", "FOUND"])
+    const validSearchTerms = Array.isArray(searchTerms) ? searchTerms : [searchTerms]; // convert serachTerms to array to pass in query
 
     // brought posts list into forum page to keep setSearch within scope of site rendering, this is for both searching and filtering using tags
     const PostList = () => {
@@ -151,10 +141,11 @@ const ForumPage = () => {
                 postsQuery = query(collection(firestore, 'posts'), orderBy("timestamp", "desc"));
             } else if (searchTerms.length > 0 && lostOrFound.length < 2) {
                 // If both searchTerms and lostOrFound have values, filter by both
+                console.log("searchTerms and lostOrFound have values")
                 postsQuery = query(
                     collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),
-                    where('tags', 'array-contains-any', searchTerms),
+                    where('tags', 'array-contains-any', validSearchTerms),
                     where('lostOrFound', '==', lostOrFound[0])
                 );
             } else if (searchTerms.length > 0) {
@@ -162,7 +153,7 @@ const ForumPage = () => {
                 postsQuery = query(
                     collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),
-                    where('tags', 'array-contains-any', searchTerms)
+                    where('tags', 'array-contains-any', validSearchTerms)
                 );
             } else if (lostOrFound.length != 0) {
                 // If only lostOrFound has a value, filter by lostOrFound
@@ -179,6 +170,7 @@ const ForumPage = () => {
                 postsList.push({ postID: doc.id, ...doc.data() })
             })
             setPosts(postsList)
+            console.log("updated posts")
         }
 
         useEffect(() => {
@@ -260,10 +252,10 @@ const ForumPage = () => {
             <Box sx={{ bgcolor: '#0174BE', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'space-around', }}></Box>
 
             {/* sends setSearch to navbar to update search terms in filters */}
-            <Navbar setSearch={setSearch} setLostStatus={setStatus}></Navbar>
+            <Navbar setSearch={setSearch} setLostStatus={setStatus} isForum={true}></Navbar>
             {/* background */}
             <Container maxWidth={false} disableGutters sx={{ height: 'auto', bgcolor: '#fff0ce', position: 'absolute'}}>
-                <Box sx={{ width: 0.75, height: '100%', bgcolor: '#fcf7ed', margin: 'auto', borderStyle: 'solid', borderWidth: '1px', borderColor: 'lightgray' }}>
+                <Box className={styles.background}>
 
                     {/* post List */}
                     <PostList />
