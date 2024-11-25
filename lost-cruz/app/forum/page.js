@@ -125,58 +125,57 @@ const Post = ({ postId, title, description, tags, imageURL, lostOrFound }) => {
 
 
 const ForumPage = () => {
-    const [searchTerms, setSearch] = useState([]); // searchTerms holds what the user inputs in the search bar
-    const [lostOrFound, setStatus] = useState(["LOST", "FOUND"]); // To filter LOST/FOUND statuses
+    const [searchTerms, setSearch] = useState([])
+    const [lostOrFound, setStatus] = useState(["LOST", "FOUND"])
 
+    // brought posts list into forum page to keep setSearch within scope of site rendering, this is for both searching and filtering using tags
     const PostList = () => {
-        const [posts, setPosts] = useState([]);
+        const [posts, setPosts] = useState([])
 
         const updatePosts = async () => {
             let postsQuery;
-
-            if (searchTerms.length === 0 && lostOrFound.length === 2) {
-                // No filters: get all posts
-                postsQuery = query(collection(firestore, "posts"), orderBy("timestamp", "desc"));
+    
+            if (searchTerms.length == 0 && lostOrFound.length == 2) {
+                // If both searchTerms and lostOrFound are empty, return all posts
+                postsQuery = query(collection(firestore, 'posts'), orderBy("timestamp", "desc"));
             } else if (searchTerms.length > 0 && lostOrFound.length < 2) {
-                // Filter by search terms and lostOrFound status
+                // If both searchTerms and lostOrFound have values, filter by both
                 postsQuery = query(
-                    collection(firestore, "posts"),
+                    collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),
-                    where("lostOrFound", "==", lostOrFound[0]),
-                    where("title", ">=", searchTerms[0]),
-                    where("title", "<=", searchTerms[0] + "\uf8ff")
+                    where('tags', 'array-contains-any', searchTerms),
+                    where('lostOrFound', '==', lostOrFound[0])
                 );
             } else if (searchTerms.length > 0) {
-                // Filter by search terms
+                // If only searchTerms have values, filter by tags
                 postsQuery = query(
-                    collection(firestore, "posts"),
+                    collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),
-                    where("title", ">=", searchTerms[0]),
-                    where("title", "<=", searchTerms[0] + "\uf8ff")
+                    where('tags', 'array-contains-any', searchTerms)
                 );
-            } else {
-                // Filter by lostOrFound
+            } else if (lostOrFound.length != 0) {
+                // If only lostOrFound has a value, filter by lostOrFound
                 postsQuery = query(
-                    collection(firestore, "posts"),
+                    collection(firestore, 'posts'),
                     orderBy("timestamp", "desc"),
-                    where("lostOrFound", "==", lostOrFound[0])
+                    where('lostOrFound', '==', lostOrFound[0])
                 );
             }
 
-            const docs = await getDocs(postsQuery);
-            const postsList = [];
+            const docs = await getDocs(postsQuery)
+            const postsList = []
             docs.forEach((doc) => {
-                postsList.push({ postID: doc.id, ...doc.data() });
-            });
-            setPosts(postsList);
-        };
+                postsList.push({ postID: doc.id, ...doc.data() })
+            })
+            setPosts(postsList)
+        }
 
         useEffect(() => {
             updatePosts();
         }, [searchTerms, lostOrFound]);
 
-        // Pagination
-        const pageSize = 10; // Number of posts per page
+        /* Pagination */
+        const pageSize = 10; // Num of posts show on a single page
         const numPage = Math.ceil(posts.length / pageSize);
         const [pagi, setPagi] = useState({
             count: 0,
@@ -185,14 +184,14 @@ const ForumPage = () => {
         });
         useEffect(() => {
             setPagi({ ...pagi, count: numPage });
-        }, [posts]);
+        }, [])
         const currentData = posts.slice(pagi.from, pagi.to);
         const handlePageChange = (e, page) => {
             const from = (page - 1) * pageSize;
             const to = (page - 1) * pageSize + pageSize;
-            setPagi({ ...pagi, from: from, to: to });
+            setPagi({ ...pagi, from: from, to: to })
             window.scroll(0, 0);
-        };
+        }
 
         /*
         This is where information retrieval to create new posts will be done. 
