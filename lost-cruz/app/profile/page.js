@@ -381,7 +381,7 @@ const Profile = () => {
                     </Box>
 
                     {/* user info edit*/}
-                    <Box sx={{
+                    {/* <Box sx={{
                         display: 'flex',
                         width: '100%',
                         alignItems: 'center',
@@ -390,10 +390,9 @@ const Profile = () => {
                         position: 'relative',
                         padding: '15px',
                     }}>
-                        {/* Filter Button */}
                         <EditBox />
                     
-                    </Box>
+                    </Box> */}
 
                     <Box sx={{
                         width: '100%',
@@ -406,7 +405,7 @@ const Profile = () => {
                         cursor: 'default'
                     }}>Select preferred tags to be notified of (5 posts in addition to regular digest posts):</Box>
 
-                    {/* <Box sx={{
+                    <Box sx={{
                         display: 'flex',
                         width: '100%',
                         alignItems: 'center',
@@ -418,7 +417,7 @@ const Profile = () => {
                         
                         <MenuBtn />
                     
-                    </Box> */}
+                    </Box>
 
                     <Box sx={{
                         width: '100%',
