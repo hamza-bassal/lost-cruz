@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
 import { collection, getDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore"
 
 import NavBar from "../components/navbar/Navbar"
@@ -260,6 +260,25 @@ const Profile = () => {
         )
     }
 
+    function handleResetPassword() {
+        const auth = getAuth();
+        const userEmail = auth.currentUser?.email;
+
+        if (!userEmail) {
+            alert('No user email found. Please log in again.');
+            return;
+        }
+
+        sendPasswordResetEmail(auth, userEmail)
+            .then(() => {
+                alert('Password reset email sent. Check your inbox.');
+            })
+            .catch((error) => {
+                console.error("Error sending password reset email:", error);
+                alert("Failed to send password reset email. Please try again later.");
+            })
+    } 
+
     return (
         <Box>
             <NavBar />
@@ -312,6 +331,28 @@ const Profile = () => {
                                 wordWrap: 'break-word',
                                 textOverflow: 'ellipsis',
                             }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span>
+                            </Box>
+
+                            {/* reset password */}
+                            <Box
+                                sx={{
+                                    margin: '10px',
+                                    color: 'Black',
+                                    overflow: 'hidden',
+                                    wordWrap: 'break-word',
+                                    textOverflow: 'ellipsis',
+                                }}
+                            >
+                                <span style={{ display: 'inline-flex' }}>
+                                    <a
+                                        href="#"
+                                        id="resetPassword"
+                                        style={{ textDecoration: 'underline', color: 'blue', cursor: 'pointer' }}
+                                        onClick={handleResetPassword}
+                                    >
+                                        Reset Password
+                                    </a>
+                                </span>
                             </Box>
                         </Box>
                     </Box>
