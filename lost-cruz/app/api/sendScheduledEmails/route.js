@@ -4,16 +4,16 @@ import nodemailer from 'nodemailer';
 import { firestore } from '@/firebase'
 import { collection, getDocs, query, orderBy, where} from 'firebase/firestore'
 
-export async function POST(request) {
+export async function GET(request) {
   try {
     console.log(request)
 
     const authHeader = request.headers.get('authorization');
-    // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    //   return new Response('Unauthorized', {
-    //     status: 401,
-    //   });
-    // }
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return new Response('Unauthorized', {
+        status: 401,
+      });
+    }
     
     const snapshot_user = query(collection(firestore, 'users'));
     const docs_users = await getDocs(snapshot_user);
