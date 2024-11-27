@@ -383,6 +383,9 @@ const CreatePost = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: "15px",
+                '@media screen and (max-width: 640px)': {
+                  display: 'block',
+                },
               }}
             >
               {/* Input for Location */}
@@ -396,6 +399,9 @@ const CreatePost = () => {
                 onChange={(e) => setLocation(e.target.value)}
                 sx={{
                   flex: 1,
+                  '@media screen and (max-width: 640px)': {
+                    marginBottom: '5%',
+                  },
                 }}
               />
 
