@@ -52,6 +52,7 @@ export async function createComment(localParentId,userId,localContent,the_collec
     updateDoc(parentRef,{
         childComment: arrayUnion(commentId)
     });   
+    return true;
 }
 
 
@@ -59,7 +60,7 @@ export async function createComment(localParentId,userId,localContent,the_collec
 export async function createCommentFromPost(localParentId,userId,localContent)
 {
     //Call createComment with "post" collection
-    createComment(localParentId,userId,localContent,post_collection_name);
+    return await createComment(localParentId,userId,localContent,post_collection_name);
 }
 
 
@@ -67,7 +68,7 @@ export async function createCommentFromPost(localParentId,userId,localContent)
 export async function createCommentFromComment(localParentId,userId,localContent)
 {
     //Call createComment with "post" collection
-    createComment(localParentId,userId,localContent,comment_collection_name);
+    return await createComment(localParentId,userId,localContent,comment_collection_name);
 }
 
 
@@ -178,12 +179,13 @@ export async function deleteCommentWithCheck(ParentId,userId,commentId,the_colle
 
     location.reload();
     alert("Comment Successfully Deleted!");
+    return true;
 }
 
 
 //This function will delete the comment from post
 export async function deleteCommentFromPost(parentId,userId,commentId){
-    deleteCommentWithCheck(parentId,userId,commentId,post_collection_name);
+    return deleteCommentWithCheck(parentId,userId,commentId,post_collection_name);
 }
 
 

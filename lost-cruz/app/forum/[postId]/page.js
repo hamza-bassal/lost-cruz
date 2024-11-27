@@ -23,6 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CommentIcon from "@mui/icons-material/Comment";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
 import { doc, getDoc, getDocs } from "firebase/firestore";
@@ -45,9 +46,11 @@ import TopBtn from "../../components/topBtn/TopBtn";
 
 import { useRequireAuth } from "../../hooks/useRequireAuth";
 
-const SingleComment = ({ commentID, creatorId, content, childComment, timestamp }) => {
+const SingleComment = ({ commentID, creatorId, content, childComment, timestamp, parentId }) => {
+  const authUser = useAuthStore((state) => state.user);
   const time = timestamp.toDate().toLocaleDateString([], { hour: "2-digit", minute: "2-digit" });
   const [username, setUsername] = useState("unknown_user");
+  const [isOwner, setIsOwner] = useState("false");
   useEffect(() => {
     async function getUsername() {
       if (creatorId) {
@@ -61,10 +64,14 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp 
         }
       }
     }
+    // check if current user is the comment owner
+    const isCommentOwner = async () => {
+      setIsOwner(await isUserOwnerOfComment(authUser.uid, commentID));
+    }
     getUsername();
+    isCommentOwner();
   }, []);
 
-  const authUser = useAuthStore((state) => state.user);
   const [commentToComment, setCommentToComment] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [commentContent, setCommentContent] = useState("");
@@ -73,13 +80,16 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp 
     setUploading(true);
 
     // create comment to comment
-    createCommentFromComment(commentID, authUser.uid, commentContent);
+    const result = await createCommentFromComment(commentID, authUser.uid, commentContent);
     // Reset form fields after submission
-    setCommentContent("");
-    setCommentToComment(false);
-    document.getElementById("replyInput").value = "";
-    alert("Comment sent successfully!")
-    setUploading(false);
+    if (result) {
+      setCommentContent("");
+      setCommentToComment(false);
+      document.getElementById("replyInput").value = "";
+      alert("Comment sent successfully!")
+      setUploading(false);
+      location.reload();
+    }
   }
 
 
@@ -91,7 +101,7 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp 
       const ref = doc(firestore, 'comments', childComment[id]);
       const snapshot = await getDoc(ref);
       if (snapshot.exists()) {
-        comments.push({ commentID: childComment[id], ...snapshot.data() });
+        comments.push({ subCommentID: childComment[id], ...snapshot.data() });
       }
     }
     setCommentList(comments);
@@ -99,8 +109,20 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp 
 
   useEffect(() => {
     updateComments();
-  }, );
+  }, []);
 
+
+  // comment deletion
+  const deleteComment = async () => {
+    const result = await deleteCommentFromPost(parentId, authUser.uid, commentID);
+
+    // delete the parent comment will delete all its child comments as well
+    if (result && commentList.length !== 0) {
+      for (const comment in commentList) {
+        await deleteComment(commentID, commentList[comment].commentID, "comments")
+      }
+    }
+  }
 
   return (
     <Box>
@@ -169,9 +191,16 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp 
             <Box sx={{ alignSelf: "center", fontSize: "small", color: "gray" }}>
               {time}
             </Box>
-            <IconButton onClick={() => { setCommentToComment(prev => !prev) }}>
-              <CommentIcon sx={{ fontSize: "20px" }} />
-            </IconButton>
+            <Box>
+              {isOwner &&
+                <IconButton onClick={deleteComment}>
+                  <DeleteIcon />
+                </IconButton>
+              }
+              <IconButton onClick={() => { setCommentToComment(prev => !prev) }}>
+                <CommentIcon sx={{ fontSize: "20px" }} />
+              </IconButton>
+            </Box>
           </Box>
         </Box>
       </Box>
@@ -205,14 +234,18 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp 
           </Box>
         </Box>}
       {
-        commentList.map(({ commentID, creatorId, content, childComment, timestamp }) => (
+        commentList.sort((a, b) => (
+          a.timestamp > b.timestamp ? 1 : b.timestamp > a.timestamp ? -1 : 0
+        )
+        ).map(({ subCommentID, creatorId, content, childComment, timestamp }) => (
           <SubComment
-            key={commentID}
-            commentID={commentID}
+            key={subCommentID}
+            subCommentID={subCommentID}
             creatorId={creatorId}
             content={content}
             childComment={childComment}
             timestamp={timestamp}
+            parentId={commentID}
           />
         ))
       }
@@ -220,7 +253,9 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp 
   );
 };
 
-const SubComment = ({ commentID, creatorId, content, childComment, timestamp }) => {
+const SubComment = ({ subCommentID, creatorId, content, childComment, timestamp, parentId }) => {
+  const authUser = useAuthStore((state) => state.user);
+  const [isOwner, setIsOwner] = useState("false");
   const time = timestamp.toDate().toLocaleDateString([], { hour: "2-digit", minute: "2-digit" });
   const [username, setUsername] = useState("unknown_user");
   useEffect(() => {
@@ -236,8 +271,16 @@ const SubComment = ({ commentID, creatorId, content, childComment, timestamp }) 
         }
       }
     }
+    const isCommentOwner = async () => {
+      setIsOwner(await isUserOwnerOfComment(authUser.uid, subCommentID));
+    }
     getUsername();
+    isCommentOwner();
   }, []);
+
+  const deleteComment = async () => {
+    await deleteCommentFromComment(parentId, authUser.uid, subCommentID);
+  }
 
   return (
     <Box className={styles.replyInput}>
@@ -253,9 +296,13 @@ const SubComment = ({ commentID, creatorId, content, childComment, timestamp }) 
           {content}
         </Box>
 
-        {/* if screen width less than 640px (mobile)
-          show the small profile img and username inside the comment box */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {isOwner &&
+          <IconButton onClick={deleteComment} sx={{ alignSelf: 'end', fontSize: 'small' }}>
+            <DeleteIcon />
+          </IconButton>
+        }
+
+        <Box sx={{ display: 'flex', marginBottom: '2px', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', gap: '3%' }}>
             <Box
               sx={{
@@ -271,14 +318,20 @@ const SubComment = ({ commentID, creatorId, content, childComment, timestamp }) 
               {username}
             </Box>
           </Box>
-          <Box sx={{ alignSelf: 'flex-end', fontSize: "small", color: "gray" }}>
+          <Box sx={{ alignSelf: 'center', fontSize: "small", color: "gray" }}>
             {time}
           </Box>
         </Box>
+
+
       </Box>
     </Box>
   )
 };
+
+/*
+
+*/
 
 // postId retrieves data
 async function getDocumentById(collectionName, documentId) {
@@ -311,7 +364,9 @@ const CommentList = ({ postId }) => {
   return (
     <Box>
       <Box>
-        {postComments.map(({ commentID, creatorId, content, childComment, timestamp }) => (
+        {postComments.sort((a, b) => (
+          a.timestamp > b.timestamp ? 1 : b.timestamp > a.timestamp ? -1 : 0
+        )).map(({ commentID, creatorId, content, childComment, timestamp }) => (
           <SingleComment
             key={commentID}
             commentID={commentID}
@@ -319,6 +374,7 @@ const CommentList = ({ postId }) => {
             content={content}
             childComment={childComment}
             timestamp={timestamp}
+            parentId={postId}
           />
         ))}
 

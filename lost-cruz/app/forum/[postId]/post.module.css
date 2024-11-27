@@ -106,7 +106,7 @@
 
 .username {
     width: 150px;
-    align-self: flex-end;
+    align-self: center;
     overflow: hidden;
     text-overflow: ellipsis;
 }
