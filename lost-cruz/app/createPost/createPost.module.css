@@ -49,3 +49,10 @@
     margin-top: -50px;
     margin-left: -250px;
 }
+
+.inputBox {
+    padding: 10px 7.5% 5px 7.5%;
+    @media screen and (max-width: 640px) {
+        display: block;
+    }
+}

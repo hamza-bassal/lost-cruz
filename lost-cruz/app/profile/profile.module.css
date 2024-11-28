@@ -23,6 +23,19 @@
     }
 }
 
+.userInfoEdit {
+    display: flex;
+    gap: 40px;
+    margin: 10px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    @media screen and (max-width: 640px) {
+        display: block;
+        justify-self: center;
+    }
+}
+
 .username {
     display: flex;
     width: inherit;
@@ -140,4 +153,32 @@
     justify-content: center;
     gap: 10px;
     box-shadow: 2px 2px 5px gray;
+}
+
+.icon {
+    font-size: 30px;
+    color: #0174BE;
+    border: 1px solid #0174BE;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.inputBox {
+    padding: 10px 7.5% 5px 7.5%;
+    display: flex;
+    align-items: center;
+    @media screen and (max-width: 640px) {
+        display: block;
+    }
+}
+
+.postImg {
+    width: 150px;
+    height: auto;
+    margin-left: 5px;
+    align-self: start;
+    @media screen and (max-width: 640px) {
+        max-width: 100%;
+    }
 }

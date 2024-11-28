@@ -1,3 +1,5 @@
+'use client'
+
 import { firestore } from '@/firebase';
 import {
     updateDoc,
@@ -123,6 +125,7 @@ export async function changeProfilePicture(userId,profilePicture)
 {
     const userRef = doc(firestore,'users',userId);
     const userSnap = await getDoc(userRef);
+
     if(userSnap.exists() == false)
     {
         return;
@@ -182,6 +185,9 @@ export async function deleteProfilePicture(userId)
             profilePictureFileName: ""
         });
     }
+
+    console.log("deleted");
+    return userSnap.data().profilePicture;
 }
 
 //This function will add a follower to the user and following to the follower

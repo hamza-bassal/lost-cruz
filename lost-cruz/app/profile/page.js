@@ -2,13 +2,15 @@
 
 'use client'
 
-import { Box, Container, IconButton, Link, Typography, FormGroup, FormControlLabel, Checkbox} from "@mui/material"
+import { Box, Container, IconButton, Link, Typography, FormGroup, FormControlLabel, Checkbox, TextField} from "@mui/material"
+import AddIcon from "@mui/icons-material/Add";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
 import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
 import { collection, getDoc, getDocs, query, where, doc, updateDoc } from "firebase/firestore"
+import {changeUserName, changeFullName, changeProfilePicture, getProfilePicture} from "./profile_function"
 
 import NavBar from "../components/navbar/Navbar"
 import TopBtn from "../components/topBtn/TopBtn"
@@ -24,9 +26,16 @@ import { tagOptions } from '../data/tagsData';
 const Profile = () => {
     const [isClient, setIsClient] = useState(false);
     const [open, setOpen] = useState(false); // watchlist filter
+    const [editOpen, setEditOpen] = useState(false); // edit box open
     const authUser1 = useRequireAuth();
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedLostStatus, setSelecLost] = useState([]);
+    const [fullName, setFullName] = useState("");
+    const [userName, setUserName] = useState("");
+    const [tempFullName, setTempName] = useState("");
+    const [tempUserName, setTempUserName] = useState("");
+    const [profilePic, setProfilePic] = useState("");
+    const [file, setFile] = useState(null);
 
 
     useEffect(() => {
@@ -69,6 +78,10 @@ const Profile = () => {
         })
     }
 
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
+
 
     const handleTagCheckboxChange = (event, tag) => {
         const isChecked = event.target.checked;
@@ -82,10 +95,44 @@ const Profile = () => {
         });
     };
 
-    // Trigger filter when user clicks the "Filter" button
+    // Trigger filter when user clicks the "Apply" button in MenuBtn
     const handleFilterClick = () => {
         updateDigestTags();
         setOpen(false);
+    };
+
+    // Trigger edit when user clicks the "Apply" button in editBox
+    const handleEditing = async () => {
+        try {
+            // Wait for each async operation to complete before proceeding
+            await changeFullName(userId, tempFullName);
+            await changeUserName(userId, tempUserName);
+
+            if (profilePic != null) {
+                await changeProfilePicture(userId, file);
+
+    
+                // Update local states and close the editing modal
+                setEditOpen(false);
+                setFullName(tempFullName);
+                setUserName(tempUserName);
+        
+                // Fetch the updated profile picture URL
+                const userRef = doc(firestore,'users',userId);
+                const userSnap = await getDoc(userRef);
+                const userInfo = { ...userSnap.data() };
+                const imgUrl = userInfo.profilePicture;
+        
+                // Update the profile picture state
+                setProfilePic(imgUrl);
+            } else {
+                setEditOpen(false);
+                setFullName(tempFullName);
+                setUserName(tempUserName);
+            }
+        } catch (error) {
+            console.error('Error during profile update:', error);
+        }
     };
 
     function updateUserProfile(user) {
@@ -99,11 +146,12 @@ const Profile = () => {
             const userInfo = { ...userSnapshot.data() };
 
             /* Display username, id, profile image*/
-            const fullName = userInfo.fullName;
-            const userName = userInfo.username;
             // const userPic = user.photoURL;
-            document.getElementById("fullName").textContent = fullName;
-            document.getElementById("userName").textContent = userName;  // do we have a user id to display?
+            setFullName(userInfo.fullName);
+            setUserName(userInfo.username);
+            setTempName(userInfo.fullName);
+            setTempUserName(userInfo.username);
+            setProfilePic(userInfo.profilePicture);
             // document.getElementById("userPic").src = userPic;
 
             setSelectedTags(userInfo.digestTags);
@@ -165,51 +213,111 @@ const Profile = () => {
         )
     }
 
-    const EditBox = () => {
-        return (
-            <Box className={styles.dropdown}>
-                <Box className={styles.dropdownBox}>
-                    <Box className={styles.userInfo}>
-                        {/* profile image */}
-                        <Box
-                            sx={{
-                                width: '150px',
-                                height: '150px',
-                                bgcolor: '#FFC436',
-                                borderRadius: '15px',
-                            }}>
-                            {/* ----- profile img here ----- */}
-                        </Box>
+    // This being its own seperate component breaks it because the values keep refreshing themselves
+    // const EditBox = () => {
+    //     return (
+    //         <Box className={styles.dropdown}>
+    //             {editOpen &&  <Box className={styles.dropdownBox} sx={{top: '10px', width: '450px'}}>
+    //                 <Box className={styles.userInfoEdit}>
+    //                     {/* profile image */}
+    //                     <Box
+    //                         sx={{
+    //                             width: '150px',
+    //                             height: '150px',
+    //                             bgcolor: '#FFC436',
+    //                             borderRadius: '15px',
+    //                         }}>
+    //                         {/* ----- profile img here ----- */}
+    //                     </Box>
 
-                        <Box sx={{ marginTop: '20px', maxWidth: '50%' }}>
-                            {/* username + edit btn */}
-                            <Box className={styles.username}>
-                                <Box sx={{
-                                    margin: '10px',
-                                    fontSize: '20px',
-                                    width: 'inherit',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                }}><p id="fullName">fullName</p></Box>
-                            </Box>
+    //                     <Box sx={{ marginTop: '20px', maxWidth: '50%' }}>
+    //                         {/* username + edit btn */}
+    //                         <Box className={styles.username}>
+    //                             <Box
+    //                                 sx={{
+    //                                     margin: '10px',
+    //                                     fontSize: '20px',
+    //                                     width: 'inherit',
+    //                                     overflow: 'hidden',
+    //                                     textOverflow: 'ellipsis',
+    //                                     display: 'flex',
+    //                                     alignItems: 'center',
+    //                                     gap: '8px',
+    //                                 }}
+    //                             >
+    //                                 <TextField
+    //                                     value={tempFullName}
+    //                                     onChange={(e) => setTempName(e.target.value)}
+    //                                     variant="outlined"
+    //                                     size="small"
+    //                                     fullWidth
+    //                                 />
+    //                             </Box>
+    //                         </Box>
 
-                            <hr style={{ borderTopColor: '#0174BE' }} />
+    //                         <hr style={{ borderTopColor: '#0174BE' }} />
 
-                            {/* user id */}
-                            <Box sx={{
-                                margin: '10px',
-                                color: 'gray',
-                                overflow: 'hidden',
-                                wordWrap: 'break-word',
-                                textOverflow: 'ellipsis',
-                            }}><span style={{ display: "inline-flex" }}><p id="userName">userName</p></span>
-                            </Box>
-                        </Box>
-                    </Box>
-                </Box>
-            </Box>
-        )
-    }
+    //                         {/* user id */}
+    //                         <Box sx={{
+    //                             color: 'gray',
+    //                             overflow: 'hidden',
+    //                             wordWrap: 'break-word',
+    //                             textOverflow: 'ellipsis',
+    //                         }}>
+    //                             <Box
+    //                                 sx={{
+    //                                     margin: '10px',
+    //                                     fontSize: '20px',
+    //                                     width: 'inherit',
+    //                                     overflow: 'hidden',
+    //                                     textOverflow: 'ellipsis',
+    //                                     display: 'flex',
+    //                                     alignItems: 'center',
+    //                                     gap: '8px',
+    //                                 }}
+    //                             >
+    //                                 <TextField
+    //                                     value={tempUserName}
+    //                                     onChange={(e) => setTempUserName(e.target.value)}
+    //                                     variant="outlined"
+    //                                     size="small"
+    //                                     fullWidth
+    //                                 />
+    //                             </Box>
+    //                         </Box>
+
+    //                         <Box sx={{
+    //                             width: '200px',
+    //                             height: '50px',
+    //                             display: 'flex',
+    //                             justifyContent: 'center',
+    //                             alignItems: 'center',
+    //                             }} 
+    //                             onClick={handleEditing} 
+    //                         >
+    //                             <Box
+    //                                 sx={{
+    //                                     width: '100%',
+    //                                     height: '80%',
+    //                                     bgcolor: '#FFC436',
+    //                                     borderRadius: '10px',
+    //                                     display: 'flex',
+    //                                     justifyContent: 'center',
+    //                                     alignItems: 'center',
+    //                                     cursor: 'pointer',
+    //                                 }}
+    //                             >
+    //                                 <Typography sx={{color: 'black', fontWeight: 'bold', fontSize: '20px',}}>
+    //                                     Apply
+    //                                 </Typography>
+    //                             </Box>
+    //                         </Box>
+    //                     </Box>
+    //                 </Box>
+    //             </Box>}
+    //         </Box>
+    //     )
+    // }
 
     const MenuBtn = () => {
         return (
@@ -324,7 +432,7 @@ const Profile = () => {
                 console.error("Error sending password reset email:", error);
                 alert("Failed to send password reset email. Please try again later.");
             })
-    } 
+    }
 
     return (
         <Box>
@@ -338,6 +446,19 @@ const Profile = () => {
                     {/* user info */}
                     <Box className={styles.userInfo}>
                         {/* profile image */}
+                        {profilePic ? ( <Box className={styles.postImg}>
+                            <img
+                            src={profilePic}
+                            alt="img"
+                            style={{
+                                width: "150px", // Makes the image stretch to the full width of the box
+                                height: "150px", // Fills the height of the box
+                                objectFit: "contain", // Ensures the whole image fits inside the box without cropping
+                                borderRadius: "75px",
+                            }}
+                            />
+                        </Box> ) : (
+
                         <Box
                             sx={{
                                 width: '150px',
@@ -346,7 +467,7 @@ const Profile = () => {
                                 borderRadius: '15px',
                             }}>
                             {/* ----- profile img here ----- */}
-                        </Box>
+                        </Box> )}
 
                         <Box sx={{ marginTop: '20px', maxWidth: '50%', 
                             '@media screen and (max-width: 640px)': {
@@ -360,7 +481,7 @@ const Profile = () => {
                                     width: 'inherit',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
-                                }}><p id="fullName">fullName</p></Box>
+                                }}>{fullName}</Box>
                             </Box>
 
                             <hr style={{ borderTopColor: '#0174BE' }} />
@@ -372,8 +493,7 @@ const Profile = () => {
                                 overflow: 'hidden',
                                 wordWrap: 'break-word',
                                 textOverflow: 'ellipsis',
-                            }}><span style={{ display: "inline-flex" }}>@<p id="userId">id...</p></span>
-                            </Box>
+                            }}>{userName}</Box>
 
 
                             {/* reset password */}
@@ -405,25 +525,142 @@ const Profile = () => {
                             </Box>
 
                         </Box>
-                        <IconButton>
+                        <IconButton onClick={() => setEditOpen(prev => !prev)}>
                             {/* edit button: change the username */}
-                            <EditIcon sx={{ color: '#0174BE' }} />
+                            <EditIcon sx={{ color: '#0174BE' }}/>
                         </IconButton>
                     </Box>
 
                     {/* user info edit*/}
-                    {/* <Box sx={{
+                    <Box sx={{
                         display: 'flex',
                         width: '100%',
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '1em',
                         position: 'relative',
-                        padding: '15px',
                     }}>
-                        <EditBox />
+                        <Box className={styles.dropdown}>
+                            {editOpen &&  <Box className={styles.dropdownBox} sx={{top: '10px', width: '400px', gap: '5px'}}>
+                                <Box className={styles.userInfoEdit}>
+                                    
+                                    {/* profile image upload */}
+                                    <Box
+                                        sx={{
+                                            marginTop: '0px',
+                                            maxWidth: '70%',
+                                            display: 'flex',           // Enables Flexbox
+                                            flexDirection: 'column',   // Stacks children vertically
+                                            alignItems: 'center',      // Centers children horizontally
+                                            justifyContent: 'center',  // Centers children vertically
+                                            textAlign: 'center',       // Centers text within children (like Typography)
+                                        }}
+                                    >
+                                        <Box className={styles.inputBox}>
+                                            <label htmlFor="image-upload">
+                                                <AddIcon className={styles.icon} />
+                                            </label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                style={{ display: "none" }} /* removes "Choose file" button */
+                                                id="image-upload"
+                                            />
+                                        </Box>
+                                        <Typography sx={{color: 'black', fontSize: '15px',}}>
+                                            Profile Image
+                                        </Typography>
+                                    </Box>
+
+                                    <Box sx={{ marginTop: '0px', maxWidth: '70%' }}>
+                                        {/* username + edit btn */}
+                                        <Box className={styles.username}>
+                                            <Box
+                                                sx={{
+                                                    margin: '10px',
+                                                    fontSize: '20px',
+                                                    width: 'inherit',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                }}
+                                            >
+                                                <TextField
+                                                    value={tempFullName}
+                                                    onChange={(e) => setTempName(e.target.value)}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    fullWidth
+                                                />
+                                            </Box>
+                                        </Box>
+
+                                        <hr style={{ borderTopColor: '#0174BE' }} />
+
+                                        {/* user id */}
+                                        <Box sx={{
+                                            color: 'gray',
+                                            overflow: 'hidden',
+                                            wordWrap: 'break-word',
+                                            textOverflow: 'ellipsis',
+                                        }}>
+                                            <Box
+                                                sx={{
+                                                    margin: '10px',
+                                                    fontSize: '20px',
+                                                    width: 'inherit',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                }}
+                                            >
+                                                <TextField
+                                                    value={tempUserName}
+                                                    onChange={(e) => setTempUserName(e.target.value)}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    fullWidth
+                                                />
+                                            </Box>
+                                        </Box>
+
+                                        <Box sx={{
+                                            width: 'inherit',
+                                            height: '50px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            }} 
+                                            onClick={handleEditing} 
+                                        >
+                                            <Box
+                                                sx={{
+                                                    width: '100%',
+                                                    height: '80%',
+                                                    bgcolor: '#FFC436',
+                                                    borderRadius: '10px',
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    cursor: 'pointer',
+                                                }}
+                                            >
+                                                <Typography sx={{color: 'black', fontWeight: 'bold', fontSize: '20px',}}>
+                                                    Apply
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Box>}
+                        </Box>
                     
-                    </Box> */}
+                    </Box>
 
                     <Box sx={{
                         width: '100%',
