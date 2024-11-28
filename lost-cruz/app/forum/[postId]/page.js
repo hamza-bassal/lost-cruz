@@ -8,6 +8,7 @@ import {
   IconButton,
   Popover,
   Typography,
+  TextField,
 } from "@mui/material";
 import {
   Dialog,
@@ -22,10 +23,21 @@ import AddIcon from "@mui/icons-material/Add";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import CommentIcon from "@mui/icons-material/Comment";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from "react";
 import { firestore } from "@/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs } from "firebase/firestore";
 import useAuthStore from "@/app/store/authStore";
+import {
+  createCommentFromPost,
+  createCommentFromComment,
+  getCommentQueryFromParent,
+  getCommentQueryFromParentCuston,
+  getCommentFromParent,
+  deleteCommentFromPost,
+  deleteCommentFromComment,
+  isUserOwnerOfComment
+} from "@/app/comment_function";
 
 import styles from "./post.module.css";
 
@@ -34,35 +46,115 @@ import TopBtn from "../../components/topBtn/TopBtn";
 
 import { useRequireAuth } from "../../hooks/useRequireAuth";
 
-const SingleComment = () => {
+const SingleComment = ({ commentID, creatorId, content, childComment, timestamp, parentId }) => {
+  const authUser = useAuthStore((state) => state.user);
+  const time = timestamp.toDate().toLocaleDateString([], { hour: "2-digit", minute: "2-digit" });
+  const [username, setUsername] = useState("unknown_user");
+  const [isOwner, setIsOwner] = useState("false");
+  useEffect(() => {
+    async function getUsername() {
+      if (creatorId) {
+        const userRef = doc(firestore, "users", creatorId);
+        const userSnapshot = await getDoc(userRef);
+        if (userSnapshot.exists()) {
+          const userInfo = userSnapshot.data();
+          setUsername(userInfo.username);
+        } else {
+          console.log("Error: User not found in database");
+        }
+      }
+    }
+    // check if current user is the comment owner
+    const isCommentOwner = async () => {
+      setIsOwner(await isUserOwnerOfComment(authUser.uid, commentID));
+    }
+    getUsername();
+    isCommentOwner();
+  }, []);
+
+  const [commentToComment, setCommentToComment] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [commentContent, setCommentContent] = useState("");
+
+  const uploadCommentToComment = async () => {
+    setUploading(true);
+
+    // create comment to comment
+    const result = await createCommentFromComment(commentID, authUser.uid, commentContent);
+    // Reset form fields after submission
+    if (result) {
+      setCommentContent("");
+      setCommentToComment(false);
+      document.getElementById("replyInput").value = "";
+      alert("Comment sent successfully!")
+      setUploading(false);
+      location.reload();
+    }
+  }
+
+
+  // Load comments to comment
+  const [commentList, setCommentList] = useState([]);
+  const updateComments = async () => {
+    const comments = [];
+    for (const id in childComment) {
+      const ref = doc(firestore, 'comments', childComment[id]);
+      const snapshot = await getDoc(ref);
+      if (snapshot.exists()) {
+        comments.push({ subCommentID: childComment[id], ...snapshot.data() });
+      }
+    }
+    setCommentList(comments);
+  }
+
+  useEffect(() => {
+    updateComments();
+  }, []);
+
+
+  // comment deletion
+  const deleteComment = async () => {
+    const result = await deleteCommentFromPost(parentId, authUser.uid, commentID);
+
+    // delete the parent comment will delete all its child comments as well
+    if (result && commentList.length !== 0) {
+      for (const comment in commentList) {
+        await deleteComment(commentID, commentList[comment].commentID, "comments")
+      }
+    }
+  }
+
   return (
     <Box>
       <Box className={styles.commentContainer}>
-        {(screen.width > 640) &&
+        {/* if screen width greater than 640px (pc)
+            show the big profile img and username outside the comment box */}
+        {<Box className={styles.commentProf}>
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "5px",
-              alignItems: "center",
+              height: "75px",
+              width: "75px",
+              bgcolor: "#FFC436",
+              borderRadius: "10px",
+              cursor: "pointer",
             }}
           >
-            <Box
-              sx={{
-                height: "75px",
-                width: "75px",
-                bgcolor: "#FFC436",
-                borderRadius: "10px",
-                cursor: "pointer",
-              }}
-            >
-              {/* User Profile img here */}
-            </Box>
-
-            <Link href="#" sx={{ textDecoration: "none", color: "black" }}>
-              username
-            </Link>
+            {/* User Profile img here */}
           </Box>
+
+          <Box
+            sx={{
+              width: 'inherit',
+              textDecoration: "none",
+              wordwrap: "break-word",
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              textAlign: 'center',
+            }}>
+            {username}
+          </Box>
+        </Box>
         }
 
         <Box className={styles.commentText}>
@@ -71,13 +163,146 @@ const SingleComment = () => {
               overflow: "auto",
               wordWrap: "break-word",
               marginBottom: "20px",
+              padding: "2%"
             }}
           >
-            <p>
-              paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...paragraph...
-            </p>
+            {content}
           </Box>
 
+          {/* if screen width less than 640px (mobile)
+          show the small profile img and username inside the comment box */}
+          <Box className={styles.mobileCommentProf}>
+            <Box
+              sx={{
+                height: "30px",
+                width: "30px",
+                bgcolor: "#FFC436",
+                borderRadius: "10px",
+              }}
+            >
+              {/* profile img here */}
+            </Box>
+            <Box className={styles.username}>
+              {username}
+            </Box>
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box sx={{ alignSelf: "center", fontSize: "small", color: "gray" }}>
+              {time}
+            </Box>
+            <Box>
+              {isOwner &&
+                <IconButton onClick={deleteComment}>
+                  <DeleteIcon />
+                </IconButton>
+              }
+              <IconButton onClick={() => { setCommentToComment(prev => !prev) }}>
+                <CommentIcon sx={{ fontSize: "20px" }} />
+              </IconButton>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* comment to comment */}
+      {commentToComment &&
+        <Box className={styles.replyInput}>
+          <Box className={styles.replyInputBox}>
+            <form className={styles.replyInputForm} method="get">
+              <TextField
+                variant="standard"
+                fullWidth
+                multiline
+                rows={5}
+                id="replyInput"
+                placeholder="Comment"
+                InputProps={{ disableUnderline: true }}
+                sx={{
+                  bgcolor: "white"
+                }}
+                onChange={(e) => setCommentContent(e.target.value)}
+              />
+              <IconButton
+                onClick={uploadCommentToComment}
+                disabled={uploading || commentContent === ""}
+                sx={{ alignSelf: 'flex-start' }}
+              >
+                <SendIcon sx={!(uploading || commentContent === "") && { color: "#0174BE" }} />
+              </IconButton>
+            </form>
+          </Box>
+        </Box>}
+      {
+        commentList.sort((a, b) => (
+          a.timestamp > b.timestamp ? 1 : b.timestamp > a.timestamp ? -1 : 0
+        )
+        ).map(({ subCommentID, creatorId, content, childComment, timestamp }) => (
+          <SubComment
+            key={subCommentID}
+            subCommentID={subCommentID}
+            creatorId={creatorId}
+            content={content}
+            childComment={childComment}
+            timestamp={timestamp}
+            parentId={commentID}
+          />
+        ))
+      }
+    </Box>
+  );
+};
+
+const SubComment = ({ subCommentID, creatorId, content, childComment, timestamp, parentId }) => {
+  const authUser = useAuthStore((state) => state.user);
+  const [isOwner, setIsOwner] = useState("false");
+  const time = timestamp.toDate().toLocaleDateString([], { hour: "2-digit", minute: "2-digit" });
+  const [username, setUsername] = useState("unknown_user");
+  useEffect(() => {
+    async function getUsername() {
+      if (creatorId) {
+        const userRef = doc(firestore, "users", creatorId);
+        const userSnapshot = await getDoc(userRef);
+        if (userSnapshot.exists()) {
+          const userInfo = userSnapshot.data();
+          setUsername(userInfo.username);
+        } else {
+          console.log("Error: User not found in database");
+        }
+      }
+    }
+    const isCommentOwner = async () => {
+      setIsOwner(await isUserOwnerOfComment(authUser.uid, subCommentID));
+    }
+    getUsername();
+    isCommentOwner();
+  }, []);
+
+  const deleteComment = async () => {
+    await deleteCommentFromComment(parentId, authUser.uid, subCommentID);
+  }
+
+  return (
+    <Box className={styles.replyInput}>
+      <Box className={styles.replyInputBox}>
+        <Box
+          sx={{
+            overflow: "auto",
+            wordWrap: "break-word",
+            marginBottom: "20px",
+            padding: "2%"
+          }}
+        >
+          {content}
+        </Box>
+
+        {isOwner &&
+          <IconButton onClick={deleteComment} sx={{ alignSelf: 'end', fontSize: 'small' }}>
+            <DeleteIcon />
+          </IconButton>
+        }
+
+        <Box sx={{ display: 'flex', marginBottom: '2px', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', gap: '3%' }}>
             <Box
               sx={{
@@ -89,28 +314,24 @@ const SingleComment = () => {
             >
               {/* profile img here */}
             </Box>
-            <Link
-              sx={{
-                alignSelf: "flex-end",
-                textDecoration: "none",
-                color: "black",
-              }}
-            >Username</Link>
-
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box sx={{ alignSelf: "center", fontSize: "small", color: "gray" }}>
-              hh:mm a/pm - MM/DD/YYYY
+            <Box className={styles.username}>
+              {username}
             </Box>
-            <IconButton>
-              <CommentIcon sx={{ fontSize: "20px" }} />
-            </IconButton>
+          </Box>
+          <Box sx={{ alignSelf: 'center', fontSize: "small", color: "gray" }}>
+            {time}
           </Box>
         </Box>
+
+
       </Box>
     </Box>
-  );
+  )
 };
+
+/*
+
+*/
 
 // postId retrieves data
 async function getDocumentById(collectionName, documentId) {
@@ -128,14 +349,34 @@ async function getDocumentById(collectionName, documentId) {
   }
 }
 
-const CommentList = () => {
+const CommentList = ({ postId }) => {
+  const [postComments, setPostComments] = useState([]);
+
+  const updatePostComments = async () => {
+    const commentList = await getCommentFromParent(postId);
+    setPostComments(commentList);
+  }
+
+  useEffect(() => {
+    updatePostComments();
+  }, [postComments]);
+
   return (
     <Box>
       <Box>
-        <SingleComment />
-        <SingleComment />
-        <SingleComment />
-        <SingleComment />
+        {postComments.sort((a, b) => (
+          a.timestamp > b.timestamp ? 1 : b.timestamp > a.timestamp ? -1 : 0
+        )).map(({ commentID, creatorId, content, childComment, timestamp }) => (
+          <SingleComment
+            key={commentID}
+            commentID={commentID}
+            creatorId={creatorId}
+            content={content}
+            childComment={childComment}
+            timestamp={timestamp}
+            parentId={postId}
+          />
+        ))}
 
         <hr
           style={{
@@ -398,7 +639,7 @@ const PostPage = ({ params }) => {
   const [lostOrFound, setStatus] = useState("LOST");
   const [tags, setTags] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [comment, setComment] = useState("");
+  const [commentContent, setCommentContent] = useState("");
 
   useEffect(() => {
     setIsClient(true);
@@ -435,34 +676,17 @@ const PostPage = ({ params }) => {
     fetchData();
   }, []);
 
-  const handleUpload = async () => {
-    if (!comment) {
-      alert("please fill out all required fields.")
-      return;
-    }
+  const uploadCommentToPost = async () => {
+    setUploading(true);
 
-    setUploading(true)
-
-    // adjust later after database got setup
-    const commentCollection = collection(firestore, "comments");
-    await addDoc(commentCollection, {
-      // comment content
-      timestamp: Timestamp.now(),
-      userId: authUser.uid,
-      postId: params.postId,
-    }).then(async (docRef) => {
-      const postRef = doc(firestore, "posts", params.postId);
-      await updateDoc(postRef, {
-        comments: arrayUnion(docRef.id) // adjust later
-      })
-    }).catch((error) => {
-      console.error("Error adding document: ", error);
-    })
+    // create comment to post
+    createCommentFromPost(params.postId, authUser.uid, commentContent);
 
     // Reset form fields after submission
-    setComment("");
-
+    setCommentContent("");
+    document.getElementById("commentInput").value = "";
     alert("Comment sent successfully!")
+    setUploading(false);
   }
 
   if (!isClient || !authUser1) return null;
@@ -599,16 +823,9 @@ const PostPage = ({ params }) => {
                   >
                     {/* profile img here */}
                   </Box>
-                  <Link
-                    href={`/profile/${author}`}
-                    sx={{
-                      alignSelf: "flex-end",
-                      textDecoration: "none",
-                      color: "black",
-                    }}
-                  >
+                  <Box className={styles.username}>
                     {author || "Unknown Author"}
-                  </Link>
+                  </Box>
                 </Box>
                 <Box
                   sx={{
@@ -651,7 +868,9 @@ const PostPage = ({ params }) => {
           </Box>
 
           {/* Comment List */}
-          <CommentList />
+          <CommentList
+            postId={params.postId}
+          />
 
           {/* Comment Box */}
           <Box className={styles.commentBoxContainer}>
@@ -663,13 +882,14 @@ const PostPage = ({ params }) => {
                 className={styles.commentBox}
                 type="text"
                 placeholder="Comment"
-                onChange={(e) => setComment(e.target.value)}
+                id="commentInput"
+                onChange={(e) => setCommentContent(e.target.value)}
               />
               <IconButton
-                onClick={handleUpload}
-                disabled={uploading}
+                onClick={uploadCommentToPost}
+                disabled={uploading || commentContent === ""}
               >
-                <SendIcon sx={{ color: "#0174BE" }} />
+                <SendIcon sx={!(uploading || commentContent === "") && { color: "#0174BE" }} />
               </IconButton>
             </form>
           </Box>

@@ -48,11 +48,10 @@
     /* half of the height & width */
     margin-top: -50px;
     margin-left: -250px;
-}
-
-.inputBox {
-    padding: 10px 7.5% 5px 7.5%;
     @media screen and (max-width: 640px) {
-        display: block;
+        height: 25%;
+        margin-top: -12.5%;
+        width: 70%;
+        margin-left: -35%;
     }
 }

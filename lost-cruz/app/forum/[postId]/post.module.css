@@ -85,6 +85,32 @@
     }
 }
 
+.commentProf {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    width: 150px;
+    @media screen and (max-width: 640px) {
+        display: none;
+    }
+}
+
+.mobileCommentProf {
+    display: flex;
+    gap: 3%;
+    @media screen and (min-width: 641px) {
+        display: none
+    }
+}
+
+.username {
+    width: 150px;
+    align-self: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .tagGroup {
     height: auto;
     width: 100px;
@@ -208,4 +234,34 @@
         max-width: 100%;
         margin-bottom: 5%;
     }
+}
+
+.replyInput {
+    display: flex;
+    padding: 2% 5% 0 15%;
+    gap: 20px;
+    width: 100%;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.replyInputBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    min-height: 100px;
+    width: 80%;
+    height: auto;
+    @media screen and (max-width: 640px) {
+        width: 100%;
+    }
+}
+
+.replyInputForm {
+    min-height: inherit;
+    display: flex;
 }
