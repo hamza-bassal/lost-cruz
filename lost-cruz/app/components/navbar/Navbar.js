@@ -4,10 +4,12 @@ import { Box, FormGroup, FormControlLabel, Checkbox, IconButton, Link, Button, T
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import styles from "./navbar.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useLogout from "@/app/hooks/useLogout"
 import { tagOptions } from '../../data/tagsData';
-import { Label } from "@mui/icons-material";
+import { firestore } from "@/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore"
 
 // Accepts udpate search method as parameter
 const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
@@ -16,8 +18,31 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedLostStatus, setSelecLost] = useState(["LOST", "FOUND"]);
     const [status, setStatus] = useState('')
+    const [profilePic, setProfilePic] = useState('')
 
     const { handleLogout, isLoggingOut, error } = useLogout();
+
+    /* Get current user id + information */
+    const auth = getAuth();
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is authenticated");
+                const id = user.uid;
+                const getUser = async () => {
+                    const userRef = doc(firestore, 'users', id);
+                    const userSnapshot = await getDoc(userRef);
+                    const userInfo = { ...userSnapshot.data() };
+
+                    setProfilePic(userInfo.profilePicture);
+                }
+                getUser();
+            }
+        });
+    
+        return () => unsubscribe(); // Cleanup listener on unmount
+    }, []); // Empty dependency array ensures this runs only once
 
     const handleLostCheckboxChange = (event, status) => {
         const isChecked = event.target.checked;
@@ -253,12 +278,28 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
                 <Box sx={{
                     width: '50px',
                     height: '50px',
-                }}
+                    }}
                     onClick={() => {
                         setProf(prev => !prev);
                         setOpen(false);
                     }}
                 >
+                    {profilePic ? ( <Box className={styles.postImg}>
+                        <img
+                        src={profilePic}
+                        alt="img"
+                        style={{
+                            width: '80%',
+                            height: '80%',
+                            bgcolor: '#FFC436',
+                            margin: '10%',
+                            cursor: 'pointer',
+                            objectFit: "contain", // Ensures the whole image fits inside the box without cropping
+                            borderRadius: "50%",
+                        }}
+                        />
+                    </Box> ) : (
+
                     <Box
                         sx={{
                             width: '80%',
@@ -268,8 +309,8 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
                             borderRadius: '10px',
                             cursor: 'pointer'
                         }}>
-                        {/* Profile Image */}
-                    </Box>
+                        {/* ----- profile img here ----- */}
+                    </Box> )}
                 </Box>
 
                 {

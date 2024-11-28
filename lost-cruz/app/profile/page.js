@@ -109,7 +109,7 @@ const Profile = () => {
             await changeUserName(userId, tempUserName);
 
             console.log(file);
-            if (file != "") {
+            if (file != null) {
                 await changeProfilePicture(userId, file);
 
     
@@ -131,6 +131,7 @@ const Profile = () => {
                 setFullName(tempFullName);
                 setUserName(tempUserName);
             }
+            window.location.reload();
         } catch (error) {
             console.error('Error during profile update:', error);
         }
