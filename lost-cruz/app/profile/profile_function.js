@@ -131,10 +131,12 @@ export async function changeProfilePicture(userId,profilePicture)
         return;
     }
 
-    const delete_success = await deleteProfilePicture(userId);
-    if(delete_success == null)
-    {
-        return;
+    if (userSnap.profilePicture != "") {
+        const delete_success = await deleteProfilePicture(userId);
+        if(delete_success == null)
+        {
+            return;
+        }
     }
 
     const storageRef = ref(storage, `profilePicture/${profilePicture.name}`);
