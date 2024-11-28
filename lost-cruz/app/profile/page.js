@@ -108,7 +108,8 @@ const Profile = () => {
             await changeFullName(userId, tempFullName);
             await changeUserName(userId, tempUserName);
 
-            if (profilePic != null) {
+            console.log(file);
+            if (file != "") {
                 await changeProfilePicture(userId, file);
 
     
