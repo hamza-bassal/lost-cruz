@@ -5,12 +5,16 @@ import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
 export async function GET(request) {
   try {
     const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      	return new Response('Unauthorized', { status: 401 });
-    }
+    // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    //   	return new Response('Unauthorized', { status: 401 });
+    // }
 
     // Fetch users
-    const userSnapshot = await getDocs(collection(firestore, 'users'));
+    const userQuery = query(
+      collection(firestore, 'users'),
+      where('subscribed','==', true),
+      );
+    const userSnapshot = await getDocs(userQuery);
     const users = userSnapshot.docs.map(doc => ({ userID: doc.id, ...doc.data() }));
 
     // Fetch latest posts
@@ -88,8 +92,6 @@ export async function GET(request) {
         const preferredSnapshot = await getDocs(preferredQuery);
         const preferredPosts = preferredSnapshot.docs.map(doc => ({ postID: doc.id, ...doc.data() }));
 
-		console.log(preferredPosts);
-
         preferredPostsHtml = preferredPosts
           .slice(0, 5)
           .map(({ postID, title, description, imageURL }) => {
@@ -119,8 +121,9 @@ export async function GET(request) {
         <p>Here are some recent posts:</p>
         ${recentPostsHtml}
         ${preferredPostsHtml ? `<p>Posts tailored to your preferences:</p>${preferredPostsHtml}` : ''}
-        <br><br>
-        <p><strong>Lost@Cruz</strong></p>
+        <br><br> <!-- Adds two blank lines -->
+        <p><strong>You can unsubscribe to the digest in your post preferences settings.</strong></p>
+        <p><strong>- Lost@Cruz<strong></p>
       `;
 
       // Send email

@@ -36,7 +36,7 @@ const Profile = () => {
     const [tempUserName, setTempUserName] = useState("");
     const [profilePic, setProfilePic] = useState("");
     const [file, setFile] = useState(null);
-
+    const [subscribed, setSubscribed] = useState(true)
 
     useEffect(() => {
         setIsClient(true);
@@ -75,6 +75,7 @@ const Profile = () => {
         await updateDoc(userDocRef, {
           digestTags: selectedTags,
           digestStatus: selectedLostStatus,
+          subscribed: subscribed
         })
     }
 
@@ -158,6 +159,8 @@ const Profile = () => {
 
             setSelectedTags(userInfo.digestTags);
             setSelecLost(userInfo.digestStatus);
+            setSubscribed(userInfo.subscribed);
+            console.log(subscribed);
 
             /* Fetch posts with post id list */
             const postId = (userInfo.posts);
@@ -356,6 +359,16 @@ const Profile = () => {
                 {open && <Box className={styles.dropdownBox}>
                     <FormGroup row>
                         <FormControlLabel 
+                        control={<Checkbox 
+                            id="subscribed-checkbox" // Unique ID
+                            name="subscribeStatus" // Name for form submission
+                            checked={subscribed} 
+                            onChange={() => setSubscribed(prev => !prev)}
+                            size="small" />} 
+                            label="Receive Digest" />
+                    </FormGroup>
+                    <FormGroup row>
+                        <FormControlLabel
                         control={<Checkbox 
                             id="lost-checkbox" // Unique ID
                             name="lostStatus" // Name for form submission
