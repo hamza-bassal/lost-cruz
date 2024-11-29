@@ -58,6 +58,7 @@ const useSignUpWithEmailAndPassword = () => {
                     posts:[],
                     digestTags: [],
                     digestStatus: [],
+                    subscribed: true,
                     createdAt:Date.now(),
                     isVerified: false // Add this flag for tracking
                 }
