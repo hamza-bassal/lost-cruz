@@ -322,9 +322,9 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
                         <Box>
                             <Button onClick={handleLogout}>Logout</Button>
                         </Box>
-                        <Box>
+                        {/* <Box>
                             <Button sx={{ color: '#FFC436' }} onClick={handleSubmit}>E-test</Button>
-                        </Box>
+                        </Box> */}
                     </Box>
                 }
             </Box>
