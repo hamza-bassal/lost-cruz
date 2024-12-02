@@ -5,7 +5,6 @@
   left: 0;
   right: 0;
   background-color: #0174BE;
-  overflow: scroll;
 }
 
 .container {
@@ -53,8 +52,11 @@
   padding: 10px 40px 20px 40px;
 
   @media screen and (max-width: 640px){
-    width: 80vw;
-    margin-left: -40vw;
+    width: 80%;
+    height: auto;
+    max-height: 80%;
+    overflow: scroll;
+    margin-left: -40%;
     padding: 2% 5% 2% 5%;
   }
 }
