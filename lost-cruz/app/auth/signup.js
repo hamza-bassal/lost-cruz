@@ -41,6 +41,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
       />
       <label>Username:</label>
@@ -53,6 +54,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
       />
       <label>Full Name:</label>
@@ -65,6 +67,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
       />
       <label>Password:</label>
@@ -77,6 +80,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
       />
       <label>Confirm Password:</label>
@@ -89,6 +93,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
       />
 
@@ -101,7 +106,7 @@ const Signup = () => {
 
       <Button 
         variant='contained'
-        sx={{margin: "30px 0px 10px 0px"}}    
+        sx={{margin: "30px 0px 10px 0px", width: 'inherit'}}    
       type="submit" onClick={() => signup(inputs)}>Sign up</Button>
     </form>
   </>

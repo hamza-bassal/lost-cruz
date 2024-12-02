@@ -36,6 +36,7 @@ const Login = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
       />
       <label>Password:</label>
@@ -48,6 +49,7 @@ const Login = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
       />
       {error && (
@@ -58,7 +60,7 @@ const Login = () => {
       <Button
       variant='contained'
       type="submit"
-      sx={{margin: "30px 0px 10px 0px"}}
+      sx={{margin: "30px 0px 10px 0px", width: 'inherit'}}
       onClick={() => login(inputs)}>Log in</Button>
     </form>
   </>
