@@ -12,7 +12,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore"
 
 // Accepts udpate search method as parameter
-const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
+const Navbar = ({ setSearch, setLostStatus, isForum = false, setSearchBarTerm}) => {
     const [open, setOpen] = useState(false); // filter
     const [prof, setProf] = useState(false); // profile
     const [selectedTags, setSelectedTags] = useState([]);
@@ -211,8 +211,8 @@ const Navbar = ({ setSearch, setLostStatus, isForum = false}) => {
         const handleSearchSubmit = async (event) => {
             event.preventDefault();
             if (tempSearchInput.trim()) {
-                const searchTerm = tempSearchInput.trim();
-                setSearch(searchTerm);
+                const searchBarTerm = tempSearchInput.trim();
+                setSearchBarTerm(searchBarTerm);
 
             } else {
                 console.log("Search input is empty. Clearing results.");
