@@ -58,15 +58,22 @@ const ContactForm = ({ params }) => {
     const [status, setStatus] = useState('');
     const [formData, setFormData] = useState({ name: '', email: '', message: '', postID: params.contactId });
     const [boxChecked, setBoxChecked] = useState(false)  // enable continue button if box checked
-    const [agree, setAgree] = useState(false)  // show the contact form after user read the guidelines
+    const [agree, setAgree] = useState(false); // show the contact form after user read the guidelines
+    const [sent, setSent] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+        setSent(false);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async() => {
+
+        if (!formData.name || !formData.email || !formData.message) {
+            console.log(formData.message.length)
+            alert("Please fill out all required fields.");
+            return;
+        }
 
         try {
             const response = await fetch('/api/sendEmail', {
@@ -91,6 +98,7 @@ const ContactForm = ({ params }) => {
                 router.push(`/forum/${params.contactId}`)
             } else {
                 setStatus('Failed to send email.');
+                setSent(false);
             }
         } catch (error) {
             setStatus('Error: ' + error.message);
@@ -161,7 +169,14 @@ const ContactForm = ({ params }) => {
                             </Link>
                         </IconButton>
 
-                        <IconButton sx={{ color: '#FFC436' }} onClick={handleSubmit}>
+                        <IconButton 
+                            sx={{ color: '#FFC436' }} 
+                            onClick={() => {
+                                handleSubmit();
+                                setSent(true); // Disable the button
+                            }}
+                            disabled={sent}
+                        >
                             <SendIcon fontSize="large" />
                         </IconButton>
                     </Box>
@@ -174,7 +189,8 @@ const ContactForm = ({ params }) => {
                         <label>Name: </label>
                         <TextField id="name" required variant="standard" fullWidth placeholder="name"
                             sx={{ bgcolor: 'white', paddingLeft: '2px', borderRadius: '5px' }}
-                            name="name" value={formData.name} onChange={handleChange}>
+                            name="name" value={formData.name} onChange={handleChange}
+                            slotProps={{htmlInput: {maxLength: 50}}} >
                         </TextField>
                     </Box>
 
@@ -183,7 +199,8 @@ const ContactForm = ({ params }) => {
                         <label>Email Address: </label>
                         <TextField id="email" required variant="standard" fullWidth placeholder="email"
                             sx={{ bgcolor: 'white', paddingLeft: '2px', borderRadius: '5px' }}
-                            name="email" value={formData.email} onChange={handleChange}>
+                            name="email" value={formData.email} onChange={handleChange}
+                            slotProps={{htmlInput: {maxLength: 50}}} >
                         </TextField>
                     </Box>
 
@@ -193,7 +210,17 @@ const ContactForm = ({ params }) => {
                         paddingLeft: '7.5%',
                     }}>Message:</label>
                     <TextField fullWidth multiline rows={11} id="message" variant="standard"
-                        InputProps={{ style: { fontSize: 20, paddingLeft: '10px', paddingRight: '10px', borderRadius: '5px' } }}
+                        slotProps={{
+                            htmlInput: {
+                                style: {
+                                    fontSize: 20, 
+                                    paddingLeft: '10px', 
+                                    paddingRight: '10px', 
+                                    borderRadius: '5px'
+                                },
+                                maxLength: 1000 // Also include maxLength here
+                            }
+                        }}
                         sx={{
                             alignSelf: 'center',
                             padding: '20px',
