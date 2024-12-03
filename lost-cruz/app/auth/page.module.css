@@ -64,6 +64,7 @@
     height: auto;
     max-height: 80vh;
     overflow: scroll;
+    scrollbar-width: none;
     margin-left: -40vw;
     padding: 2% 5% 2% 5%;
   }
@@ -90,6 +91,7 @@
     height: 80%;
     width: 80%;
     overflow: scroll;
+    scrollbar-width: none;
     margin-left: -40%;
     padding: 2% 5% 2% 5%;
   }
