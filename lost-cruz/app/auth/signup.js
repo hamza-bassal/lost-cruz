@@ -41,6 +41,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
         maxLength={100}
       />
@@ -54,6 +55,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
         maxLength={25}
       />
@@ -67,6 +69,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
         maxLength={50}
       />
@@ -80,6 +83,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
         maxLength={50}
       />
@@ -93,6 +97,7 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
         maxLength={50}
       />
@@ -106,7 +111,7 @@ const Signup = () => {
 
       <Button 
         variant='contained'
-        sx={{margin: "30px 0px 10px 0px"}}    
+        sx={{margin: "30px 0px 10px 0px", width: 'inherit'}}    
       type="submit" onClick={() => signup(inputs)}>Sign up</Button>
     </form>
   </>

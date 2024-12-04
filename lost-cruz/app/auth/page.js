@@ -65,31 +65,29 @@ export default function AuthPage() {
         {/* goes to login or signup page on user choice */}
         <Box>
           {showLogin ? <Login /> : <Signup />}
-          <Button onClick={() => setShowLogin(!showLogin)}>
-            {showLogin ? "Need an account? Sign up" : "Already have an account? Log in"}
-          </Button>
-          
-          {/* Forgot Password Button */}
-          <Button
-            onClick={() => setForgotPassword(true)} // Open modal
-            style={{
-              background: 'none',
-              color: 'blue',
-              textDecoration: 'underline',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Forgot Password?
-          </Button>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            '@media screen and (max-width: 640px)': {
+              display: 'block',
+              textAlign: 'center',
+            },
+          }}>
+            <Button onClick={() => setShowLogin(!showLogin)}>
+              {showLogin ? "Need an account? Sign up" : "Already have an account? Log in"}
+            </Button>
 
-          {/* same as above but with no box */}
-          {/* <Box mx={2} fontSize={14}>
-						{showLogin ? "Don't have an account?" : "Already have an account?"}
-					</Box>
-					<Box onClick={() => setShowLogin(!showLogin)} color={"blue.500"} cursor={"pointer"}>
-						{showLogin ? "Sign up" : "Log in"}
-					</Box> */}
+            {/* Forgot Password Button */}
+            <Button
+              onClick={() => setForgotPassword(true)} // Open modal
+              style={{
+                textDecoration: 'underline',
+                textUnderlineOffset: '3px',
+              }}
+            >
+              Forgot Password?
+            </Button>
+          </Box>
         </Box>
       </Box>
     )
