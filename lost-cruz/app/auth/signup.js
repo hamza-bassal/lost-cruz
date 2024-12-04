@@ -43,6 +43,7 @@ const Signup = () => {
           padding: '5px',
           width: 'inherit'
         }}
+        maxLength={100}
       />
       <label>Username:</label>
       <input
@@ -56,6 +57,7 @@ const Signup = () => {
           padding: '5px',
           width: 'inherit'
         }}
+        maxLength={25}
       />
       <label>Full Name:</label>
       <input
@@ -69,6 +71,7 @@ const Signup = () => {
           padding: '5px',
           width: 'inherit'
         }}
+        maxLength={50}
       />
       <label>Password:</label>
       <input
@@ -82,6 +85,7 @@ const Signup = () => {
           padding: '5px',
           width: 'inherit'
         }}
+        maxLength={50}
       />
       <label>Confirm Password:</label>
       <input
@@ -95,6 +99,7 @@ const Signup = () => {
           padding: '5px',
           width: 'inherit'
         }}
+        maxLength={50}
       />
 
         {error && (
