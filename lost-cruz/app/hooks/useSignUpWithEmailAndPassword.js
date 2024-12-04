@@ -53,6 +53,7 @@ const useSignUpWithEmailAndPassword = () => {
                     fullName:inputs.fullName,
                     bio:"",
                     profilePicture:"",
+                    profilePictureFileName:"",
                     followers:[],
                     following:[],
                     posts:[],
@@ -60,6 +61,7 @@ const useSignUpWithEmailAndPassword = () => {
                     digestStatus: [],
                     subscribed: true,
                     createdAt:Date.now(),
+                    recievedGuideline: false,
                     isVerified: false // Add this flag for tracking
                 }
 
