@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { firestore } from '@/firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc} from 'firebase/firestore'
 
 export async function POST(request) {
     const { postID } = await request.json();
@@ -14,13 +14,19 @@ export async function POST(request) {
     // Check if the document exists and extract its data
     const post = { postID: postSnapshot.id, ...postSnapshot.data() };
 
-    const userRef = doc(firestore, 'users', post.userID)
+    const userRef = doc(firestore, 'users', post.userID);
 
     // Fetch the document
     const userSnapshot = await getDoc(userRef);
 
     // Check if the document exists and extract its data
     const user = { userID: userSnapshot.id, ...userSnapshot.data() };
+
+    if (user.recievedGuideline) {
+        return new Response(JSON.stringify({ success: true }), {
+            status: 200
+        });
+    }
 
     // Configure Nodemailer transporter
     const transporter = nodemailer.createTransport({

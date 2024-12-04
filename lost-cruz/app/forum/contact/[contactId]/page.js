@@ -21,8 +21,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useRouter } from "next/navigation"; // Import Next.js router
 import { useState, useEffect } from 'react'
-
-import useUserEmail from "../../../hooks/useUserEmail";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, updateDoc, getDoc} from 'firebase/firestore'
+import { firestore } from '@/firebase'
 
 import styles from "./contact.module.css"
 import Guideline from "./guideline"
@@ -31,31 +32,14 @@ import { useRequireAuth } from '../../../hooks/useRequireAuth';
 
 
 const ContactForm = ({ params }) => {
-    const [isClient, setIsClient] = useState(false);
-    const authUser1 = useRequireAuth();
+    // const authUser1 = useRequireAuth();
     //const { email, loading, error } = useUserEmail(params.contactId);
     const router = useRouter();
 
-    // Client-side check
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    // const authUser1 = useRequireAuth(); // Redirects to login if not authenticated
-
     // if (!authUser1) {
-    //     // Show nothing or a loading spinner while redirecting
     //     return null;
     // }
 
-
-    //console.log(`Email is ${email}`)
-
-    // if (loading) return <p>Loading...</p>;
-    // if (error) return <p>Error: {error.message}</p>;
-
-    // const [email, setEmail] = useState("")
-    const [status, setStatus] = useState('');
     const [formData, setFormData] = useState({ name: '', email: '', message: '', postID: params.contactId });
     const [boxChecked, setBoxChecked] = useState(false)  // enable continue button if box checked
     const [agree, setAgree] = useState(false); // show the contact form after user read the guidelines
@@ -66,6 +50,20 @@ const ContactForm = ({ params }) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
         setSent(false);
     };
+
+    const auth = getAuth();
+    const [userId, setUserId] = useState(""); // current user id
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("User is authenticated");
+                setUserId(user.uid);
+            }
+        });
+    
+        return () => unsubscribe(); // Cleanup listener on unmount
+    }, []); // Empty dependency array ensures this runs only once
 
     const handleSubmit = async() => {
 
@@ -92,16 +90,29 @@ const ContactForm = ({ params }) => {
                 body: JSON.stringify({ postID: params.contactId }),
             });
 
+            // Get a reference to the specific document by postID
+            const postRef = doc(firestore, 'posts', params.contactId);
+
+            // Fetch the document
+            const postSnapshot = await getDoc(postRef);
+
+            // Check if the document exists and extract its data
+            const post = { postID: postSnapshot.id, ...postSnapshot.data() };
+
+            const userDocRef = doc(firestore, 'users', post.userID);
+
+            await updateDoc(userDocRef, {
+                recievedGuideline: true
+            });
+
             if (response.ok && safety.ok) {
-                setStatus('Email sent successfully!');
                 alert("Email sent successfully!");
                 router.push(`/forum/${params.contactId}`)
             } else {
-                setStatus('Failed to send email.');
                 setSent(false);
             }
         } catch (error) {
-            setStatus('Error: ' + error.message);
+            alert("Email failed to send! Try again later.");
         }
     };
 
