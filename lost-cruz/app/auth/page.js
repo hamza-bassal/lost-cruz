@@ -73,7 +73,6 @@ export default function AuthPage() {
           <Button
             onClick={() => setForgotPassword(true)} // Open modal
             style={{
-              marginTop: '10px',
               background: 'none',
               color: 'blue',
               textDecoration: 'underline',
