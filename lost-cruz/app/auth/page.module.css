@@ -27,6 +27,7 @@
 .textContainer {
   max-width: 50%;
   align-self: center;
+
   @media screen and (max-width: 640px) {
     max-width: 100%;
     padding: 0 5%;
@@ -35,12 +36,9 @@
 
 .loginBox {
   position: fixed;
-  width: 650px;
-  height: auto;
   top: 50%;
   left: 50%;
   transform: translateY(-50%);
-  margin-left: -325px;
   background-color: #FCF7ED;
   border: 5px double #0174BE;
   border-radius: 25px;
@@ -49,11 +47,25 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 10px 40px 20px 40px;
+}
 
-  @media screen and (max-width: 640px){
-    width: 80%;
-    margin-left: -40%;
+@media screen and (min-width: 641px) {
+  .loginBox {
+    width: 640px;
+    height: auto;
+    margin-left: -320px;
+    padding: 10px 40px 20px 40px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .loginBox {
+    width: 80vw;
+    height: auto;
+    max-height: 80vh;
+    overflow: scroll;
+    scrollbar-width: none;
+    margin-left: -40vw;
     padding: 2% 5% 2% 5%;
   }
 }
@@ -75,10 +87,11 @@
   flex-direction: column;
   padding: 10px 40px 20px 40px;
 
-  @media screen and (max-width: 640px){
+  @media screen and (max-width: 640px) {
     height: 80%;
     width: 80%;
     overflow: scroll;
+    scrollbar-width: none;
     margin-left: -40%;
     padding: 2% 5% 2% 5%;
   }

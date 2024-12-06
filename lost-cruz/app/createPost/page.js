@@ -221,7 +221,14 @@ const CreatePost = () => {
             id="title"
             variant="standard"
             placeholder="Title"
-            InputProps={{ style: { fontSize: 30 } }}
+            slotProps={{
+              htmlInput: {
+                  style: {
+                      fontSize: 30
+                  },
+                  maxLength: 100 // Also include maxLength here
+              }
+            }}
             InputLabelProps={{ style: { fontSize: 30 } }}
             sx={{
               bgcolor: "white",
@@ -250,7 +257,14 @@ const CreatePost = () => {
             rows={15}
             id="description"
             placeholder="Description"
-            InputProps={{ style: { fontSize: 20 } }}
+            slotProps={{
+              htmlInput: {
+                  style: {
+                      fontSize: 20
+                  },
+                  maxLength: 1000 // Also include maxLength here
+              }
+            }}
             sx={{
               bgcolor: "white",
             }}
@@ -271,6 +285,11 @@ const CreatePost = () => {
             value={inputTags}
             onChange={handleInputChange}
             sx={{ bgcolor: "white", paddingLeft: "3px", borderRadius: "5px", margin: '5px' }}
+            slotProps={{
+              htmlInput: {
+                  maxLength: 200 // Also include maxLength here
+              }
+            }}
           ></TextField>
           <FormControl variant="standard" sx={{ minWidth: 200, display: 'flex', alignItems: 'center' }}>
             <Select
@@ -396,6 +415,14 @@ const CreatePost = () => {
                 fullWidth
                 placeholder="Enter Location"
                 value={location}
+                slotProps={{
+                  htmlInput: {
+                      style: {
+                          fontSize: 20
+                      },
+                      maxLength: 100 // Also include maxLength here
+                  }
+                }}
                 onChange={(e) => setLocation(e.target.value)}
                 sx={{
                   flex: 1,
@@ -424,13 +451,6 @@ const CreatePost = () => {
             </Box>
           </Box>
         )}
-
-        {/* Save to draft */}
-        <Box className={styles.inputBox}>
-          <IconButton>
-            <ArticleIcon className={styles.icon} />
-          </IconButton>
-        </Box>
       </Box>
     </Box>
   );

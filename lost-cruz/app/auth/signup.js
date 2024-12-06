@@ -41,7 +41,9 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
+        maxLength={100}
       />
       <label>Username:</label>
       <input
@@ -53,7 +55,9 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
+        maxLength={25}
       />
       <label>Full Name:</label>
       <input
@@ -65,7 +69,9 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
+        maxLength={50}
       />
       <label>Password:</label>
       <input
@@ -77,7 +83,9 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
+        maxLength={50}
       />
       <label>Confirm Password:</label>
       <input
@@ -89,7 +97,9 @@ const Signup = () => {
         style={{
           height: '30px',
           padding: '5px',
+          width: 'inherit'
         }}
+        maxLength={50}
       />
 
         {error && (
@@ -101,7 +111,7 @@ const Signup = () => {
 
       <Button 
         variant='contained'
-        sx={{margin: "30px 0px 10px 0px"}}    
+        sx={{margin: "30px 0px 10px 0px", width: 'inherit'}}    
       type="submit" onClick={() => signup(inputs)}>Sign up</Button>
     </form>
   </>

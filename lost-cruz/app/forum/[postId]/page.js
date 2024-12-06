@@ -51,6 +51,8 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp,
   const time = timestamp.toDate().toLocaleDateString([], { hour: "2-digit", minute: "2-digit" });
   const [username, setUsername] = useState("unknown_user");
   const [isOwner, setIsOwner] = useState("false");
+  const [profilePic, setProfilePic] = useState('')
+
   useEffect(() => {
     async function getUsername() {
       if (creatorId) {
@@ -59,6 +61,7 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp,
         if (userSnapshot.exists()) {
           const userInfo = userSnapshot.data();
           setUsername(userInfo.username);
+          setProfilePic(userInfo.profilePicture);
         } else {
           console.log("Error: User not found in database");
         }
@@ -134,12 +137,23 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp,
             sx={{
               height: "75px",
               width: "75px",
-              bgcolor: "#FFC436",
               borderRadius: "10px",
               cursor: "pointer",
             }}
           >
-            {/* User Profile img here */}
+            {profilePic &&
+              <img
+                src={profilePic}
+                alt="img"
+                style={{
+                  width: 'inherit',
+                  height: 'inherit',
+                  bgcolor: '#FFC436',
+                  cursor: 'pointer',
+                  objectFit: "contain", // Ensures the whole image fits inside the box without cropping
+                  borderRadius: "10px",
+                }}
+              />}
           </Box>
 
           <Box
@@ -176,11 +190,22 @@ const SingleComment = ({ commentID, creatorId, content, childComment, timestamp,
               sx={{
                 height: "30px",
                 width: "30px",
-                bgcolor: "#FFC436",
                 borderRadius: "10px",
               }}
             >
-              {/* profile img here */}
+              {profilePic &&
+                <img
+                  src={profilePic}
+                  alt="img"
+                  style={{
+                    width: 'inherit',
+                    height: 'inherit',
+                    bgcolor: '#FFC436',
+                    cursor: 'pointer',
+                    objectFit: "contain", // Ensures the whole image fits inside the box without cropping
+                    borderRadius: "10px",
+                  }}
+                />}
             </Box>
             <Box className={styles.username}>
               {username}
@@ -258,6 +283,8 @@ const SubComment = ({ subCommentID, creatorId, content, childComment, timestamp,
   const [isOwner, setIsOwner] = useState("false");
   const time = timestamp.toDate().toLocaleDateString([], { hour: "2-digit", minute: "2-digit" });
   const [username, setUsername] = useState("unknown_user");
+  const [profilePic, setProfilePic] = useState('')
+
   useEffect(() => {
     async function getUsername() {
       if (creatorId) {
@@ -266,6 +293,7 @@ const SubComment = ({ subCommentID, creatorId, content, childComment, timestamp,
         if (userSnapshot.exists()) {
           const userInfo = userSnapshot.data();
           setUsername(userInfo.username);
+          setProfilePic(userInfo.profilePicture);
         } else {
           console.log("Error: User not found in database");
         }
@@ -308,11 +336,22 @@ const SubComment = ({ subCommentID, creatorId, content, childComment, timestamp,
               sx={{
                 height: "30px",
                 width: "30px",
-                bgcolor: "#FFC436",
                 borderRadius: "10px",
               }}
             >
-              {/* profile img here */}
+              {profilePic &&
+                <img
+                  src={profilePic}
+                  alt="img"
+                  style={{
+                    width: 'inherit',
+                    height: 'inherit',
+                    bgcolor: '#FFC436',
+                    cursor: 'pointer',
+                    objectFit: "contain", // Ensures the whole image fits inside the box without cropping
+                    borderRadius: "10px",
+                  }}
+                />}
             </Box>
             <Box className={styles.username}>
               {username}
@@ -640,6 +679,7 @@ const PostPage = ({ params }) => {
   const [tags, setTags] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [commentContent, setCommentContent] = useState("");
+  const [profilePic, setProfilePic] = useState('')
 
   useEffect(() => {
     setIsClient(true);
@@ -668,6 +708,7 @@ const PostPage = ({ params }) => {
         if (userSnapshot.exists()) {
           const userInfo = userSnapshot.data();
           setAuthor(userInfo.username);
+          setProfilePic(userInfo.profilePicture);
         } else {
           console.log("Error: User not found in database");
         }
@@ -815,14 +856,27 @@ const PostPage = ({ params }) => {
                     sx={{
                       height: "30px",
                       width: "30px",
-                      bgcolor: "#FFC436",
-                      borderRadius: "10px",
+                      borderRadius: "50%",
                       marginLeft: "10px",
                       cursor: "pointer",
-                    }}
+                    }
+                    }
                   >
-                    {/* profile img here */}
+                    {profilePic &&
+                      <img
+                        src={profilePic}
+                        alt="img"
+                        style={{
+                          width: 'inherit',
+                          height: 'inherit',
+                          bgcolor: '#FFC436',
+                          cursor: 'pointer',
+                          objectFit: "contain", // Ensures the whole image fits inside the box without cropping
+                          borderRadius: "50%",
+                        }}
+                      />}
                   </Box>
+
                   <Box className={styles.username}>
                     {author || "Unknown Author"}
                   </Box>
