@@ -418,7 +418,7 @@ const CreatePost = () => {
                 slotProps={{
                   htmlInput: {
                       style: {
-                          fontSize: 30
+                          fontSize: 20
                       },
                       maxLength: 100 // Also include maxLength here
                   }
