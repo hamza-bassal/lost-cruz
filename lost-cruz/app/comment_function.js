@@ -120,7 +120,7 @@ async function deleteComment(ParentId,commentId,the_collection) {
         return false;
     }
 
-    if(docSnap.data().childComment === null)
+    if(docSnap.data().childComment === undefined)
     {
         return false;
     }
@@ -227,6 +227,11 @@ export async function postRemoveCommnet(postId) {
     const docSnap = await getDoc(docRef)
 
     let childCommentList = await docSnap.data().childComment;
+
+    if(childCommentList === undefined)
+    {
+        return false;
+    }
 
     for(let i = 0; i < childCommentList.length; i++)
     {
