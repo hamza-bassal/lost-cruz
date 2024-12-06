@@ -120,6 +120,11 @@ async function deleteComment(ParentId,commentId,the_collection) {
         return false;
     }
 
+    if(docSnap.data().childComment === null)
+    {
+        return false;
+    }
+
     //If there is child comment recersively delete the child comment
     for(let i = 0; i < docSnap.data().childComment.length; i++)
     {
@@ -216,4 +221,16 @@ export async function isUserOwnerOfComment(userId,commentId)
     }
 }
 
-export default {createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, deleteCommentWithCheck, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment, getCommentFromParent, getCommentQueryFromParent, getCommentQueryFromParentCuston};
+//This function will delete comment when the post is removed
+export async function postRemoveCommnet(postId) {
+    const docRef = doc(firestore, 'posts', postId)
+    const docSnap = await getDoc(docRef)
+
+    let childCommentList = await docSnap.data().childComment;
+
+    for(let i = 0; i < childCommentList.length; i++)
+    {
+        await deleteComment(postId,childCommentList[i],post_collection_name);
+    }
+}
+export default { postRemoveCommnet ,createComment, createCommentFromComment, createCommentFromPost, getCommentQueryFromParent, deleteCommentWithCheck, deleteCommentFromComment, deleteCommentFromPost, isUserOwnerOfComment, getCommentFromParent, getCommentQueryFromParent, getCommentQueryFromParentCuston};
