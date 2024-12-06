@@ -12,11 +12,7 @@ import {
 import { orderBy, limit } from "firebase/firestore";
 import { getStorage, ref, deleteObject } from "firebase/storage";
 
-import { storage } from "@/firebase";
-
-import { postRemoveCommnet } from "../comment_function";
-
-const comment_collection_name = 'comments';
+import { storage } from "@/firebase"
 
 export async function removePost(documentId){
     //Confirm Box
@@ -41,9 +37,6 @@ export async function removePost(documentId){
         console.error("Can't find post or user");
         return;
     }
-
-    //Remove comments
-    await postRemoveCommnet(documentId);
 
     //https://stackoverflow.com/questions/49536475/firebase-reffromurl-is-not-a-function
     //Delete image
@@ -114,8 +107,6 @@ export async function deletePostPhoto(documentId)
 
     //https://firebase.google.com/docs/storage/web/delete-files#web
     const desertRef = ref(storage, `images/${docSnap.data().imageName}`);
-
-
 
     // Delete the file
     deleteObject(desertRef).then(() => {
